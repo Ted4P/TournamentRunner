@@ -7,7 +7,7 @@ import java.util.Observable;
 
 public class TournamentModel extends Observable{
 	public TournamentModel(int num, int size, boolean doubleElim){		//Number, size of brackets, plus if the brackets are double or single elim
-		Brackets.setBrackets(num,size,doubleElim);
+		Brackets.setBrackets(num,size);
 		setChanged();
 		notifyObservers();
 	}
