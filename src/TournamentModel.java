@@ -15,7 +15,7 @@ public class TournamentModel extends Observable{
 		
 	}
 	public Bracket getBracket(int num){
-		
+		return Brackets.getBracket(num);
 	}
 	
 }
