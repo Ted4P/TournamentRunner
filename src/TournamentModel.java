@@ -12,10 +12,12 @@ public class TournamentModel extends Observable{
 		notifyObservers();
 	}
 	public void addPerson(Person person, int bracket){
-		
+		Brackets.getBracket(bracket).addPerson(person);
+		setChanged();
+		notifyObservers();
 	}
 	public Bracket getBracket(int num){
 		return Brackets.getBracket(num);
 	}
-	
+	public int getNumBrackets(){return Brackets.getNum();}
 }

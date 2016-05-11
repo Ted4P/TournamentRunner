@@ -11,5 +11,8 @@ public class Brackets {
 		if(num>=brackets.length) return null;
 		return brackets[num];
 	}
+	public static int getNum() {
+		return brackets.length;
+	}
 	
 }
