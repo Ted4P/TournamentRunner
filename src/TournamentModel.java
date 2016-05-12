@@ -6,7 +6,15 @@ import java.util.Observable;
  */
 
 public class TournamentModel extends Observable{
-	public TournamentModel(int num, int size, boolean doubleElim){		//Number, size of brackets, plus if the brackets are double or single elim
+	public TournamentModel(){
+		
+	}
+	public void setup(int num, int size){		//If dflt no param constructor, init brackets
+		Brackets.setBrackets(num,size);
+		setChanged();
+		notifyObservers();
+	}
+	public TournamentModel(int num, int size){		//Number, size of brackets, plus if the brackets are double or single elim
 		Brackets.setBrackets(num,size);
 		setChanged();
 		notifyObservers();
