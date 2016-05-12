@@ -7,15 +7,29 @@ import javax.swing.*;
 
 
 public class TournamentView extends JFrame implements Observer{
+	TournamentModel model;
 	
-	public TournamentView(TournamentModel model){		//Start popup with 
+	public TournamentView(){		//Start popup with 
 		Container pane = getContentPane();
-		model.addObserver(this);
 		
-		
+		/*
+		 * Startup prompt for number and size of brackets
+		 */
+		 String numBrackets = JOptionPane.showInputDialog(this,
+                 "Enter number of brackets", null);
+		 if(numBrackets!=null){
+			 String bracketSize = JOptionPane.showInputDialog(this,
+                 "Enter size of each bracket", null);
+			 model = new TournamentModel(Integer.parseInt(numBrackets),Integer.parseInt(bracketSize));
+			 model.addObserver(this);
+		 }
+		 else {}//If canceled out, load file?
+		 
+		 
+		 
 		//GUI FILLER
 		pane.add(new JLabel("HELLO WORLD"));
-		setTitle("Key printer");
+		setTitle("Tournament Runner");
 		setSize(700,400);
 		setVisible(true);
 	}
@@ -26,7 +40,6 @@ public class TournamentView extends JFrame implements Observer{
 	}
 	
 	public static void main(String[] args){
-		TournamentModel model = new TournamentModel();
-		TournamentView view = new TournamentView(model);
+		TournamentView view = new TournamentView();
 	}
 }
