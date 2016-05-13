@@ -6,6 +6,7 @@ public class Match {		//IF YOU NEED FUNCTIONALITY FROM THIS CLASS, ASK AND I'LL 
 		lPer = new Person("TBD", "");
 		rPer = new Person("TBD", "");
 		wPer = new Person("TBD", "");
+		note = "No information availible yet";
 		this.parent = parent;
 		if(size<=2) return;
 		left = new Match(size/2, this);
@@ -13,11 +14,10 @@ public class Match {		//IF YOU NEED FUNCTIONALITY FROM THIS CLASS, ASK AND I'LL 
 	}
 	public boolean addPerson(Person person){
 		if(left!=null && left.addPerson(person)) return true;
-		if(right!=null && right.addPerson(person)) return true;
-		if(left==null&&right==null){
-			System.out.println("ADDING PERSON: " + person);
-			if(lPer==null){lPer = person; return true;}
-			if(rPer==null){rPer = person; return true;}
+		else if(right!=null && right.addPerson(person)) return true;
+		else if(left==null&&right==null){
+			if(lPer.getName().equals("TBD")){lPer = person; return true;}
+			if(rPer.getName().equals("TBD")){rPer = person; return true;}
 		}
 		return false;
 	}
@@ -60,7 +60,9 @@ public class Match {		//IF YOU NEED FUNCTIONALITY FROM THIS CLASS, ASK AND I'LL 
 			result += left.getInfo() + "\n";
 		if(right != null)
 			result += right.getInfo() + "\n";
-		result += lPer.toString() + rPer.toString() + wPer.toString() + note + "\n";
+		result += "[\"" + lPer.getName() + "/" + lPer.getSchool() + "\",\""
+			+ rPer.getName() + "/" + rPer.getSchool() + "\",\""
+			+ wPer.getName() + "/" + wPer.getSchool() + "\",\"" + note + "\"]";
 		return result;
 	}
 }
