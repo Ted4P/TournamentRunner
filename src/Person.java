@@ -1,5 +1,5 @@
 
-public class Person {		//Name, team, weight class
+public class Person implements Comparable<Person>{		//Name, team, weight class
 	private String name, school;
 	public Person(String name, String school){
 		this.name = name;
@@ -12,4 +12,10 @@ public class Person {		//Name, team, weight class
 	public String getName(){return name;}
 	public String getSchool(){return school;}
 	public String toString(){return name + " from " + school;}
+	@Override
+	public int compareTo(Person other) {
+		if(this == other)
+			return 0;
+		return this.name.compareTo(other.getName());
+	}
 }
