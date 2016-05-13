@@ -11,24 +11,25 @@ import java.util.TreeSet;
 
 public class TournamentModel extends Observable{
 	private Set<Person>[] competitors;		//Each index is a bracket #
-	
-	public void setup(int num, int size){		//If dflt no param constructor, init brackets
+	private String tournamentName;
+	public TournamentModel(int num, int size, String name){		//Number, size of brackets, plus if the brackets are double or single elim
 		competitors = new Set[num];
-		
 		for(int i = 0; i < num; i++) competitors[i] = new TreeSet<Person>();
-		
+		tournamentName = name;
 		Brackets.setBrackets(num,size);
 		setChanged();
 		notifyObservers();
 	}
-	public TournamentModel(int num, int size){		//Number, size of brackets, plus if the brackets are double or single elim
-		setup(num, size);
-	}
-	public void addPerson(Person person, int bracket){
-		competitors[bracket].add(person);
-		Brackets.getBracket(bracket).addPerson(person);
-		setChanged();
-		notifyObservers();
+	public boolean addPerson(Person person, int bracket){
+		if(competitors[bracket].add(person)){
+			boolean result = Brackets.getBracket(bracket).addPerson(person);
+			if(result){
+				setChanged();
+				notifyObservers();
+			}
+			return result;
+		}
+		return false;
 	}
 	public void advancePerson(Person person, int bracket, String notes){
 		Brackets.getBracket(bracket).recordWin(person, notes);
@@ -37,4 +38,10 @@ public class TournamentModel extends Observable{
 		return competitors[bracket];
 	}
 	public int getNumBrackets(){return Brackets.getNum();}
+	public void setName(String name){
+		tournamentName = name;
+	}
+	public String getName(){
+		return tournamentName;
+	}
 }
