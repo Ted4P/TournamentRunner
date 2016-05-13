@@ -19,10 +19,9 @@ import com.sun.glass.events.KeyEvent;
 public class TournamentView extends JFrame implements Observer, ActionListener{
 	TournamentModel model;
 	private final JMenuItem newBracket, fromFile, save, saveAs, add;
-	String currFileName;
-
-	public TournamentView(){  //Start popup with 
-		currFileName = null;
+	private String currPathway;
+	public TournamentView(){//Start popup with
+		currPathway = null; 
 		Container pane = getContentPane();
 		JMenuBar bar = new JMenuBar();
 		JMenu file = new JMenu("File");
@@ -44,18 +43,10 @@ public class TournamentView extends JFrame implements Observer, ActionListener{
 		edit.add(add);
 		bar.add(file);
 		bar.add(edit);
-
-
-
-
-
-
+		update(null,null);
 		//GUI FILLER
 		pane.add(new JLabel("HELLO WORLD"));
 		super.setJMenuBar(bar);
-		add.setEnabled(false);
-		save.setEnabled(false);
-		saveAs.setEnabled(false);
 		setTitle("Tournament Runner");
 		setSize(700,400);
 		setVisible(true);
@@ -66,6 +57,7 @@ public class TournamentView extends JFrame implements Observer, ActionListener{
 		/*
 		 * Startup prompt for number and size of brackets
 		 */
+		String currPathway = null;
 		String numBrackets = JOptionPane.showInputDialog(this,
 				"Enter number of brackets", null);
 		if(numBrackets!=null){
@@ -75,15 +67,15 @@ public class TournamentView extends JFrame implements Observer, ActionListener{
 					JOptionPane.showMessageDialog(this, "Error: A new tournament must contain at least 1 bracket", "Whoops!", JOptionPane.ERROR_MESSAGE);
 				else{
 					String bracketSize = JOptionPane.showInputDialog(this, "Enter size of each bracket", null);
-					Integer intBracketSize = Integer.parseInt(bracketSize);
-					if(intBracketSize < 2)
-						JOptionPane.showMessageDialog(this, "Error: Each bracket must contain at least 2 competitors", "Whoops!", JOptionPane.ERROR_MESSAGE);
-					else{
-						model = new TournamentModel(intBracketNum,intBracketSize);
-						model.addObserver(this);
-						add.setEnabled(true);
-						save.setEnabled(true);
-						saveAs.setEnabled(true);
+					if(bracketSize != null){
+						Integer intBracketSize = Integer.parseInt(bracketSize);
+						if(intBracketSize < 2)
+							JOptionPane.showMessageDialog(this, "Error: Each bracket must contain at least 2 competitors", "Whoops!", JOptionPane.ERROR_MESSAGE);
+						else{
+							model = new TournamentModel(intBracketNum,intBracketSize, "New Tournament");
+							model.addObserver(this);
+							update(null,null);
+						}
 					}
 				}
 			}
@@ -91,22 +83,24 @@ public class TournamentView extends JFrame implements Observer, ActionListener{
 				JOptionPane.showMessageDialog(this, "Error: Invalid Input", "Whoops!", JOptionPane.ERROR_MESSAGE);
 			}
 		}
-		else {}//If canceled out, load file?
 	}
 
 	private void addNewPerson(){
 		if(model == null)
 			return;
 		String name = JOptionPane.showInputDialog(this, "Enter the name of the new person");
-		if(name == null || name.equals("")){
-			JOptionPane.showMessageDialog(this, "Error: A competitor's name is required");
-		}
+		if(name == null || name.equals(""))
+			return;
+		else if(name.equals("TBD"))
+			JOptionPane.showMessageDialog(this, "Error: Invalid name");
 		else{
 			String school = JOptionPane.showInputDialog(this, "Enter the school of the new person");
-			if(school == null || school.equals(""))
+			if(school == null)
+				return;
+			else if(school.equals(""))
 				school = "Unaffiliated";
-			model.addPerson(new Person(name, school), 0);
 		}
+		//System.out.println(Brackets.getBracket(0).getInfo());
 	}
 
 	private void newBracketFromFile(){
@@ -128,41 +122,58 @@ public class TournamentView extends JFrame implements Observer, ActionListener{
 	}
 
 	private void save(){
-		if(currFileName == null)
+		if(currPathway == null)
 			saveAs();
 		else{
-
+			writeFile();
 		}
 	}
 
 	private void saveAs(){
 		String fileName = JOptionPane.showInputDialog(this, "Save as:");
-		if(fileName == null || fileName.contains(".") || fileName.contains("\\") || fileName.equals(""))
-			JOptionPane.showMessageDialog(this, "Error: Invalid file name", "Whoops!", JOptionPane.ERROR_MESSAGE);
-		else{
-			JFileChooser fileChooser = new JFileChooser(System.getProperty("user.dir") + "/");
-			fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-			int result = fileChooser.showOpenDialog(null);
-			if(result == JFileChooser.APPROVE_OPTION){
-				File dir = fileChooser.getSelectedFile();
-				try{
-					System.out.println(dir.getAbsolutePath() + "\\" + fileName + ".bracket");
-					File newFile = new File(dir.getAbsolutePath() + "\\" + fileName + ".bracket");
-					FileWriter writer = new FileWriter(newFile);
-				writer.write(Brackets.getNum() + "\n" + Brackets.getSize() + "\n");
-				for(int i=0;i<Brackets.getNum();i++)
-					writer.write(Brackets.getBracket(i).getInfo() + "\n");
-				writer.close();
-				}
-				catch(IOException e){
-					JOptionPane.showMessageDialog(this, "An error has occured, the file has not been saved", "Whoops!", JOptionPane.ERROR_MESSAGE);
+		if(fileName != null){
+			if(fileName.contains(".") || fileName.contains("\\") || fileName.equals(""))
+				JOptionPane.showMessageDialog(this, "Error: Invalid file name", "Whoops!", JOptionPane.ERROR_MESSAGE);
+			else{
+				JFileChooser fileChooser = new JFileChooser(System.getProperty("user.dir") + "/");
+				fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+				int result = fileChooser.showOpenDialog(null);
+				if(result == JFileChooser.APPROVE_OPTION){
+					File dir = fileChooser.getSelectedFile();
+					currPathway = dir.getAbsolutePath() + "/" + fileName + ".bracket";
 				}
 			}
 		}
 	}
 
+	public void writeFile(){
+		try{
+			File newFile = new File(currPathway);
+			FileWriter writer = new FileWriter(newFile);
+			writer.write(Brackets.getNum() + "\n" + Brackets.getSize() + "\n");
+			for(int i=0;i<Brackets.getNum();i++)
+				writer.write(Brackets.getBracket(i).getInfo() + "\n");
+			writer.close();
+			model.setName(currPathway);
+		}
+		catch(IOException e){
+			JOptionPane.showMessageDialog(this, "An error has occured, the file has not been saved", "Whoops!", JOptionPane.ERROR_MESSAGE);
+		}
+	}
+
 	public void update(Observable arg0, Object arg1) {
-		//UPDATE BRACKETS
+		if(model == null){
+			add.setEnabled(false);
+			save.setEnabled(false);
+			saveAs.setEnabled(false);
+			setTitle("Tournament Runner");
+		}
+		else{
+			setTitle(model.getName());
+			add.setEnabled(true);
+			save.setEnabled(true);
+			saveAs.setEnabled(true);
+		}
 	}
 
 
@@ -182,5 +193,7 @@ public class TournamentView extends JFrame implements Observer, ActionListener{
 		else if(source == save){
 			save();
 		}
+		else if(source == saveAs)
+			saveAs();
 	}
 }
