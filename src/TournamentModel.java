@@ -38,8 +38,5 @@ public class TournamentModel extends Observable{
 	public Set<Person> getCompetitors(int bracket){
 		return competitors[bracket];
 	}
-	public Bracket getBracket(int num){
-		return Brackets.getBracket(num);
-	}
 	public int getNumBrackets(){return Brackets.getNum();}
 }
