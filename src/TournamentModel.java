@@ -24,6 +24,9 @@ public class TournamentModel extends Observable{
 		setChanged();
 		notifyObservers();
 	}
+	public void advancePerson(Person person, int bracket){
+		
+	}
 	public Bracket getBracket(int num){
 		return Brackets.getBracket(num);
 	}

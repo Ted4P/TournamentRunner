@@ -5,7 +5,7 @@ public class Match {		//IF YOU NEED FUNCTIONALITY FROM THIS CLASS, ASK AND I'LL 
 	private String note;
 	public Match(int size, Match parent){
 		this.parent = parent;
-		if(size==2) return;
+		if(size<=2) return;
 		left = new Match(size/2, this);
 		right = new Match(size/2, this);
 	}

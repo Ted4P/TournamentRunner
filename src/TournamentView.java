@@ -11,7 +11,7 @@ import java.util.Scanner;
 
 import javax.swing.*;
 
-import com.sun.glass.events.KeyEvent;
+//import com.sun.glass.events.KeyEvent;
 
 public class TournamentView extends JFrame implements Observer, ActionListener{
 	TournamentModel model;
