@@ -1,9 +1,11 @@
-
 public class Match {		//IF YOU NEED FUNCTIONALITY FROM THIS CLASS, ASK AND I'LL ADD A GETTER. THE CODE IS AWFUL AND WILL MAKE YOU HATE LIFE ITSELF
 	private Match left, right, parent;
 	private Person lPer, rPer, wPer;
 	private String note;
 	public Match(int size, Match parent){
+		lPer = new Person("TBD", "");
+		rPer = new Person("TBD", "");
+		wPer = new Person("TBD", "");
 		this.parent = parent;
 		if(size<=2) return;
 		left = new Match(size/2, this);
@@ -51,5 +53,14 @@ public class Match {		//IF YOU NEED FUNCTIONALITY FROM THIS CLASS, ASK AND I'LL 
 	public String getNotes(){return note;}
 	public Person getWinner() {
 		return wPer;
+	}
+	public String getInfo(){
+		String result = "";
+		if(left != null)
+			result += left.getInfo() + "\n";
+		if(right != null)
+			result += right.getInfo() + "\n";
+		result += lPer.toString() + rPer.toString() + wPer.toString() + note + "\n";
+		return result;
 	}
 }
