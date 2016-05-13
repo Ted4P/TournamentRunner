@@ -5,40 +5,51 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.Scanner;
 
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
-//import com.sun.glass.events.KeyEvent;
+import com.sun.glass.events.KeyEvent;
 
 public class TournamentView extends JFrame implements Observer, ActionListener{
 	TournamentModel model;
-	
+	private final JMenuItem newBracket, fromFile, save, saveAs, add;
+	String currFileName;
 
-	public TournamentView(){		//Start popup with 
+	public TournamentView(){  //Start popup with 
+		currFileName = null;
 		Container pane = getContentPane();
 		JMenuBar bar = new JMenuBar();
 		JMenu file = new JMenu("File");
-		JMenuItem newBracket = new JMenuItem("New Bracket");
+		newBracket = new JMenuItem("New Bracket");
 		newBracket.addActionListener(this);
 		file.add(newBracket);
-		JMenuItem fromFile = new JMenuItem("Import from file");
+		fromFile = new JMenuItem("Open");
 		fromFile.addActionListener(this);
 		file.add(fromFile);
+		save = new JMenuItem("Save");
+		save.addActionListener(this);
+		file.add(save);
+		saveAs = new JMenuItem("Save As");
+		saveAs.addActionListener(this);
+		file.add(saveAs);
 		JMenu edit = new JMenu("Edit");
-		JMenuItem add = new JMenuItem("Add Competitor");
+		add = new JMenuItem("Add Competitor");
 		add.addActionListener(this);
 		edit.add(add);
 		bar.add(file);
 		bar.add(edit);
-
-
-
-
-
-
+		
+		
+		
+		
+		
+		
 		//GUI FILLER
 		pane.add(new JLabel("HELLO WORLD"));
 		super.setJMenuBar(bar);
@@ -100,6 +111,7 @@ public class TournamentView extends JFrame implements Observer, ActionListener{
 		String pathName = System.getProperty("user.dir") + "/";
 		JFileChooser fileChooser = new JFileChooser(pathName);
 		fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+		fileChooser.setFileFilter(new FileNameExtensionFilter(null, ".bracket"));
 		int result = fileChooser.showOpenDialog(null);
 		if(result == JFileChooser.APPROVE_OPTION){
 			File file = fileChooser.getSelectedFile();
@@ -113,6 +125,34 @@ public class TournamentView extends JFrame implements Observer, ActionListener{
 		}
 	}
 	
+	private void save(){
+		if(currFileName == null)
+			saveAs();
+		else{
+			String fileName = JOptionPane.showInputDialog(this, "Save as:");
+			JFileChooser fileChooser = new JFileChooser(System.getProperty("user.dir") + "/");
+			fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+			int result = fileChooser.showOpenDialog(null);
+			if(result == JFileChooser.APPROVE_OPTION){
+				File dir = fileChooser.getCurrentDirectory();
+				try{FileWriter writer = new FileWriter(fileName + ".bracket");
+					writer.write(Brackets.getNum() + "\n" + Brackets.getSize() + "\n");
+					for(int i=0;i<Brackets.getNum();i++){
+						
+					}
+				}
+				catch(IOException e){
+					
+				}
+				
+			}
+		}
+	}
+	
+	private void saveAs(){
+		
+	}
+	
 	public void update(Observable arg0, Object arg1) {
 		//UPDATE BRACKETS
 	}
@@ -124,11 +164,15 @@ public class TournamentView extends JFrame implements Observer, ActionListener{
 
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		if(((AbstractButton)arg0.getSource()).getText().equals("New Bracket"))
+		Object source = arg0.getSource();
+		if(source == newBracket)
 			createNewBracket();
-		else if(((AbstractButton)arg0.getSource()).getText().equals("Add Competitor"))
+		else if(source == add)
 			addNewPerson();
-		else if(((AbstractButton)arg0.getSource()).getText().equals("Import from file"))
+		else if(source == fromFile)
 			newBracketFromFile();
+		else if(source == save){
+			save();
+		}
 	}
 }
