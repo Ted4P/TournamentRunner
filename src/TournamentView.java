@@ -3,8 +3,11 @@ import java.awt.Panel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.Scanner;
 
 import javax.swing.*;
 
@@ -21,6 +24,9 @@ public class TournamentView extends JFrame implements Observer, ActionListener{
 		JMenuItem newBracket = new JMenuItem("New Bracket");
 		newBracket.addActionListener(this);
 		file.add(newBracket);
+		JMenuItem fromFile = new JMenuItem("Import from file");
+		fromFile.addActionListener(this);
+		file.add(fromFile);
 		JMenu edit = new JMenu("Edit");
 		JMenuItem add = new JMenuItem("Add Competitor");
 		add.addActionListener(this);
@@ -89,7 +95,24 @@ public class TournamentView extends JFrame implements Observer, ActionListener{
 			model.addPerson(new Person(name, school), 0);
 		}
 	}
-
+	
+	private void newBracketFromFile(){
+		String pathName = System.getProperty("user.dir") + "/";
+		JFileChooser fileChooser = new JFileChooser(pathName);
+		fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+		int result = fileChooser.showOpenDialog(null);
+		if(result == JFileChooser.APPROVE_OPTION){
+			File file = fileChooser.getSelectedFile();
+			try{
+				Scanner scan = new Scanner(file);
+				/*Create new bracket based off of a text file, exact format to be specified later*/
+			}
+			catch(FileNotFoundException e){
+				JOptionPane.showMessageDialog(this, "Error: Invalid File", "Whoops!", JOptionPane.ERROR_MESSAGE);
+			}
+		}
+	}
+	
 	public void update(Observable arg0, Object arg1) {
 		//UPDATE BRACKETS
 	}
@@ -105,5 +128,7 @@ public class TournamentView extends JFrame implements Observer, ActionListener{
 			createNewBracket();
 		else if(((AbstractButton)arg0.getSource()).getText().equals("Add Competitor"))
 			addNewPerson();
+		else if(((AbstractButton)arg0.getSource()).getText().equals("Import from file"))
+			newBracketFromFile();
 	}
 }
