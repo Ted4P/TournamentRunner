@@ -9,6 +9,14 @@ public class Bracket {//Represents a single bracket, with given size and elimina
 	public void recordWin(Person winner, String notes){
 		top.advancePerson(winner, notes);
 	}
+	/*Returns all names in this bracket in a specific order:
+	 * Go to the left most match, then adds the names of both competitors (lPer, rPer) then adds the winner
+	 * of the match, followed by the notes, then prints out the right child of the parent of the current match, with the same rules
+	 * followed by the information for the parent itself.
+	 */
+	public String getInfo(){
+		return top.getInfo();
+	}
 	
 	public static void main(String[] args){		//Test method for Person and Bracket
 		Bracket ne138 = new Bracket(4);
