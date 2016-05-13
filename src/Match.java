@@ -1,5 +1,5 @@
 
-public class Match {
+public class Match {		//IF YOU NEED FUNCTIONALITY FROM THIS CLASS, ASK AND I'LL ADD A GETTER. THE CODE IS AWFUL AND WILL MAKE YOU HATE LIFE ITSELF
 	private Match left, right, parent;
 	private Person lPer, rPer, wPer;
 	private String note;
