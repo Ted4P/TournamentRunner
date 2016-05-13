@@ -22,9 +22,7 @@ public class TournamentModel extends Observable{
 		notifyObservers();
 	}
 	public TournamentModel(int num, int size){		//Number, size of brackets, plus if the brackets are double or single elim
-		Brackets.setBrackets(num,size);
-		setChanged();
-		notifyObservers();
+		setup(num, size);
 	}
 	public void addPerson(Person person, int bracket){
 		competitors[bracket].add(person);
