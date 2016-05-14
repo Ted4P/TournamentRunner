@@ -16,6 +16,6 @@ public class Person implements Comparable<Person>{		//Name, team, weight class
 	public int compareTo(Person other) {
 		if(this == other)
 			return 0;
-		return this.name.compareTo(other.getName());
+		return (name+school).toLowerCase().compareTo((other.getName()+other.getSchool()).toLowerCase());
 	}
 }
