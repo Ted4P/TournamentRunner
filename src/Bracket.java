@@ -1,9 +1,11 @@
 
 public class Bracket {//Represents a single bracket, with given size and elimination style
 	private Match top;
-	public Bracket(int size) {
+	private String name;
+	public Bracket(int size,  String name) {
 		top = new Match(size, null);
 	}
+	public void setName(String nm){name = nm;}
 	public boolean addPerson(Person per){return top.addPerson(per);}
 	
 	public void recordWin(Person winner, String notes){
@@ -18,8 +20,12 @@ public class Bracket {//Represents a single bracket, with given size and elimina
 		return top.getInfo();
 	}
 	
+	public String getName(){
+		return name;
+	}
+	
 	public static void main(String[] args){		//Test method for Person and Bracket
-		Bracket ne138 = new Bracket(4);
+		Bracket ne138 = new Bracket(4,"NE138");
 		ne138.addPerson(new Person("TED", "MX"));
 		ne138.addPerson(new Person("HARRY", "MRN"));
 		ne138.recordWin(new Person("TED", "MX"), "PIN");

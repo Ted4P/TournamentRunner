@@ -97,6 +97,8 @@ public class TournamentView extends JFrame implements Observer, ActionListener{
 				return;
 			else if(school.equals(""))
 				school = "Unaffiliated";
+			
+			//Add "which bracket" w/ dropdown menu for names of each
 		}
 		//System.out.println(Brackets.getBracket(0).getInfo());
 	}

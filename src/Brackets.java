@@ -7,7 +7,7 @@ public class Brackets {
 		bSize = size;
 		if(brackets!=null) return;
 		brackets = new Bracket[num];
-		for(int i = 0; i < num; i++) brackets[i] = new Bracket(size);
+		for(int i = 0; i < num; i++) brackets[i] = new Bracket(size,""+i);
 	}
 	public static Bracket getBracket(int num) {
 		if(num>=brackets.length) return null;
