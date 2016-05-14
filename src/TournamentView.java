@@ -7,6 +7,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.Scanner;
@@ -18,6 +20,7 @@ public class TournamentView extends JFrame implements Observer, ActionListener{
 	TournamentModel model;
 	private final JMenuItem newBracket, fromFile, save, saveAs, add;
 	private String currPathway;
+	private String[] bracketNames;
 	public TournamentView(){//Start popup with
 		currPathway = null; 
 		Container pane = getContentPane();
@@ -42,6 +45,7 @@ public class TournamentView extends JFrame implements Observer, ActionListener{
 		bar.add(file);
 		bar.add(edit);
 		update(null,null);
+		
 		//GUI FILLER
 		pane.add(new JLabel("HELLO WORLD"));
 		super.setJMenuBar(bar);
@@ -97,6 +101,7 @@ public class TournamentView extends JFrame implements Observer, ActionListener{
 				return;
 			else if(school.equals(""))
 				school = "Unaffiliated";
+			
 			
 			//Add "which bracket" w/ dropdown menu for names of each
 		}
@@ -169,10 +174,13 @@ public class TournamentView extends JFrame implements Observer, ActionListener{
 			setTitle("Tournament Runner");
 		}
 		else{
+			bracketNames = new String[Brackets.getNum()];
+			for(int i = 0; i < Brackets.getNum(); i++) bracketNames[i] = Brackets.getBracket(i).getName();
 			setTitle(model.getName());
 			add.setEnabled(true);
 			save.setEnabled(true);
 			saveAs.setEnabled(true);
+			
 		}
 	}
 
