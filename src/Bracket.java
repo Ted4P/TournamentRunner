@@ -4,6 +4,7 @@ public class Bracket {//Represents a single bracket, with given size and elimina
 	private String name;
 	public Bracket(int size,  String name) {
 		top = new Match(size, null);
+		this.name = name;
 	}
 	public void setName(String nm){name = nm;}
 	public boolean addPerson(Person per){return top.addPerson(per);}

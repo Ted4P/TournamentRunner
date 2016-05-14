@@ -102,10 +102,34 @@ public class TournamentView extends JFrame implements Observer, ActionListener{
 			else if(school.equals(""))
 				school = "Unaffiliated";
 			
-			
+			String bracket = JOptionPane.showInputDialog(this, "Enter the name of the bracket");
+			if(bracket==null)
+				return;
+			else if(bracket.equals(""))
+				JOptionPane.showMessageDialog(this, "Error: No bracket specified");
+			else addPerson(name,school,bracket);
 			//Add "which bracket" w/ dropdown menu for names of each
 		}
-		//System.out.println(Brackets.getBracket(0).getInfo());
+		System.out.println(Brackets.getBracket(0).getInfo());
+	}
+
+	private void addPerson(String name, String school, String bracket) {
+		int brackNum = findBrackNum(bracket);
+		
+		if(brackNum==-1)
+			JOptionPane.showMessageDialog(this, "Error: No bracket with specified name found");
+		else{
+			boolean success = Brackets.getBracket(brackNum).addPerson(new Person(name, school));
+			if(success){
+				JOptionPane.showMessageDialog(this, name + " from " + school + " successfully added to bracket " + bracket);
+			}
+			else JOptionPane.showMessageDialog(this, "Error: Could not add to bracket " + bracket);
+		}
+	}
+	private int findBrackNum(String bracketName){
+		for(int i = 0; i < Brackets.getNum(); i++)
+			if(Brackets.getBracket(i).getName().equals(bracketName)) return i;
+		return -1;
 	}
 
 	private void newBracketFromFile(){
