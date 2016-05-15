@@ -17,10 +17,15 @@ import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class TournamentView extends JFrame implements Observer, ActionListener{
+	private static final String 
+			ERROR_NAME_NOT_FOUND = "Error: No bracket with specified name found", 
+			ERROR_NO_BRACKET_SPECIFIED = "Error: No bracket specified";
+
 	TournamentModel model;
 	private final JMenuItem newBracket, fromFile, save, saveAs, add;
 	private String currPathway;
 	private String[] bracketNames;
+	
 	public TournamentView(){//Start popup with
 		currPathway = null; 
 		Container pane = getContentPane();
@@ -106,7 +111,7 @@ public class TournamentView extends JFrame implements Observer, ActionListener{
 			if(bracket==null)
 				return;
 			else if(bracket.equals(""))
-				JOptionPane.showMessageDialog(this, "Error: No bracket specified");
+				JOptionPane.showMessageDialog(this, ERROR_NO_BRACKET_SPECIFIED);
 			else addPerson(name,school,bracket);
 			//Add "which bracket" w/ dropdown menu for names of each
 		}
@@ -117,7 +122,7 @@ public class TournamentView extends JFrame implements Observer, ActionListener{
 		int brackNum = findBrackNum(bracket);
 		
 		if(brackNum==-1)
-			JOptionPane.showMessageDialog(this, "Error: No bracket with specified name found");
+			JOptionPane.showMessageDialog(this, ERROR_NAME_NOT_FOUND);
 		else{
 			boolean success = Brackets.getBracket(brackNum).addPerson(new Person(name, school));
 			if(success){
