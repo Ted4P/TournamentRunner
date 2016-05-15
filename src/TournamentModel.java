@@ -44,4 +44,14 @@ public class TournamentModel extends Observable{
 	public String getName(){
 		return tournamentName;
 	}
+	public void restoreState(String[] data, int i){
+		Brackets.getBracket(i).restoreState(data);
+		setChanged();
+		notifyObservers();
+	}
+	public void setBracketName(int index, String newName) {
+		Brackets.getBracket(index).setName(newName);
+		setChanged();
+		notifyObservers();
+	}
 }

@@ -22,9 +22,9 @@ public class TournamentView extends JFrame implements Observer, ActionListener{
 			ERROR_NO_BRACKET_SPECIFIED = "Error: No bracket specified";
 
 	TournamentModel model;
-	private final JMenuItem newBracket, fromFile, save, saveAs, add;
+	private final JMenuItem newBracket, fromFile, save, saveAs, add, changeName;
 	private String currPathway;
-	private String[] bracketNames;
+	private JTabbedPane brackets;
 	
 	public TournamentView(){//Start popup with
 		currPathway = null; 
@@ -47,12 +47,17 @@ public class TournamentView extends JFrame implements Observer, ActionListener{
 		add = new JMenuItem("Add Competitor");
 		add.addActionListener(this);
 		edit.add(add);
+		changeName = new JMenuItem("Change Bracket Name");
+		changeName.addActionListener(this);
+		edit.add(changeName);
 		bar.add(file);
 		bar.add(edit);
 		update(null,null);
-		
+		brackets = new JTabbedPane();
+		brackets.setTabPlacement(JTabbedPane.LEFT);
+		pane.add(brackets);
 		//GUI FILLER
-		pane.add(new JLabel("HELLO WORLD"));
+		
 		super.setJMenuBar(bar);
 		setTitle("Tournament Runner");
 		setSize(700,400);
@@ -81,7 +86,7 @@ public class TournamentView extends JFrame implements Observer, ActionListener{
 						else{
 							model = new TournamentModel(intBracketNum,intBracketSize, "New Tournament");
 							model.addObserver(this);
-							update(null,null);
+							update(model,null);
 						}
 					}
 				}
@@ -90,6 +95,7 @@ public class TournamentView extends JFrame implements Observer, ActionListener{
 				JOptionPane.showMessageDialog(this, "Error: Invalid Input", "Whoops!", JOptionPane.ERROR_MESSAGE);
 			}
 		}
+		
 	}
 
 	private void addNewPerson(){
@@ -156,14 +162,14 @@ public class TournamentView extends JFrame implements Observer, ActionListener{
 					Brackets.getBracket(i).setName(scan.nextLine());
 					for(int j = 0; j < brackSize-1; j++){
 						String matchLine = scan.nextLine();
-						Brackets.getBracket(i).restoreState(matchLine.split(","));
+						model.restoreState(matchLine.split(","),i);
 						//PROCESS MATCHLINE
 					}
 				}
 				
 				scan.close();
 				model.addObserver(this);
-				update(null,null);
+				update(model,null);
 			}
 			catch(FileNotFoundException e){
 				JOptionPane.showMessageDialog(this, "Error: Invalid File", "Whoops!", JOptionPane.ERROR_MESSAGE);
@@ -171,6 +177,28 @@ public class TournamentView extends JFrame implements Observer, ActionListener{
 		}
 	}
 
+	private void loadTabs() {
+		System.out.println("LOADING TABS");
+		brackets.removeAll();
+		for(int i = 0; i < Brackets.getNum(); i++){
+			brackets.addTab(Brackets.getBracket(i).getName(), new JLabel("PUT RENDERING SUTFF HERE"));
+		}
+		
+	}
+
+	private void changeBracketName() {
+		String name = JOptionPane.showInputDialog(this, "Enter the bracket to rename");
+		if(name==null||name.equals("")) return;
+		int index = findBrackNum(name);
+		if(index==-1){ 
+			JOptionPane.showMessageDialog(this, "Error: Bracket name not found");
+			return;
+		}
+		String newName = JOptionPane.showInputDialog(this, "Enter the new name");
+		if(newName==null||newName.equals("")) return;
+		model.setBracketName(index,newName);
+	}
+	
 	private void save(){
 		if(currPathway == null)
 			saveAs();
@@ -203,7 +231,7 @@ public class TournamentView extends JFrame implements Observer, ActionListener{
 			FileWriter writer = new FileWriter(newFile);
 			writer.write(Brackets.getNum() + "\n" + Brackets.getSize() + "\n" + model.getName() + "\n");
 			for(int i=0;i<Brackets.getNum();i++){
-				writer.write(bracketNames[i] + "\n");
+				writer.write(Brackets.getBracket(i).getName() + "\n");
 				writer.write(Brackets.getBracket(i).getInfo() + "\n");
 			}
 			writer.close();
@@ -219,16 +247,16 @@ public class TournamentView extends JFrame implements Observer, ActionListener{
 			add.setEnabled(false);
 			save.setEnabled(false);
 			saveAs.setEnabled(false);
+			changeName.setEnabled(false);
 			setTitle("Tournament Runner");
 		}
 		else{
-			bracketNames = new String[Brackets.getNum()];
-			for(int i = 0; i < Brackets.getNum(); i++) bracketNames[i] = Brackets.getBracket(i).getName();
-			setTitle(model.getName());
+			loadTabs();
+			setTitle(((TournamentModel) arg0).getName());
 			add.setEnabled(true);
 			save.setEnabled(true);
 			saveAs.setEnabled(true);
-			
+			changeName.setEnabled(true);
 		}
 	}
 
@@ -246,10 +274,11 @@ public class TournamentView extends JFrame implements Observer, ActionListener{
 			addNewPerson();
 		else if(source == fromFile)
 			newBracketFromFile();
-		else if(source == save){
+		else if(source == save)
 			save();
-		}
 		else if(source == saveAs)
 			saveAs();
+		else if(source == changeName)
+			changeBracketName();
 	}
 }
