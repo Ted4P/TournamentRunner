@@ -5,7 +5,6 @@ public class Brackets {
 	private static int bSize;
 	public static void setBrackets(int num, int size) {
 		bSize = size;
-		if(brackets!=null) return;
 		brackets = new Bracket[num];
 		for(int i = 0; i < num; i++) brackets[i] = new Bracket(size,""+(i+1));
 	}

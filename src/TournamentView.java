@@ -141,13 +141,29 @@ public class TournamentView extends JFrame implements Observer, ActionListener{
 		String pathName = System.getProperty("user.dir") + "/";
 		JFileChooser fileChooser = new JFileChooser(pathName);
 		fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-		fileChooser.setFileFilter(new FileNameExtensionFilter(null, ".bracket"));
+		fileChooser.setFileFilter(new FileNameExtensionFilter(null, "bracket"));
 		int result = fileChooser.showOpenDialog(null);
 		if(result == JFileChooser.APPROVE_OPTION){
 			File file = fileChooser.getSelectedFile();
 			try{
 				Scanner scan = new Scanner(file);
-				/*Create new bracket based off of a text file, exact format to be specified later*/
+				int numBrack = Integer.parseInt(scan.nextLine());
+				int brackSize = Integer.parseInt(scan.nextLine());
+				String name = scan.nextLine();
+				model = new TournamentModel(numBrack,brackSize,name);
+				
+				for(int i = 0; i < numBrack; i++){
+					Brackets.getBracket(i).setName(scan.nextLine());
+					for(int j = 0; j < brackSize-1; j++){
+						String matchLine = scan.nextLine();
+						System.out.println(matchLine);		//Each line refers to an individual match in the tree. Need to process in bracket class
+					}
+					//PARSE WRESTLERS FROM FILE FORMAT
+				}
+				
+				
+				model.addObserver(this);
+				update(null,null);
 			}
 			catch(FileNotFoundException e){
 				JOptionPane.showMessageDialog(this, "Error: Invalid File", "Whoops!", JOptionPane.ERROR_MESSAGE);
@@ -175,6 +191,7 @@ public class TournamentView extends JFrame implements Observer, ActionListener{
 				if(result == JFileChooser.APPROVE_OPTION){
 					File dir = fileChooser.getSelectedFile();
 					currPathway = dir.getAbsolutePath() + "/" + fileName + ".bracket";
+					writeFile();
 				}
 			}
 		}
@@ -184,9 +201,11 @@ public class TournamentView extends JFrame implements Observer, ActionListener{
 		try{
 			File newFile = new File(currPathway);
 			FileWriter writer = new FileWriter(newFile);
-			writer.write(Brackets.getNum() + "\n" + Brackets.getSize() + "\n");
-			for(int i=0;i<Brackets.getNum();i++)
+			writer.write(Brackets.getNum() + "\n" + Brackets.getSize() + "\n" + model.getName() + "\n");
+			for(int i=0;i<Brackets.getNum();i++){
+				writer.write(bracketNames[i] + "\n");
 				writer.write(Brackets.getBracket(i).getInfo() + "\n");
+			}
 			writer.close();
 			model.setName(currPathway);
 		}
