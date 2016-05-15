@@ -3,7 +3,7 @@ public class Bracket {//Represents a single bracket, with given size and elimina
 	private Match top;
 	private String name;
 	public Bracket(int size,  String name) {
-		top = new Match(size, null);
+		top = new Match(size, null,1);
 		this.name = name;
 	}
 	public void setName(String nm){name = nm;}
@@ -24,9 +24,7 @@ public class Bracket {//Represents a single bracket, with given size and elimina
 	public String getName(){
 		return name;
 	}
-	public void restoreState(String[] data, int j) {
-		System.out.println("CALLED");
-		top.restoreState(data,j+1,Brackets.getSize()-1);
-		
+	public void restoreState(String[] data) {
+		top.restoreState(data);
 	}
 }

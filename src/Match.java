@@ -2,15 +2,17 @@ public class Match {		//IF YOU NEED FUNCTIONALITY FROM THIS CLASS, ASK AND I'LL 
 	private Match left, right, parent;
 	private Person lPer, rPer, wPer;
 	private String note;
-	public Match(int size, Match parent){
+	private int val;
+	public Match(int size, Match parent, int i){
+		val=i;
 		lPer = new Person("TBD", "");
 		rPer = new Person("TBD", "");
 		wPer = new Person("TBD", "");
 		note = "No information availible yet";
 		this.parent = parent;
 		if(size<=2) return;
-		left = new Match(size/2, this);
-		right = new Match(size/2, this);
+		left = new Match(size/2, this,i*2);
+		right = new Match(size/2, this,i*2+1);
 	}
 	public boolean addPerson(Person person){
 		if(left!=null && left.addPerson(person)) return true;
@@ -62,13 +64,11 @@ public class Match {		//IF YOU NEED FUNCTIONALITY FROM THIS CLASS, ASK AND I'LL 
 			result += right.getInfo() + "\n";
 		result += lPer.getName() + "/" + lPer.getSchool() + ","
 			+ rPer.getName() + "/" + rPer.getSchool() + ","
-			+ wPer.getName() + "/" + wPer.getSchool() + "," + note;
+			+ wPer.getName() + "/" + wPer.getSchool() + "," + note + "," + val;
 		return result;
 	}
-	public void restoreState(String[] data, int j, int i) {
-		if(j>i)return;
-		if(j==i){
-			System.out.println("FOUND MATCH w/ DATA AT " + j);
+	public void restoreState(String[] data) {
+		if(Integer.parseInt(data[4])==val){
 			if(data[0]!="TBD/")
 				lPer = new Person(data[0].substring(0,data[0].indexOf('/')),data[0].substring(data[0].indexOf('/')+1));
 			if(data[1]!="TBD/")
@@ -79,8 +79,8 @@ public class Match {		//IF YOU NEED FUNCTIONALITY FROM THIS CLASS, ASK AND I'LL 
 			return;
 		}
 		else{
-			if(left!=null) restoreState(data,j,i/2);
-			if(right!=null) restoreState(data,j,i/2+1);
+			if(left!=null) left.restoreState(data);
+			if(right!=null) right.restoreState(data);
 		}
 		
 	}

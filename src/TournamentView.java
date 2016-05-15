@@ -156,7 +156,7 @@ public class TournamentView extends JFrame implements Observer, ActionListener{
 					Brackets.getBracket(i).setName(scan.nextLine());
 					for(int j = 0; j < brackSize-1; j++){
 						String matchLine = scan.nextLine();
-						Brackets.getBracket(i).restoreState(matchLine.split(","), j);
+						Brackets.getBracket(i).restoreState(matchLine.split(","));
 						//PROCESS MATCHLINE
 					}
 				}
@@ -164,7 +164,6 @@ public class TournamentView extends JFrame implements Observer, ActionListener{
 				scan.close();
 				model.addObserver(this);
 				update(null,null);
-				System.out.println(Brackets.getBracket(0).getInfo());
 			}
 			catch(FileNotFoundException e){
 				JOptionPane.showMessageDialog(this, "Error: Invalid File", "Whoops!", JOptionPane.ERROR_MESSAGE);
