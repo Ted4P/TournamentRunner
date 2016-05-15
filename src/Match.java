@@ -66,19 +66,21 @@ public class Match {		//IF YOU NEED FUNCTIONALITY FROM THIS CLASS, ASK AND I'LL 
 		return result;
 	}
 	public void restoreState(String[] data, int j, int i) {
-		if(i>j)return;
+		if(j>i)return;
 		if(j==i){
+			System.out.println("FOUND MATCH w/ DATA AT " + j);
 			if(data[0]!="TBD/")
-				lPer = new Person(data[0].substring(0,data[0].indexOf('/')),data[0].substring(data[0].indexOf('/')));
+				lPer = new Person(data[0].substring(0,data[0].indexOf('/')),data[0].substring(data[0].indexOf('/')+1));
 			if(data[1]!="TBD/")
-				rPer = new Person(data[1].substring(0,data[1].indexOf('/')),data[1].substring(data[1].indexOf('/')));
+				rPer = new Person(data[1].substring(0,data[1].indexOf('/')),data[1].substring(data[1].indexOf('/')+1));
 			if(data[2]!="TBD/")
-				wPer = new Person(data[2].substring(0,data[2].indexOf('/')),data[2].substring(data[2].indexOf('/')));
+				wPer = new Person(data[2].substring(0,data[2].indexOf('/')),data[2].substring(data[2].indexOf('/')+1));
 			note = data[3];
+			return;
 		}
 		else{
-			if(left!=null) restoreState(data,j,i*2);
-			if(right!=null) restoreState(data,j,i*2+1);
+			if(left!=null) restoreState(data,j,i/2);
+			if(right!=null) restoreState(data,j,i/2+1);
 		}
 		
 	}

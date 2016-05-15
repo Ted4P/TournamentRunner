@@ -25,7 +25,8 @@ public class Bracket {//Represents a single bracket, with given size and elimina
 		return name;
 	}
 	public void restoreState(String[] data, int j) {
-		top.restoreState(data, 8-j,1);
+		System.out.println("CALLED");
+		top.restoreState(data,j+1,Brackets.getSize()-1);
 		
 	}
 }
