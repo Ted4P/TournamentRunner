@@ -60,9 +60,9 @@ public class Match {		//IF YOU NEED FUNCTIONALITY FROM THIS CLASS, ASK AND I'LL 
 			result += left.getInfo() + "\n";
 		if(right != null)
 			result += right.getInfo() + "\n";
-		result += "[\"" + lPer.getName() + "/" + lPer.getSchool() + "\",\""
-			+ rPer.getName() + "/" + rPer.getSchool() + "\",\""
-			+ wPer.getName() + "/" + wPer.getSchool() + "\",\"" + note + "\"]";
+		result += lPer.getName() + "/" + lPer.getSchool() + ","
+			+ rPer.getName() + "/" + rPer.getSchool() + ","
+			+ wPer.getName() + "/" + wPer.getSchool() + "," + note;
 		return result;
 	}
 }
