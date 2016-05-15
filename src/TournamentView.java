@@ -156,6 +156,7 @@ public class TournamentView extends JFrame implements Observer, ActionListener{
 					Brackets.getBracket(i).setName(scan.nextLine());
 					for(int j = 0; j < brackSize-1; j++){
 						String matchLine = scan.nextLine();
+						Brackets.getBracket(i).restoreState(matchLine.split(","), j);
 						//PROCESS MATCHLINE
 					}
 				}

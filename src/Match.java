@@ -65,4 +65,21 @@ public class Match {		//IF YOU NEED FUNCTIONALITY FROM THIS CLASS, ASK AND I'LL 
 			+ wPer.getName() + "/" + wPer.getSchool() + "," + note;
 		return result;
 	}
+	public void restoreState(String[] data, int j, int i) {
+		if(i>j)return;
+		if(j==i){
+			if(data[0]!="TBD/")
+				lPer = new Person(data[0].substring(0,data[0].indexOf('/')),data[0].substring(data[0].indexOf('/')));
+			if(data[1]!="TBD/")
+				rPer = new Person(data[1].substring(0,data[1].indexOf('/')),data[1].substring(data[1].indexOf('/')));
+			if(data[2]!="TBD/")
+				wPer = new Person(data[2].substring(0,data[2].indexOf('/')),data[2].substring(data[2].indexOf('/')));
+			note = data[3];
+		}
+		else{
+			if(left!=null) restoreState(data,j,i*2);
+			if(right!=null) restoreState(data,j,i*2+1);
+		}
+		
+	}
 }

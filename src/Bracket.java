@@ -24,13 +24,8 @@ public class Bracket {//Represents a single bracket, with given size and elimina
 	public String getName(){
 		return name;
 	}
-	
-	public static void main(String[] args){		//Test method for Person and Bracket
-		Bracket ne138 = new Bracket(4,"NE138");
-		ne138.addPerson(new Person("TED", "MX"));
-		ne138.addPerson(new Person("HARRY", "MRN"));
-		ne138.recordWin(new Person("TED", "MX"), "PIN");
-		ne138.recordWin(new Person("TED", "MX"), "PIN");
-		System.out.println(ne138.top.getWinner());
+	public void restoreState(String[] data, int j) {
+		top.restoreState(data, 8-j,1);
+		
 	}
 }
