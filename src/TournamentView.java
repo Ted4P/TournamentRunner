@@ -156,17 +156,7 @@ public class TournamentView extends JFrame implements Observer, ActionListener{
 					Brackets.getBracket(i).setName(scan.nextLine());
 					for(int j = 0; j < brackSize-1; j++){
 						String matchLine = scan.nextLine();
-						String[] info = matchLine.split(",");
-						for(int k = 0; k < 2; k++)
-							if(!info[k].equals("TBD/")){
-								Person per = new Person(info[k].substring(0, info[k].indexOf('/')), info[k].substring(info[k].indexOf('/')+1));
-								if(!model.getCompetitors(i).contains(per)) model.addPerson(per, i);
-							}
-						
-						if(!info[2].equals("TBD/")){		//Winner of match
-							Person per = new Person(info[2].substring(0, info[2].indexOf('/')), info[2].substring(info[2].indexOf('/')+1));
-							Brackets.getBracket(i).recordWin(per, info[3]);
-						}
+						//PROCESS MATCHLINE
 					}
 				}
 				

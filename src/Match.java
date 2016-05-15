@@ -34,9 +34,9 @@ public class Match {		//IF YOU NEED FUNCTIONALITY FROM THIS CLASS, ASK AND I'LL 
 		if(rPer!=null && rPer.equals(person)){
 				return promoteWinner(rPer, notes);
 		}
-		left.advancePerson(person, notes);
-		right.advancePerson(person, notes);
-		return true;
+		if(left.advancePerson(person, notes)) return true;
+		if(right.advancePerson(person, notes)) return true;
+		return false;
 	}
 	private boolean promoteWinner(Person per, String notes) {
 		note = notes;
