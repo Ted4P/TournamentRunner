@@ -1,5 +1,12 @@
+import java.awt.ComponentOrientation;
 import java.awt.Container;
+import java.awt.Dialog;
+import java.awt.FlowLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 import java.awt.Panel;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -14,18 +21,25 @@ import java.util.Observer;
 import java.util.Scanner;
 
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class TournamentView extends JFrame implements Observer, ActionListener{
 	private static final String 
-			ERROR_NAME_NOT_FOUND = "Error: No bracket with specified name found", 
-			ERROR_NO_BRACKET_SPECIFIED = "Error: No bracket specified";
+	ERROR_NAME_NOT_FOUND = "Error: No bracket with specified name found", 
+	ERROR_NO_BRACKET_SPECIFIED = "Error: No bracket specified";
 
 	TournamentModel model;
 	private final JMenuItem newBracket, fromFile, save, saveAs, add, changeName;
+	private JTextField name2, school2;
+	private JComboBox<String> bracketOptions;
+	private JButton confirm, cancel;
 	private String currPathway;
 	private JTabbedPane brackets;
-	
+	private JDialog dialog;
+	private JCheckBox noSchool;
+
 	public TournamentView(){//Start popup with
 		currPathway = null; 
 		Container pane = getContentPane();
@@ -57,7 +71,7 @@ public class TournamentView extends JFrame implements Observer, ActionListener{
 		brackets.setTabPlacement(JTabbedPane.LEFT);
 		pane.add(brackets);
 		//GUI FILLER
-		
+
 		super.setJMenuBar(bar);
 		setTitle("Tournament Runner");
 		setSize(700,400);
@@ -95,54 +109,115 @@ public class TournamentView extends JFrame implements Observer, ActionListener{
 				JOptionPane.showMessageDialog(this, "Error: Invalid Input", "Whoops!", JOptionPane.ERROR_MESSAGE);
 			}
 		}
-		
+
 	}
 
-	private void addNewPerson(){
+	private void addPersonWindow(){
 		if(model == null)
 			return;
-		String name = JOptionPane.showInputDialog(this, "Enter the name of the new person");
-		if(name == null || name.equals(""))
-			return;
-		else if(name.equals("TBD"))
-			JOptionPane.showMessageDialog(this, "Error: Invalid name");
-		else{
-			String school = JOptionPane.showInputDialog(this, "Enter the school of the new person");
-			if(school == null)
-				return;
-			else if(school.equals(""))
-				school = "Unaffiliated";
-			
-			String bracket = JOptionPane.showInputDialog(this, "Enter the name of the bracket");
-			if(bracket==null)
-				return;
-			else if(bracket.equals(""))
-				JOptionPane.showMessageDialog(this, ERROR_NO_BRACKET_SPECIFIED);
-			else addPerson(name,school,bracket);
-			//Add "which bracket" w/ dropdown menu for names of each
-		}
-		System.out.println(Brackets.getBracket(0).getInfo());
+		name2 = new JTextField("Name");
+		name2.setColumns(10);
+		school2 = new JTextField("School");
+		school2.setColumns(10);
+		String[] brackets = new String[Brackets.getNum()];
+		for(int i=0;i<brackets.length;i++)
+			brackets[i] = Brackets.getBracket(i).getName();
+		bracketOptions = new JComboBox<String>(brackets);
+		confirm = new JButton("Add");
+		confirm.addActionListener(this);
+		confirm.setEnabled(false);
+		cancel = new JButton("Cancel");
+		cancel.addActionListener(this);
+		cancel.setEnabled(false);
+		noSchool = new JCheckBox("Unaffiliated");
+		noSchool.addActionListener(this);
+		DocumentListener docListen = new DocumentListener(){
+				public void changedUpdate(DocumentEvent e){
+					enableButtons();
+				}
+				public void removeUpdate(DocumentEvent e){
+					enableButtons();
+				}
+				public void insertUpdate(DocumentEvent e){
+					enableButtons();
+				}
+				private void enableButtons(){
+					if(name2.getText().equals("Name") || name2.getText().equals("") || ((school2.getText().equals("School") || school2.getText().equals("")) && !noSchool.isSelected())){
+						confirm.setEnabled(false);
+						cancel.setEnabled(false);
+					}
+					else{
+						confirm.setEnabled(true);
+						cancel.setEnabled(true);
+					}
+				}
+		};
+		name2.getDocument().addDocumentListener(docListen);
+		school2.getDocument().addDocumentListener(docListen);
+		dialog = new JDialog(this, "Add new competitor");
+		dialog.setLayout(new GridLayout(3,1));
+		dialog.setSize(600,300);
+		JPanel options = new JPanel();
+		options.setLayout(new GridBagLayout());
+		GridBagConstraints constraints = new GridBagConstraints();
+		constraints.gridheight = 10;
+		constraints.gridwidth = dialog.getWidth();
+		constraints.fill = GridBagConstraints.BOTH;
+		options.add(name2);
+		options.add(school2);
+		options.add(noSchool);
+		JPanel bracketSelect = new JPanel();
+		bracketSelect.setLayout(new GridBagLayout());
+		bracketSelect.add(new JLabel("Select bracket: "));
+		bracketSelect.add(bracketOptions);
+		JPanel buttons = new JPanel();
+		buttons.setLayout(new GridBagLayout());
+		buttons.add(confirm);
+		buttons.add(cancel);
+		Toolkit tlkt = Toolkit.getDefaultToolkit();
+		dialog.add(options);
+		dialog.add(bracketSelect);
+		dialog.add(buttons);
+		dialog.setModal(true);
+		dialog.setResizable(false);
+		dialog.setLocation((int)(tlkt.getScreenSize().getWidth()-dialog.getWidth())/2,(int)(tlkt.getScreenSize().getHeight()-dialog.getHeight())/2);
+		dialog.setAlwaysOnTop(true);
+		dialog.setVisible(true);
+		dialog.pack();
 	}
 
-	private void addPerson(String name, String school, String bracket) {
+	//Add "which bracket" w/ dropdown menu for names of each
+
+	private void addPerson() {
+		String name = name2.getText();
+		String school = school2.getText();
+		String bracket = (String)bracketOptions.getSelectedItem();
 		int brackNum = findBrackNum(bracket);
-		
-		if(brackNum==-1)
+		if(noSchool.isSelected())
+			school = "Unaffiliated";
+		if(name.equals(""))
+			JOptionPane.showMessageDialog(this, "Error: Please enter a name");
+		else if(name.equals("TBD"))
+			JOptionPane.showMessageDialog(this, "Error: Invalid name");
+		else if(bracket.equals(""))
+			JOptionPane.showMessageDialog(this, ERROR_NO_BRACKET_SPECIFIED);
+		else if(brackNum==-1)
 			JOptionPane.showMessageDialog(this, ERROR_NAME_NOT_FOUND);
-		else{
-			boolean success = Brackets.getBracket(brackNum).addPerson(new Person(name, school));
-			if(success){
-				JOptionPane.showMessageDialog(this, name + " from " + school + " successfully added to bracket " + bracket);
-			}
-			else JOptionPane.showMessageDialog(this, "Error: Could not add to bracket " + bracket);
+		else addPerson(name,school,brackNum);
+	}
+	private void addPerson(String name, String school, int bracket){	
+		String bracketName = Brackets.getBracket(bracket).getName();
+		boolean success = Brackets.getBracket(bracket).addPerson(new Person(name, school));
+		if(success){
+			JOptionPane.showMessageDialog(this, name + " from " + school + " successfully added to bracket " + bracketName);
 		}
+		else JOptionPane.showMessageDialog(this, "Error: Could not add to bracket " + bracketName);
 	}
 	private int findBrackNum(String bracketName){
 		for(int i = 0; i < Brackets.getNum(); i++)
 			if(Brackets.getBracket(i).getName().equals(bracketName)) return i;
 		return -1;
 	}
-
 	private void newBracketFromFile(){
 		String pathName = System.getProperty("user.dir") + "/";
 		JFileChooser fileChooser = new JFileChooser(pathName);
@@ -157,7 +232,7 @@ public class TournamentView extends JFrame implements Observer, ActionListener{
 				int brackSize = Integer.parseInt(scan.nextLine());
 				String name = scan.nextLine();
 				model = new TournamentModel(numBrack,brackSize,name);
-				
+
 				for(int i = 0; i < numBrack; i++){
 					Brackets.getBracket(i).setName(scan.nextLine());
 					for(int j = 0; j < brackSize-1; j++){
@@ -166,7 +241,7 @@ public class TournamentView extends JFrame implements Observer, ActionListener{
 						//PROCESS MATCHLINE
 					}
 				}
-				
+
 				scan.close();
 				model.addObserver(this);
 				update(model,null);
@@ -178,12 +253,11 @@ public class TournamentView extends JFrame implements Observer, ActionListener{
 	}
 
 	private void loadTabs() {
-		System.out.println("LOADING TABS");
 		brackets.removeAll();
 		for(int i = 0; i < Brackets.getNum(); i++){
 			brackets.addTab(Brackets.getBracket(i).getName(), new JLabel("PUT RENDERING SUTFF HERE"));
 		}
-		
+
 	}
 
 	private void changeBracketName() {
@@ -198,7 +272,7 @@ public class TournamentView extends JFrame implements Observer, ActionListener{
 		if(newName==null||newName.equals("")) return;
 		model.setBracketName(index,newName);
 	}
-	
+
 	private void save(){
 		if(currPathway == null)
 			saveAs();
@@ -271,7 +345,7 @@ public class TournamentView extends JFrame implements Observer, ActionListener{
 		if(source == newBracket)
 			createNewBracket();
 		else if(source == add)
-			addNewPerson();
+			addPersonWindow();
 		else if(source == fromFile)
 			newBracketFromFile();
 		else if(source == save)
@@ -280,5 +354,30 @@ public class TournamentView extends JFrame implements Observer, ActionListener{
 			saveAs();
 		else if(source == changeName)
 			changeBracketName();
+		else if(source == confirm){
+			dialog.dispose();
+			addPerson();
+		}
+		else if(source == cancel){
+			dialog.dispose();
+		}
+		else if(source == noSchool){
+			if(name2.getText().equals("Name") || name2.getText().equals("") || ((school2.getText().equals("School") || school2.getText().equals("")) && !noSchool.isSelected())){
+				confirm.setEnabled(false);
+				cancel.setEnabled(false);
+			}
+			else{
+				confirm.setEnabled(true);
+				cancel.setEnabled(true);
+			}
+			if(noSchool.isSelected()){
+				school2.setText("Unaffiliated");
+				school2.setEditable(false);
+			}
+			else{
+				school2.setText("School");
+				school2.setEditable(true);
+			}
+		}
 	}
 }
