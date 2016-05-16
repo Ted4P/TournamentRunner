@@ -1,7 +1,5 @@
-import java.util.Map;
 import java.util.Observable;
 import java.util.Set;
-import java.util.TreeMap;
 /*Tournament.java is runnable, main method asks what tournament to create, then calls TournamentModel constructor 
  * TournamentModel is the brains of the class, 
  * 			calls singleton class Brackets with # of brackets, size and type (hold info abt bracket)
@@ -33,6 +31,8 @@ public class TournamentModel extends Observable{
 	}
 	public void advancePerson(Person person, int bracket, String notes){
 		Brackets.getBracket(bracket).recordWin(person, notes);
+		setChanged();
+		notifyObservers();
 	}
 	public Set<Person> getCompetitors(int bracket){
 		return competitors[bracket];
