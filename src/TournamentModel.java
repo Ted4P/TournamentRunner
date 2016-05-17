@@ -1,4 +1,9 @@
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Observable;
+import java.util.Scanner;
 import java.util.Set;
 /*Tournament.java is runnable, main method asks what tournament to create, then calls TournamentModel constructor 
  * TournamentModel is the brains of the class, 
@@ -51,6 +56,41 @@ public class TournamentModel extends Observable{
 	}
 	public void setBracketName(int index, String newName) {
 		Brackets.getBracket(index).setName(newName);
+		setChanged();
+		notifyObservers();
+	}
+	public void writeFile(String currPathway) throws IOException {
+			File newFile = new File(currPathway);
+			FileWriter writer = new FileWriter(newFile);
+			writer.write(Brackets.getNum() + "\n" + Brackets.getSize() + "\n" + getName() + "\n");
+			for(int i=0;i<Brackets.getNum();i++){
+				writer.write(Brackets.getBracket(i).getName() + "\n");
+				writer.write(Brackets.getBracket(i).getInfo() + "\n");
+			}
+			writer.close();
+	}
+	public void restoreState(File file) throws FileNotFoundException {
+		Scanner scan = new Scanner(file);
+		int numBrack = Integer.parseInt(scan.nextLine());
+		int brackSize = Integer.parseInt(scan.nextLine());
+		tournamentName = scan.nextLine();
+		Brackets.setBrackets(numBrack, brackSize);
+		
+		for(int i = 0; i < numBrack; i++){
+			Brackets.getBracket(i).setName(scan.nextLine());
+			for(int j = 0; j < brackSize-1; j++){
+				String matchLine = scan.nextLine();
+				String[] data = matchLine.split(",");
+				restoreState(data,i);
+				for(int k = 0; k < 2; k++){
+					if(!data[k].equals("TBD/")){		//Add people back to set
+						competitors[i].add(new Person(data[k].substring(0, data[k].indexOf('/')), data[k].substring(data[k].indexOf('/')+1)));
+					}
+				}
+			}
+		}
+		
+		scan.close();
 		setChanged();
 		notifyObservers();
 	}

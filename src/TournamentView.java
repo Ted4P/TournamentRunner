@@ -152,24 +152,7 @@ public class TournamentView extends JFrame implements Observer, ActionListener{
 		if(result == JFileChooser.APPROVE_OPTION){
 			File file = fileChooser.getSelectedFile();
 			try{
-				Scanner scan = new Scanner(file);
-				int numBrack = Integer.parseInt(scan.nextLine());
-				int brackSize = Integer.parseInt(scan.nextLine());
-				String name = scan.nextLine();
-				model = new TournamentModel(numBrack,brackSize,name);
-				
-				for(int i = 0; i < numBrack; i++){
-					Brackets.getBracket(i).setName(scan.nextLine());
-					for(int j = 0; j < brackSize-1; j++){
-						String matchLine = scan.nextLine();
-						model.restoreState(matchLine.split(","),i);
-						//PROCESS MATCHLINE
-					}
-				}
-				
-				scan.close();
-				model.addObserver(this);
-				update(model,null);
+				model.restoreState(file);
 			}
 			catch(FileNotFoundException e){
 				JOptionPane.showMessageDialog(this, "Error: Invalid File", "Whoops!", JOptionPane.ERROR_MESSAGE);
@@ -203,7 +186,11 @@ public class TournamentView extends JFrame implements Observer, ActionListener{
 		if(currPathway == null)
 			saveAs();
 		else{
-			writeFile();
+			try {
+				model.writeFile(currPathway);
+			} catch (IOException e) {
+				JOptionPane.showMessageDialog(this, "An error has occured, the file has not been saved", "Whoops!", JOptionPane.ERROR_MESSAGE);
+			}
 		}
 	}
 
@@ -219,26 +206,13 @@ public class TournamentView extends JFrame implements Observer, ActionListener{
 				if(result == JFileChooser.APPROVE_OPTION){
 					File dir = fileChooser.getSelectedFile();
 					currPathway = dir.getAbsolutePath() + "/" + fileName + ".bracket";
-					writeFile();
+					try {
+						model.writeFile(currPathway);
+					} catch (IOException e) {
+						JOptionPane.showMessageDialog(this, "An error has occured, the file has not been saved", "Whoops!", JOptionPane.ERROR_MESSAGE);
+					}
 				}
 			}
-		}
-	}
-
-	public void writeFile(){
-		try{
-			File newFile = new File(currPathway);
-			FileWriter writer = new FileWriter(newFile);
-			writer.write(Brackets.getNum() + "\n" + Brackets.getSize() + "\n" + model.getName() + "\n");
-			for(int i=0;i<Brackets.getNum();i++){
-				writer.write(Brackets.getBracket(i).getName() + "\n");
-				writer.write(Brackets.getBracket(i).getInfo() + "\n");
-			}
-			writer.close();
-			model.setName(currPathway);
-		}
-		catch(IOException e){
-			JOptionPane.showMessageDialog(this, "An error has occured, the file has not been saved", "Whoops!", JOptionPane.ERROR_MESSAGE);
 		}
 	}
 
