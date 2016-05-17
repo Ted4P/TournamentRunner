@@ -5,11 +5,7 @@ import java.io.IOException;
 import java.util.Observable;
 import java.util.Scanner;
 import java.util.Set;
-/*Tournament.java is runnable, main method asks what tournament to create, then calls TournamentModel constructor 
- * TournamentModel is the brains of the class, 
- * 			calls singleton class Brackets with # of brackets, size and type (hold info abt bracket)
- * TournamentView displays the bracket, and can tell the Model the results of matches
- */
+
 import java.util.TreeSet;
 
 public class TournamentModel extends Observable{
