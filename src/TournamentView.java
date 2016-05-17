@@ -214,12 +214,16 @@ public class TournamentView extends JFrame implements Observer, ActionListener, 
 	}
 	private void addPerson(String name, String school, int bracket){	
 		String bracketName = Brackets.getBracket(bracket).getName();
-		boolean success = Brackets.getBracket(bracket).addPerson(new Person(name, school));
+		boolean success = model.addPerson(new Person(name, school),bracket);
 		if(success){
 			JOptionPane.showMessageDialog(this, name + " from " + school + " successfully added to bracket " + bracketName);
 		}
 		else JOptionPane.showMessageDialog(this, "Error: Could not add to bracket " + bracketName);
-		update(model, null);
+		for(Person p: model.getCompetitors(0)){
+			System.out.println(p.getName());
+			model.advancePerson(p, bracket, "None");
+		}
+		update(model, null);	
 	}
 	private int findBrackNum(String bracketName){
 		for(int i = 0; i < Brackets.getNum(); i++)
@@ -341,6 +345,12 @@ public class TournamentView extends JFrame implements Observer, ActionListener, 
 		TournamentView view = new TournamentView();
 	}
 
+	public void promotePerson(String name, int bracket){
+		for(Person p: model.getCompetitors(bracket)){
+			model.advancePerson(p, bracket, "None");
+		}
+	}
+	
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		Object source = arg0.getSource();
