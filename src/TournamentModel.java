@@ -94,4 +94,13 @@ public class TournamentModel extends Observable{
 		setChanged();
 		notifyObservers();
 	}
+	
+	public void startTournament(){
+		int num = Brackets.getNum();
+		for(int i = 0; i < num; i++){
+			Bracket curr = Brackets.getBracket(i);
+			while(curr.addPerson(new Bye()));
+			curr.promoteBye();
+		}
+	}
 }

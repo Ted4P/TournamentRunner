@@ -91,4 +91,11 @@ public class Match {		//IF YOU NEED FUNCTIONALITY FROM THIS CLASS, ASK AND I'LL 
 		}
 		
 	}
+	public void promoteBye() {
+		if(left!=null) promoteBye();
+		if(right!=null) promoteBye();
+		if(lPer instanceof Bye && rPer instanceof Bye) return;
+		if(lPer instanceof Bye) advancePerson(rPer, "Bye");
+		if(rPer instanceof Bye) advancePerson(lPer, "Bye");
+	}
 }

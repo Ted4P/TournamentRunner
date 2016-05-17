@@ -27,4 +27,7 @@ public class Bracket {//Represents a single bracket, with given size and elimina
 	public void restoreState(String[] data) {
 		top.restoreState(data);
 	}
+	public void promoteBye() {
+		top.promoteBye();
+	}
 }
