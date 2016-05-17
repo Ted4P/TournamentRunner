@@ -7,11 +7,13 @@ import java.util.Scanner;
 import java.util.Set;
 
 import java.util.TreeSet;
-
+/*
+ * The central governing class of the program, holding state information about the brackets, names and competitors
+ */
 public class TournamentModel extends Observable{
-	private Set<Person>[] competitors;		//Each index is a bracket #
+	private Set<Person>[] competitors;		//Array of Sets of Person of added competitors
 	private String tournamentName;
-	public TournamentModel(int num, int size, String name){		//Number, size of brackets, plus if the brackets are double or single elim
+	public TournamentModel(int num, int size, String name){		//Number, size of brackets, and tournament name
 		competitors = new Set[num];
 		for(int i = 0; i < num; i++) competitors[i] = new TreeSet<Person>();
 		tournamentName = name;
@@ -19,6 +21,10 @@ public class TournamentModel extends Observable{
 		setChanged();
 		notifyObservers();
 	}
+	/*
+	 * Attempt to add the given person to the bracket with index [bracket]. 
+	 * 			If an equal person has already been added, or the bracket is full, return false
+	 */
 	public boolean addPerson(Person person, int bracket){
 		if(competitors[bracket].add(person)){
 			boolean result = Brackets.getBracket(bracket).addPerson(person);
@@ -30,31 +36,35 @@ public class TournamentModel extends Observable{
 		}
 		return false;
 	}
+	/*
+	 * Attempt to advance the given person one match in the bracket. 
+	 */
 	public void advancePerson(Person person, int bracket, String notes){
 		Brackets.getBracket(bracket).recordWin(person, notes);
 		setChanged();
 		notifyObservers();
 	}
+	/*
+	 * Return a Set<Person> of all competitors in the specified bracket
+	 */
 	public Set<Person> getCompetitors(int bracket){
 		return competitors[bracket];
 	}
-	public int getNumBrackets(){return Brackets.getNum();}
+	//Set the tournament name
 	public void setName(String name){
 		tournamentName = name;
 	}
+	//Return the tournament name
 	public String getName(){
 		return tournamentName;
 	}
-	public void restoreState(String[] data, int i){
-		Brackets.getBracket(i).restoreState(data);
-		setChanged();
-		notifyObservers();
-	}
+	//Set the name of the bracket specified by [index] to the string [newName]
 	public void setBracketName(int index, String newName) {
 		Brackets.getBracket(index).setName(newName);
 		setChanged();
 		notifyObservers();
 	}
+	//Attempt to write all state to the file located at currPathway, and throw an error on failure. The file format is specified in the manual
 	public void writeFile(String currPathway) throws IOException {
 			File newFile = new File(currPathway);
 			FileWriter writer = new FileWriter(newFile);
@@ -65,6 +75,7 @@ public class TournamentModel extends Observable{
 			}
 			writer.close();
 	}
+	//Attempt to restore the state to the passed file, and throw an error on failure. The file format is specified in the manual
 	public void restoreState(File file) throws FileNotFoundException {
 		Scanner scan = new Scanner(file);
 		int numBrack = Integer.parseInt(scan.nextLine());
@@ -90,7 +101,12 @@ public class TournamentModel extends Observable{
 		setChanged();
 		notifyObservers();
 	}
-	
+	private void restoreState(String[] data, int i){
+		Brackets.getBracket(i).restoreState(data);
+		setChanged();
+		notifyObservers();
+	}
+	//Fill empty slots in the tournament with Byes, then advance all competitors until a match featuring no Byes is found
 	public void startTournament(){
 		int num = Brackets.getNum();
 		for(int i = 0; i < num; i++){

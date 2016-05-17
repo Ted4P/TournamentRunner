@@ -1,4 +1,6 @@
-
+/*
+ * Singleton class representing the Brackets of the tournament, with getters for size, number and brackets
+ */
 public class Brackets {
 	private Brackets(){}
 	private static Bracket[] brackets;

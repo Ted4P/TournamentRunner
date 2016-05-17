@@ -239,24 +239,7 @@ public class TournamentView extends JFrame implements Observer, ActionListener, 
 		if(result == JFileChooser.APPROVE_OPTION){
 			File file = fileChooser.getSelectedFile();
 			try{
-				Scanner scan = new Scanner(file);
-				int numBrack = Integer.parseInt(scan.nextLine());
-				int brackSize = Integer.parseInt(scan.nextLine());
-				String name = scan.nextLine();
-				model = new TournamentModel(numBrack,brackSize,name);
-
-				for(int i = 0; i < numBrack; i++){
-					Brackets.getBracket(i).setName(scan.nextLine());
-					for(int j = 0; j < brackSize-1; j++){
-						String matchLine = scan.nextLine();
-						model.restoreState(matchLine.split(","),i);
-						//PROCESS MATCHLINE
-					}
-				}
-
-				scan.close();
-				model.addObserver(this);
-				update(model,null);
+				model.restoreState(file);
 			}
 			catch(FileNotFoundException e){
 				JOptionPane.showMessageDialog(this, "Error: Invalid File", "Whoops!", JOptionPane.ERROR_MESSAGE);

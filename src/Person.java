@@ -1,5 +1,5 @@
 
-public class Person implements Comparable<Person>{		//Name, team, weight class
+public class Person implements Comparable<Person>{		//Represents a person with a given name and school
 	private String name, school;
 	public Person(String name, String school){
 		this.name = name;

@@ -1,26 +1,28 @@
-
-public class Bracket {//Represents a single bracket, with given size and elimination style
+//Represents a single bracket, with size set in the constructor
+public class Bracket {
 	private Match top;
 	private String name;
 	public Bracket(int size,  String name) {
 		top = new Match(size, null,1);
 		this.name = name;
 	}
+	//Set the bracket name
 	public void setName(String nm){name = nm;}
+	/*
+	 * Attempt to add a new Person to the bracket, and return false if no space can be found
+	 */
 	public boolean addPerson(Person per){return top.addPerson(per);}
 	
 	public void recordWin(Person winner, String notes){
 		top.advancePerson(winner, notes);
 	}
-	/*Returns all names in this bracket in a specific order:
-	 * Go to the left most match, then adds the names of both competitors (lPer, rPer) then adds the winner
-	 * of the match, followed by the notes, then prints out the right child of the parent of the current match, with the same rules
-	 * followed by the information for the parent itself.
+	/*
+	 * Returns all state information about the bracket in postfix notation
 	 */
 	public String getInfo(){
 		return top.getInfo();
 	}
-	
+	//Return the bracket name
 	public String getName(){
 		return name;
 	}

@@ -1,4 +1,7 @@
-public class Match {		//IF YOU NEED FUNCTIONALITY FROM THIS CLASS, ASK AND I'LL ADD A GETTER. THE CODE IS AWFUL AND WILL MAKE YOU HATE LIFE ITSELF
+/*
+ * Represents a bracket using a tree data structure
+ */
+public class Match {
 	private Match left, right, parent;
 	private Person lPer, rPer, wPer;
 	private String note;
@@ -14,6 +17,10 @@ public class Match {		//IF YOU NEED FUNCTIONALITY FROM THIS CLASS, ASK AND I'LL 
 		left = new Match(size/2, this,i*2);
 		right = new Match(size/2, this,i*2+1);
 	}
+	/*
+	 * Add a new Person to the bracket, attempting to "balance" by adding people to the side with fewer entrants. 
+	 * Returns false if no free spaces exist in the given bracket, otherwise true
+	 */
 	public boolean addPerson(Person person){
 		if(left==null&&right==null){
 			if(lPer.getName().equals("TBD")){lPer = person; return true;}
@@ -28,7 +35,14 @@ public class Match {		//IF YOU NEED FUNCTIONALITY FROM THIS CLASS, ASK AND I'LL 
 		else if(left!=null && left.addPerson(person)){ numLeft++; return true;}
 		return false;
 	}
-		
+	
+	/*
+	 * Attempt to advance the given person one match in the bracket. 
+	 * Find the match with a contestant that .equals() the submitted person, then:
+	 * 			Move that person to the "winner" slot in the match
+	 * 			Advance that person, if possible, to the next round of competition
+	 * 			Set the match notes to the submitted notes string
+	 */
 	public boolean advancePerson(Person person, String notes){
 		if(left==null&&right==null){
 			if(lPer!=null && lPer.equals(person)){ promoteWinner(lPer,notes); return true;}
@@ -59,10 +73,11 @@ public class Match {		//IF YOU NEED FUNCTIONALITY FROM THIS CLASS, ASK AND I'LL 
 		else
 			lPer = per;
 	}
-	public String getNotes(){return note;}
-	public Person getWinner() {
-		return wPer;
-	}
+	/*
+	 * Return a string containing the information for this bracket in postfix notation in the given format:
+	 * 			Name/school of the left, right, and winner, followed by match notes and the value of the match, all comma separated
+	 * 			One match per line, with children having values val*2 and val*2+1
+	 */
 	public String getInfo(){
 		String result = "";
 		if(left != null)
@@ -74,6 +89,10 @@ public class Match {		//IF YOU NEED FUNCTIONALITY FROM THIS CLASS, ASK AND I'LL 
 			+ wPer.getName() + "/" + wPer.getSchool() + "," + note + "," + val;
 		return result;
 	}
+	/*
+	 * Given a Match toString, recursively determine if the given match is equal to the current, 
+	 * 			then load information into the Match using the format specified in getInfo
+	 */
 	public void restoreState(String[] data) {
 		if(Integer.parseInt(data[4])==val){
 			lPer = new Person(data[0].substring(0,data[0].indexOf('/')),data[0].substring(data[0].indexOf('/')+1));
@@ -88,6 +107,9 @@ public class Match {		//IF YOU NEED FUNCTIONALITY FROM THIS CLASS, ASK AND I'LL 
 		}
 		
 	}
+	/*
+	 * For all competitors facing Byes, promote until a match featuring two humans is found
+	 */
 	public void promoteBye() {
 		if(left!=null) promoteBye();
 		if(right!=null) promoteBye();
