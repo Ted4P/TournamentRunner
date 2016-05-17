@@ -21,6 +21,38 @@ public class TournamentModel extends Observable{
 		setChanged();
 		notifyObservers();
 	}
+	//Attempt to restore the state to the passed file, and throw an error on failure. The file format is specified in the manual
+	public TournamentModel(File file, TournamentView view) throws FileNotFoundException {
+		Scanner scan = new Scanner(file);
+		int numBrack = Integer.parseInt(scan.nextLine());
+		int brackSize = Integer.parseInt(scan.nextLine());
+		tournamentName = scan.nextLine();
+		Brackets.setBrackets(numBrack, brackSize);
+		competitors = new Set[numBrack];
+		for(int i = 0 ; i < numBrack; i++) competitors[i]=new TreeSet<Person>();
+		for(int i = 0; i < numBrack; i++){
+			Brackets.getBracket(i).setName(scan.nextLine());
+			for(int j = 0; j < brackSize-1; j++){
+				String matchLine = scan.nextLine();
+				String[] data = matchLine.split(",");
+				restoreState(data,i);
+				for(int k = 0; k < 2; k++){
+					if(!data[k].equals("TBD/")){		//Add people back to set
+						competitors[i].add(new Person(data[k].substring(0, data[k].indexOf('/')), data[k].substring(data[k].indexOf('/')+1)));
+					}
+				}
+			}
+		}
+		this.addObserver(view);
+		scan.close();
+		setChanged();
+		notifyObservers();
+	}
+	private void restoreState(String[] data, int i){
+		Brackets.getBracket(i).restoreState(data);
+		setChanged();
+		notifyObservers();
+	}
 	/*
 	 * Attempt to add the given person to the bracket with index [bracket]. 
 	 * 			If an equal person has already been added, or the bracket is full, return false
@@ -74,37 +106,7 @@ public class TournamentModel extends Observable{
 			}
 			writer.close();
 	}
-	//Attempt to restore the state to the passed file, and throw an error on failure. The file format is specified in the manual
-	public void restoreState(File file) throws FileNotFoundException {
-		Scanner scan = new Scanner(file);
-		int numBrack = Integer.parseInt(scan.nextLine());
-		int brackSize = Integer.parseInt(scan.nextLine());
-		tournamentName = scan.nextLine();
-		Brackets.setBrackets(numBrack, brackSize);
-		
-		for(int i = 0; i < numBrack; i++){
-			Brackets.getBracket(i).setName(scan.nextLine());
-			for(int j = 0; j < brackSize-1; j++){
-				String matchLine = scan.nextLine();
-				String[] data = matchLine.split(",");
-				restoreState(data,i);
-				for(int k = 0; k < 2; k++){
-					if(!data[k].equals("TBD/")){		//Add people back to set
-						competitors[i].add(new Person(data[k].substring(0, data[k].indexOf('/')), data[k].substring(data[k].indexOf('/')+1)));
-					}
-				}
-			}
-		}
-		
-		scan.close();
-		setChanged();
-		notifyObservers();
-	}
-	private void restoreState(String[] data, int i){
-		Brackets.getBracket(i).restoreState(data);
-		setChanged();
-		notifyObservers();
-	}
+	
 	//Fill empty slots in the tournament with Byes, then advance all competitors until a match featuring no Byes is found
 	public void startTournament(){
 		int num = Brackets.getNum();
