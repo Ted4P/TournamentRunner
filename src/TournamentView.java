@@ -1,7 +1,10 @@
+import java.awt.BorderLayout;
 import java.awt.ComponentOrientation;
 import java.awt.Container;
 import java.awt.Dialog;
 import java.awt.FlowLayout;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
@@ -21,14 +24,18 @@ import java.util.Observer;
 import java.util.Scanner;
 
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-public class TournamentView extends JFrame implements Observer, ActionListener{
+public class TournamentView extends JFrame implements Observer, ActionListener, ChangeListener{
 	private static final String 
 	ERROR_NAME_NOT_FOUND = "Error: No bracket with specified name found", 
 	ERROR_NO_BRACKET_SPECIFIED = "Error: No bracket specified";
+
+	public static final int MATCH_WIDTH = 15, MATCH_HEIGHT = 6;
 
 	TournamentModel model;
 	private final JMenuItem newBracket, fromFile, save, saveAs, add, changeName;
@@ -39,6 +46,8 @@ public class TournamentView extends JFrame implements Observer, ActionListener{
 	private JTabbedPane brackets;
 	private JDialog dialog;
 	private JCheckBox noSchool;
+	private BracketPanel currPanel;
+
 
 	public TournamentView(){//Start popup with
 		currPathway = null; 
@@ -70,11 +79,9 @@ public class TournamentView extends JFrame implements Observer, ActionListener{
 		brackets = new JTabbedPane();
 		brackets.setTabPlacement(JTabbedPane.LEFT);
 		pane.add(brackets);
-		//GUI FILLER
-
 		super.setJMenuBar(bar);
 		setTitle("Tournament Runner");
-		setSize(700,400);
+		setSize(1500,1000);
 		setVisible(true);
 		super.setDefaultCloseOperation(EXIT_ON_CLOSE);
 	}
@@ -132,25 +139,25 @@ public class TournamentView extends JFrame implements Observer, ActionListener{
 		noSchool = new JCheckBox("Unaffiliated");
 		noSchool.addActionListener(this);
 		DocumentListener docListen = new DocumentListener(){
-				public void changedUpdate(DocumentEvent e){
-					enableButtons();
+			public void changedUpdate(DocumentEvent e){
+				enableButtons();
+			}
+			public void removeUpdate(DocumentEvent e){
+				enableButtons();
+			}
+			public void insertUpdate(DocumentEvent e){
+				enableButtons();
+			}
+			private void enableButtons(){
+				if(name2.getText().equals("Name") || name2.getText().equals("") || ((school2.getText().equals("School") || school2.getText().equals("")) && !noSchool.isSelected())){
+					confirm.setEnabled(false);
+					cancel.setEnabled(false);
 				}
-				public void removeUpdate(DocumentEvent e){
-					enableButtons();
+				else{
+					confirm.setEnabled(true);
+					cancel.setEnabled(true);
 				}
-				public void insertUpdate(DocumentEvent e){
-					enableButtons();
-				}
-				private void enableButtons(){
-					if(name2.getText().equals("Name") || name2.getText().equals("") || ((school2.getText().equals("School") || school2.getText().equals("")) && !noSchool.isSelected())){
-						confirm.setEnabled(false);
-						cancel.setEnabled(false);
-					}
-					else{
-						confirm.setEnabled(true);
-						cancel.setEnabled(true);
-					}
-				}
+			}
 		};
 		name2.getDocument().addDocumentListener(docListen);
 		school2.getDocument().addDocumentListener(docListen);
@@ -212,6 +219,7 @@ public class TournamentView extends JFrame implements Observer, ActionListener{
 			JOptionPane.showMessageDialog(this, name + " from " + school + " successfully added to bracket " + bracketName);
 		}
 		else JOptionPane.showMessageDialog(this, "Error: Could not add to bracket " + bracketName);
+		update(model, null);
 	}
 	private int findBrackNum(String bracketName){
 		for(int i = 0; i < Brackets.getNum(); i++)
@@ -227,8 +235,24 @@ public class TournamentView extends JFrame implements Observer, ActionListener{
 		if(result == JFileChooser.APPROVE_OPTION){
 			File file = fileChooser.getSelectedFile();
 			try{
-				model.restoreState(file);
+				Scanner scan = new Scanner(file);
+				int numBrack = Integer.parseInt(scan.nextLine());
+				int brackSize = Integer.parseInt(scan.nextLine());
+				String name = scan.nextLine();
+				model = new TournamentModel(numBrack,brackSize,name);
 
+				for(int i = 0; i < numBrack; i++){
+					Brackets.getBracket(i).setName(scan.nextLine());
+					for(int j = 0; j < brackSize-1; j++){
+						String matchLine = scan.nextLine();
+						model.restoreState(matchLine.split(","),i);
+						//PROCESS MATCHLINE
+					}
+				}
+
+				scan.close();
+				model.addObserver(this);
+				update(model,null);
 			}
 			catch(FileNotFoundException e){
 				JOptionPane.showMessageDialog(this, "Error: Invalid File", "Whoops!", JOptionPane.ERROR_MESSAGE);
@@ -238,10 +262,10 @@ public class TournamentView extends JFrame implements Observer, ActionListener{
 
 	private void loadTabs() {
 		brackets.removeAll();
-		for(int i = 0; i < Brackets.getNum(); i++){
-			brackets.addTab(Brackets.getBracket(i).getName(), new JLabel("PUT RENDERING SUTFF HERE"));
-		}
-
+		for(int i = 0; i < Brackets.getNum(); i++)
+			brackets.addTab(Brackets.getBracket(i).getName(), new BracketPanel(Brackets.getBracket(i), this));
+		brackets.addChangeListener(this);
+		currPanel = (BracketPanel)brackets.getSelectedComponent();
 	}
 
 	private void changeBracketName() {
@@ -306,6 +330,9 @@ public class TournamentView extends JFrame implements Observer, ActionListener{
 			save.setEnabled(true);
 			saveAs.setEnabled(true);
 			changeName.setEnabled(true);
+			currPanel = new BracketPanel(Brackets.getBracket(brackets.getSelectedIndex()), this);
+			currPanel.paint(this.getGraphics());
+			brackets.setComponentAt(brackets.getSelectedIndex(), currPanel);
 		}
 	}
 
@@ -353,6 +380,12 @@ public class TournamentView extends JFrame implements Observer, ActionListener{
 				school2.setText("School");
 				school2.setEditable(true);
 			}
+		}
+	}
+
+	public void stateChanged(ChangeEvent arg0) {
+		if(arg0.getSource() == brackets){
+			currPanel = (BracketPanel)brackets.getSelectedComponent();
 		}
 	}
 }
