@@ -5,9 +5,9 @@ public class Match {		//IF YOU NEED FUNCTIONALITY FROM THIS CLASS, ASK AND I'LL 
 	private int val;
 	public Match(int size, Match parent, int i){
 		val=i;
-		lPer = new Person("TBD", "");
-		rPer = new Person("TBD", "");
-		wPer = new Person("TBD", "");
+		lPer = new Person("TBD", "TBD");
+		rPer = new Person("TBD", "TBD");
+		wPer = new Person("No Winner", "No School");
 		note = "No information availible yet";
 		this.parent = parent;
 		if(size<=2) return;
@@ -19,7 +19,7 @@ public class Match {		//IF YOU NEED FUNCTIONALITY FROM THIS CLASS, ASK AND I'LL 
 		else if(right!=null && right.addPerson(person)) return true;
 		else if(left==null&&right==null){
 			if(lPer.getName().equals("TBD")){lPer = person; return true;}
-			if(rPer.getName().equals("TBD")){rPer = person; return true;}
+			else if(rPer.getName().equals("TBD")){rPer = person; return true;}
 		}
 		return false;
 	}
@@ -44,13 +44,15 @@ public class Match {		//IF YOU NEED FUNCTIONALITY FROM THIS CLASS, ASK AND I'LL 
 		note = notes;
 		wPer = per;
 		if(parent!=null){
-			parent.setPerson(per);
+			parent.setPerson(per, val);
 		}
 		return true;
 	}
-	private void setPerson(Person per){
-		if(lPer==null) lPer = per;
-		else rPer = per;
+	private void setPerson(Person per, int childVal){
+		if(val*2 == childVal)
+			rPer = per;
+		else
+			lPer = per;
 	}
 	public String getNotes(){return note;}
 	public Person getWinner() {
