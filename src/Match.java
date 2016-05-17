@@ -2,7 +2,7 @@ public class Match {		//IF YOU NEED FUNCTIONALITY FROM THIS CLASS, ASK AND I'LL 
 	private Match left, right, parent;
 	private Person lPer, rPer, wPer;
 	private String note;
-	private int val;
+	private int val, numLeft, numRight;
 	public Match(int size, Match parent, int i){
 		val=i;
 		lPer = new Person("TBD", "TBD");
@@ -15,12 +15,17 @@ public class Match {		//IF YOU NEED FUNCTIONALITY FROM THIS CLASS, ASK AND I'LL 
 		right = new Match(size/2, this,i*2+1);
 	}
 	public boolean addPerson(Person person){
-		if(left!=null && left.addPerson(person)) return true;
-		else if(right!=null && right.addPerson(person)) return true;
-		else if(left==null&&right==null){
+		if(left==null&&right==null){
 			if(lPer.getName().equals("TBD")){lPer = person; return true;}
 			else if(rPer.getName().equals("TBD")){rPer = person; return true;}
 		}
+		if(numLeft<numRight){
+			if(left!=null && left.addPerson(person)){ numLeft++; return true;}
+			else if(right!=null && right.addPerson(person)){ numRight++; return true;}
+			return false;
+		}
+		if(right!=null && right.addPerson(person)){ numRight++; return true;}
+		else if(left!=null && left.addPerson(person)){ numLeft++; return true;}
 		return false;
 	}
 		
