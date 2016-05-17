@@ -273,7 +273,7 @@ public class TournamentView extends JFrame implements Observer, ActionListener, 
 			saveAs();
 		else{
 			try {
-				model.writeFile(currPathway);
+				model.writeFile(new File(currPathway));
 			} catch (IOException e) {
 				JOptionPane.showMessageDialog(this, "An error has occured, the file has not been saved", "Whoops!", JOptionPane.ERROR_MESSAGE);
 			}
@@ -293,7 +293,7 @@ public class TournamentView extends JFrame implements Observer, ActionListener, 
 					File dir = fileChooser.getSelectedFile();
 					currPathway = dir.getAbsolutePath() + "/" + fileName + ".bracket";
 					try {
-						model.writeFile(currPathway);
+						model.writeFile(new File(currPathway));
 					} catch (IOException e) {
 						JOptionPane.showMessageDialog(this, "An error has occured, the file has not been saved", "Whoops!", JOptionPane.ERROR_MESSAGE);
 					}

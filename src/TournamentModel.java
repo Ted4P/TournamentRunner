@@ -65,9 +65,8 @@ public class TournamentModel extends Observable{
 		notifyObservers();
 	}
 	//Attempt to write all state to the file located at currPathway, and throw an error on failure. The file format is specified in the manual
-	public void writeFile(String currPathway) throws IOException {
-			File newFile = new File(currPathway);
-			FileWriter writer = new FileWriter(newFile);
+	public void writeFile(File file) throws IOException {
+			FileWriter writer = new FileWriter(file);
 			writer.write(Brackets.getNum() + "\n" + Brackets.getSize() + "\n" + getName() + "\n");
 			for(int i=0;i<Brackets.getNum();i++){
 				writer.write(Brackets.getBracket(i).getName() + "\n");
