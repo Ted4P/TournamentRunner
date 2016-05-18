@@ -220,10 +220,6 @@ public class TournamentView extends JFrame implements Observer, ActionListener, 
 			JOptionPane.showMessageDialog(this, name + " from " + school + " successfully added to bracket " + bracketName);
 		}
 		else JOptionPane.showMessageDialog(this, "Error: Could not add to bracket " + bracketName);
-		for(Person p: model.getCompetitors(0)){
-			System.out.println(p.getName());
-			model.advancePerson(p, bracket, "None");
-		}
 		update(model, null);	
 	}
 	private int findBrackNum(String bracketName){
@@ -236,8 +232,8 @@ public class TournamentView extends JFrame implements Observer, ActionListener, 
 		model.setMatch(p1,p2,win,notes,bracket,index);
 	}
 	
-	public void promotePerson(Person person, int bracket, String notes){
-		model.advancePerson(person, bracket, notes);
+	public void promotePerson(Person person, int bracket, String notes, int matchID){
+		model.advancePerson(person, bracket, notes, matchID);
 	}
 	
 	private void newBracketFromFile(){
