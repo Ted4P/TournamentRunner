@@ -113,7 +113,6 @@ public class BracketPanel extends JPanel implements ActionListener{
 	}
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		System.out.println("HI");
 		if(arg0.getSource() instanceof MatchButton){
 			new MatchEditWindow(view, bracket, info[getIndex(((MatchButton)(arg0.getSource())).getMatch())]);
 		}
