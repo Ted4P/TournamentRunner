@@ -35,7 +35,7 @@ public class TournamentModel extends Observable{
 			for(int j = 0; j < brackSize-1; j++){
 				String matchLine = scan.nextLine();
 				String[] data = matchLine.split(",");
-				restoreState(data,i);
+				Brackets.getBracket(i).restoreState(data);
 				for(int k = 0; k < 2; k++){
 					if(!data[k].equals("TBD/")){		//Add people back to set
 						competitors[i].add(new Person(data[k].substring(0, data[k].indexOf('/')), data[k].substring(data[k].indexOf('/')+1)));
@@ -45,11 +45,6 @@ public class TournamentModel extends Observable{
 		}
 		this.addObserver(view);
 		scan.close();
-		setChanged();
-		notifyObservers();
-	}
-	private void restoreState(String[] data, int i){
-		Brackets.getBracket(i).restoreState(data);
 		setChanged();
 		notifyObservers();
 	}
