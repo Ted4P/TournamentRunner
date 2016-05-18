@@ -6,11 +6,12 @@ public class Match {
 	private Person lPer, rPer, wPer;
 	private String note;
 	private int val, numLeft, numRight;
+	public static final String DEFAULT_WINNER_NAME = "No Winner", DEFAULT_WINNER_SCHOOL = "No School";
 	public Match(int size, Match parent, int i){
 		val=i;
 		lPer = new Person("TBD", "TBD");
 		rPer = new Person("TBD", "TBD");
-		wPer = new Person("No Winner", "No School");
+		wPer = new Person(DEFAULT_WINNER_NAME,DEFAULT_WINNER_SCHOOL);
 		note = "No information availible yet";
 		this.parent = parent;
 		if(size<=2) return;
