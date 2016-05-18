@@ -37,9 +37,6 @@ public class TournamentView extends JFrame implements Observer, ActionListener, 
 	private static final String 
 	ERROR_NAME_NOT_FOUND = "Error: No bracket with specified name found", 
 	ERROR_NO_BRACKET_SPECIFIED = "Error: No bracket specified";
-
-	public static final int MATCH_WIDTH = 15, MATCH_HEIGHT = 6;
-
 	TournamentModel model;
 	private final JMenuItem newBracket, fromFile, save, saveAs, add, changeName;
 	private JTextField name2, school2;
@@ -233,6 +230,10 @@ public class TournamentView extends JFrame implements Observer, ActionListener, 
 		for(int i = 0; i < Brackets.getNum(); i++)
 			if(Brackets.getBracket(i).getName().equals(bracketName)) return i;
 		return -1;
+	}
+	
+	public void setMatch(Person p1, Person p2, Person win, String notes, int bracket, int index){
+		model.setMatch(p1,p2,win,notes,bracket,index);
 	}
 	
 	public void promotePerson(Person person, int bracket, String notes){
