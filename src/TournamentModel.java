@@ -29,15 +29,15 @@ public class TournamentModel extends Observable{
 		tournamentName = scan.nextLine();
 		Brackets.setBrackets(numBrack, brackSize);
 		competitors = new Set[numBrack];
-		for(int i = 0 ; i < numBrack; i++) competitors[i]=new TreeSet<Person>();
 		for(int i = 0; i < numBrack; i++){
+			competitors[i]=new TreeSet<Person>();
 			Brackets.getBracket(i).setName(scan.nextLine());
 			for(int j = 0; j < brackSize-1; j++){
 				String matchLine = scan.nextLine();
 				String[] data = matchLine.split(",");
 				Brackets.getBracket(i).restoreState(data);
 				for(int k = 0; k < 2; k++){
-					if(!data[k].equals("TBD/")){		//Add people back to set
+					if(!data[k].equals("TBD/TBD" && !(data[k] instanceof Bye))){		//Add people back to set
 						competitors[i].add(new Person(data[k].substring(0, data[k].indexOf('/')), data[k].substring(data[k].indexOf('/')+1)));
 					}
 				}
