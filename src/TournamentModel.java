@@ -91,6 +91,14 @@ public class TournamentModel extends Observable{
 		setChanged();
 		notifyObservers();
 	}
+	
+	public void setMatch(Person left, Person right, Person winner, String notes, int bracket, int index){
+		Brackets.getBracket(bracket).setMatch(left,right,winner,notes,index);
+		
+		setChanged();
+		notifyObservers();
+	}
+	
 	//Attempt to write all state to the file located at currPathway, and throw an error on failure. The file format is specified in the manual
 	public void writeFile(File file) throws IOException {
 			FileWriter writer = new FileWriter(file);

@@ -32,4 +32,7 @@ public class Bracket {
 	public void promoteBye() {
 		top.promoteBye();
 	}
+	public void setMatch(Person left, Person right, Person winner,String notes, int index) {
+		top.setMatch(left,right,winner,notes,index);
+	}
 }

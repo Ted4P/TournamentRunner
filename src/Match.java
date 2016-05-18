@@ -118,4 +118,15 @@ public class Match {
 		if(lPer instanceof Bye) advancePerson(rPer, "Bye");
 		if(rPer instanceof Bye) advancePerson(lPer, "Bye");
 	}
+	public void setMatch(Person left2, Person right2, Person winner, String notes, int index) {
+		if(val==index){
+			lPer= left2;
+			rPer = right2;
+			wPer = winner;
+			note = notes;
+			return;
+		}
+		if(left!=null) left.setMatch(left2, right2, winner, notes, index);
+		if(right!=null) right.setMatch(left2, right2, winner, notes, index);
+	}
 }
