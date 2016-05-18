@@ -37,7 +37,7 @@ public class TournamentModel extends Observable{
 				String[] data = matchLine.split(",");
 				Brackets.getBracket(i).restoreState(data);
 				for(int k = 0; k < 2; k++){
-					if(!data[k].equals("TBD/TBD" && !(data[k] instanceof Bye))){		//Add people back to set
+					if(!data[k].equals("TBD/TBD")){		//Add people back to set
 						competitors[i].add(new Person(data[k].substring(0, data[k].indexOf('/')), data[k].substring(data[k].indexOf('/')+1)));
 					}
 				}
