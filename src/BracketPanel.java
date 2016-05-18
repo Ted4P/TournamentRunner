@@ -58,14 +58,13 @@ public class BracketPanel extends JPanel implements ActionListener{
 		paintOneMatch(2*MATCH_WIDTH*level-(int)(MATCH_WIDTH*1.5),totShift-MATCH_HEIGHT/2+MATCH_HEIGHT,shift, 0, 1, g);
 	}
 	private void paintOneMatch(int x, int y, int shift, int level, int match, Graphics g){
-		g.setFont(new Font(g.getFont().getFontName(),Font.PLAIN,MATCH_HEIGHT/3));
+		g.setFont(new Font(g.getFont().getFontName(),Font.BOLD,MATCH_HEIGHT/3));
 		int index = getIndex(match);
 		for(int i=0;i<2;i++){
 			g.drawRect(x, y, MATCH_WIDTH, MATCH_HEIGHT);
 			if((info[index][4]+info[index][5]).equals(Match.DEFAULT_WINNER_NAME + Match.DEFAULT_WINNER_SCHOOL))
 				g.setColor(Color.BLACK);
 			else if((info[index][2*i]+info[index][2*i+1]).equals(info[index][4]+info[index][5])){
-				g.setFont(new Font(g.getFont().getFontName(), Font.BOLD, MATCH_HEIGHT/3));
 				g.setColor(Color.GREEN);
 			}
 			else
@@ -73,7 +72,6 @@ public class BracketPanel extends JPanel implements ActionListener{
 			g.drawString(info[index][2*i], x+5, y+(5*i+4)*MATCH_HEIGHT/10);
 			g.drawString(info[index][2*i+1], x+MATCH_WIDTH/2, y+(5*i+4)*MATCH_HEIGHT/10);
 			g.setColor(Color.BLACK);
-			g.setFont(new Font(g.getFont().getFontName(),Font.PLAIN,MATCH_HEIGHT/3));
 			MatchButton button = new MatchButton(match);
 			button.setBounds(x + MATCH_WIDTH, y + MATCH_HEIGHT/4, MATCH_WIDTH/4,MATCH_HEIGHT/2);
 			button.setFont(new Font(button.getFont().getFontName(), Font.PLAIN, MATCH_HEIGHT/5));
@@ -114,7 +112,8 @@ public class BracketPanel extends JPanel implements ActionListener{
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		if(arg0.getSource() instanceof MatchButton){
-			new MatchEditWindow(view, bracket, info[getIndex(((MatchButton)(arg0.getSource())).getMatch())]);
+			MatchButton match = (MatchButton)arg0.getSource();
+			new MatchEditWindow(view, bracket, info[getIndex(match.getMatch())],match.getMatch());
 		}
 	}
 }
