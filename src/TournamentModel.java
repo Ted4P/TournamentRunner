@@ -66,8 +66,8 @@ public class TournamentModel extends Observable{
 	/*
 	 * Attempt to advance the given person one match in the bracket. 
 	 */
-	public void advancePerson(Person person, int bracket, String notes){
-		Brackets.getBracket(bracket).recordWin(person, notes);
+	public void advancePerson(Person person, int bracket, String notes, int matchID){
+		Brackets.getBracket(bracket).recordWin(person, notes, matchID);
 		setChanged();
 		notifyObservers();
 	}
