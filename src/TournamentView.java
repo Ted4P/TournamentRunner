@@ -2,6 +2,7 @@ import java.awt.BorderLayout;
 import java.awt.ComponentOrientation;
 import java.awt.Container;
 import java.awt.Dialog;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -13,6 +14,8 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
@@ -30,7 +33,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-public class TournamentView extends JFrame implements Observer, ActionListener, ChangeListener{
+public class TournamentView extends JFrame implements Observer, ActionListener, KeyListener{
 	private static final String 
 	ERROR_NAME_NOT_FOUND = "Error: No bracket with specified name found", 
 	ERROR_NO_BRACKET_SPECIFIED = "Error: No bracket specified";
@@ -78,10 +81,11 @@ public class TournamentView extends JFrame implements Observer, ActionListener, 
 		update(null,null);
 		brackets = new JTabbedPane();
 		brackets.setTabPlacement(JTabbedPane.LEFT);
+		brackets.addKeyListener(this);
 		pane.add(brackets);
 		super.setJMenuBar(bar);
 		setTitle("Tournament Runner");
-		setSize(1500,1000);
+		setSize(1600,800);
 		setVisible(true);
 		super.setDefaultCloseOperation(EXIT_ON_CLOSE);
 	}
@@ -230,6 +234,11 @@ public class TournamentView extends JFrame implements Observer, ActionListener, 
 			if(Brackets.getBracket(i).getName().equals(bracketName)) return i;
 		return -1;
 	}
+	
+	public void promotePerson(Person person, int bracket, String notes){
+		model.advancePerson(person, bracket, notes);
+	}
+	
 	private void newBracketFromFile(){
 		String pathName = System.getProperty("user.dir") + "/";
 		JFileChooser fileChooser = new JFileChooser(pathName);
@@ -250,9 +259,11 @@ public class TournamentView extends JFrame implements Observer, ActionListener, 
 	private void loadTabs() {
 		brackets.removeAll();
 		for(int i = 0; i < Brackets.getNum(); i++)
-			brackets.addTab(Brackets.getBracket(i).getName(), new BracketPanel(Brackets.getBracket(i), this));
-		brackets.addChangeListener(this);
-		currPanel = (BracketPanel)brackets.getSelectedComponent();
+			brackets.addTab(Brackets.getBracket(i).getName(), new JScrollPane(new BracketPanel(Brackets.getBracket(i),this)));
+		currPanel = new BracketPanel(Brackets.getBracket(brackets.getSelectedIndex()),this);
+		JScrollPane pane = new JScrollPane(currPanel);
+		pane.setFocusable(true);
+		brackets.setComponentAt(brackets.getSelectedIndex(), pane);
 	}
 
 	private void changeBracketName() {
@@ -317,21 +328,14 @@ public class TournamentView extends JFrame implements Observer, ActionListener, 
 			save.setEnabled(true);
 			saveAs.setEnabled(true);
 			changeName.setEnabled(true);
-			currPanel = new BracketPanel(Brackets.getBracket(brackets.getSelectedIndex()), this);
 			currPanel.paint(this.getGraphics());
-			brackets.setComponentAt(brackets.getSelectedIndex(), currPanel);
+			
 		}
 	}
 
 
 	public static void main(String[] args){
 		TournamentView view = new TournamentView();
-	}
-
-	public void promotePerson(String name, int bracket){
-		for(Person p: model.getCompetitors(bracket)){
-			model.advancePerson(p, bracket, "None");
-		}
 	}
 	
 	@Override
@@ -376,9 +380,24 @@ public class TournamentView extends JFrame implements Observer, ActionListener, 
 		}
 	}
 
-	public void stateChanged(ChangeEvent arg0) {
-		if(arg0.getSource() == brackets){
-			currPanel = (BracketPanel)brackets.getSelectedComponent();
+	@Override
+	public void keyPressed(KeyEvent arg0) {
+		if(arg0.getKeyCode() == KeyEvent.VK_MINUS){
+			BracketPanel.zoomOut();
 		}
+		else if(arg0.getKeyCode() == KeyEvent.VK_EQUALS){
+			BracketPanel.zoomIn();
+		}
+		update(model,null);
+	}
+
+	@Override
+	public void keyReleased(KeyEvent arg0) {
+		
+	}
+
+	@Override
+	public void keyTyped(KeyEvent arg0) {
+		
 	}
 }
