@@ -14,11 +14,19 @@ public class Brackets {
 		if(num>=brackets.length) return null;
 		return brackets[num];
 	}
+	public static Bracket[] getAllBrackets(){
+		return brackets;
+	}
 	public static int getNum() {
 		return brackets.length;
 	}
 	public static int getSize(){
 		return bSize;
 	}
-	
+	public static int indexOf(Bracket bracket){
+		for(int i=0;i<bSize;i++)
+			if(brackets[i] == bracket)
+				return i;
+		return -1;
+	}
 }
