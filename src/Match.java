@@ -44,21 +44,18 @@ public class Match {
 	 * 			Advance that person, if possible, to the next round of competition
 	 * 			Set the match notes to the submitted notes string
 	 */
-	public boolean advancePerson(Person person, String notes){
-		if(left==null&&right==null){
-			if(lPer!=null && lPer.equals(person)){ promoteWinner(lPer,notes); return true;}
-			if(rPer!=null && rPer.equals(person)){ promoteWinner(rPer,notes); return true;}
-			return false;
+	public boolean advancePerson(Person person, String notes, int matchID){
+		if(matchID == val){
+			if(lPer.equals(person))
+				return promoteWinner(person, notes);
+			else if(rPer.equals(person))
+				return promoteWinner(person, notes);
+			else
+				return false;
 		}
-		if(lPer!=null && lPer.equals(person)){
-			return promoteWinner(lPer, notes);
-		}
-		if(rPer!=null && rPer.equals(person)){
-				return promoteWinner(rPer, notes);
-		}
-		if(left.advancePerson(person, notes)) return true;
-		if(right.advancePerson(person, notes)) return true;
-		return false;
+		else if(left != null && left.advancePerson(person, notes, matchID)) return true;
+		else if(right != null && right.advancePerson(person, notes, matchID)) return true;
+		else return false;
 	}
 	private boolean promoteWinner(Person per, String notes) {
 		note = notes;
@@ -115,8 +112,8 @@ public class Match {
 		if(left!=null) promoteBye();
 		if(right!=null) promoteBye();
 		if(lPer instanceof Bye && rPer instanceof Bye) return;
-		if(lPer instanceof Bye) advancePerson(rPer, "Bye");
-		if(rPer instanceof Bye) advancePerson(lPer, "Bye");
+		if(lPer instanceof Bye) advancePerson(rPer, "Bye", val*2+1);
+		if(rPer instanceof Bye) advancePerson(lPer, "Bye", val*2);
 	}
 	public void setMatch(Person left2, Person right2, Person winner, String notes, int index) {
 		if(val==index){
