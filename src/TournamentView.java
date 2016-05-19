@@ -33,12 +33,12 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-public class TournamentView extends JFrame implements Observer, ActionListener, KeyListener{
+public class TournamentView extends JFrame implements Observer, ActionListener{
 	private static final String 
 	ERROR_NAME_NOT_FOUND = "Error: No bracket with specified name found", 
 	ERROR_NO_BRACKET_SPECIFIED = "Error: No bracket specified";
 	TournamentModel model;
-	private final JMenuItem newBracket, fromFile, save, saveAs, add, changeName;
+	private final JMenuItem newBracket, fromFile, save, saveAs, add, changeName, zoomIn, zoomOut;
 	private JTextField name2, school2;
 	private JComboBox<String> bracketOptions;
 	private JButton confirm, cancel;
@@ -78,12 +78,21 @@ public class TournamentView extends JFrame implements Observer, ActionListener, 
 		changeName.setAccelerator(KeyStroke.getKeyStroke('R', Toolkit.getDefaultToolkit ().getMenuShortcutKeyMask()));
 		changeName.addActionListener(this);
 		edit.add(changeName);
+		JMenu view = new JMenu("View");
+		zoomIn = new JMenuItem("Zoom In");
+		zoomOut = new JMenuItem("Zoom Out");
+		zoomIn.setAccelerator(KeyStroke.getKeyStroke('=',Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+		zoomOut.setAccelerator(KeyStroke.getKeyStroke('-', Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+		zoomIn.addActionListener(this);
+		zoomOut.addActionListener(this);
+		view.add(zoomIn);
+		view.add(zoomOut);
 		bar.add(file);
 		bar.add(edit);
+		bar.add(view);
 		update(null,null);
 		brackets = new JTabbedPane();
 		brackets.setTabPlacement(JTabbedPane.LEFT);
-		brackets.addKeyListener(this);
 		pane.add(brackets);
 		super.setJMenuBar(bar);
 		setTitle("Tournament Runner");
@@ -260,8 +269,10 @@ public class TournamentView extends JFrame implements Observer, ActionListener, 
 
 	private void loadTabs() {
 		brackets.removeAll();
-		for(int i = 0; i < Brackets.getNum(); i++)
-			brackets.addTab(Brackets.getBracket(i).getName(), new JScrollPane(new BracketPanel(Brackets.getBracket(i),this)));
+		for(int i = 0; i < Brackets.getNum(); i++){
+			JScrollPane scroll = new JScrollPane(new BracketPanel(Brackets.getBracket(i),this));
+			brackets.addTab(Brackets.getBracket(i).getName(), scroll);
+		}
 		currPanel = new BracketPanel(Brackets.getBracket(brackets.getSelectedIndex()),this);
 		JScrollPane pane = new JScrollPane(currPanel);
 		pane.setFocusable(true);
@@ -321,6 +332,8 @@ public class TournamentView extends JFrame implements Observer, ActionListener, 
 			save.setEnabled(false);
 			saveAs.setEnabled(false);
 			changeName.setEnabled(false);
+			zoomIn.setEnabled(false);
+			zoomOut.setEnabled(false);
 			setTitle("Tournament Runner");
 		}
 		else{
@@ -331,7 +344,8 @@ public class TournamentView extends JFrame implements Observer, ActionListener, 
 			saveAs.setEnabled(true);
 			changeName.setEnabled(true);
 			currPanel.paint(this.getGraphics());
-			
+			zoomIn.setEnabled(true);
+			zoomOut.setEnabled(true);
 		}
 	}
 
@@ -380,26 +394,13 @@ public class TournamentView extends JFrame implements Observer, ActionListener, 
 				school2.setEditable(true);
 			}
 		}
-	}
-
-	@Override
-	public void keyPressed(KeyEvent arg0) {
-		if(arg0.getKeyCode() == KeyEvent.VK_MINUS){
-			BracketPanel.zoomOut();
-		}
-		else if(arg0.getKeyCode() == KeyEvent.VK_EQUALS){
+		else if(source == zoomIn){
 			BracketPanel.zoomIn();
+			update(model,null);
 		}
-		update(model,null);
-	}
-
-	@Override
-	public void keyReleased(KeyEvent arg0) {
-		
-	}
-
-	@Override
-	public void keyTyped(KeyEvent arg0) {
-		
+		else if(source == zoomOut){
+			BracketPanel.zoomOut();
+			update(model,null);
+		}
 	}
 }
