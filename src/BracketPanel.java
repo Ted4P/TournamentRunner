@@ -20,6 +20,7 @@ public class BracketPanel extends JPanel implements ActionListener{
 	private Bracket bracket;
 	private String[][] info;
 	private static int MATCH_WIDTH = 200, MATCH_HEIGHT = MATCH_WIDTH*1/5;
+	private final static int MAX_WIDTH = 1000, MIN_WIDTH = 100;
 	private static double FACTOR = 1.25;
 	private MatchButton[] editButtons;
 	private TournamentView view;
@@ -73,8 +74,8 @@ public class BracketPanel extends JPanel implements ActionListener{
 			g.drawString(info[index][2*i+1], x+MATCH_WIDTH/2, y+(5*i+4)*MATCH_HEIGHT/10);
 			g.setColor(Color.BLACK);
 			MatchButton button = new MatchButton(match);
-			button.setBounds(x + MATCH_WIDTH, y + MATCH_HEIGHT/4, MATCH_WIDTH/4,MATCH_HEIGHT/2);
-			button.setFont(new Font(button.getFont().getFontName(), Font.PLAIN, MATCH_HEIGHT/5));
+			button.setBounds(x + MATCH_WIDTH, y + MATCH_HEIGHT/5, MATCH_WIDTH/3,3*MATCH_HEIGHT/5);
+			button.setFont(new Font(button.getFont().getFontName(), Font.PLAIN, MATCH_HEIGHT/3));
 			button.addActionListener(this);
 			add(button);
 			editButtons[match] = button;
@@ -91,12 +92,16 @@ public class BracketPanel extends JPanel implements ActionListener{
 		}
 	}
 	public static void zoomIn(){
+		if(MATCH_WIDTH*FACTOR < MAX_WIDTH){
 		MATCH_WIDTH *= FACTOR;
 		MATCH_HEIGHT *= FACTOR;
+		}
 	}
 	public static void zoomOut(){
+		if(MATCH_WIDTH/FACTOR > MIN_WIDTH){
 		MATCH_WIDTH /= FACTOR;
 		MATCH_HEIGHT /= FACTOR;
+		}
 	}
 	public static void setFactor(double newFactor){
 		FACTOR = newFactor;
