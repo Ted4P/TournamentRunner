@@ -13,8 +13,8 @@ public class Bracket {
 	 */
 	public boolean addPerson(Person per){return top.addPerson(per);}
 	
-	public void recordWin(Person winner, String notes){
-		top.advancePerson(winner, notes);
+	public void recordWin(Person winner, String notes, int matchID){
+		top.advancePerson(winner, notes, matchID);
 	}
 	/*
 	 * Returns all state information about the bracket in postfix notation
