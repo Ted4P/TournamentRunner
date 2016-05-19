@@ -47,7 +47,7 @@ public class MatchEditWindow extends JDialog implements ActionListener{
 		school2.setColumns(10);
 		school2.setHorizontalAlignment(JTextField.CENTER);
 		notes = new JTextField(matchInfo[6]);
-		String currWinner = matchInfo[3] + "(" + matchInfo[4] + ")";
+		String currWinner = matchInfo[4] + "(" + matchInfo[3] + ")";
 		winnerEdit = new JComboBox(new String[]{"Unplayed",name1.getText() + "(" + school1.getText() + ")",name2.getText() + "(" + school2.getText() + ")"});
 		if(winnerEdit.getItemAt(1).equals(currWinner))
 			winnerEdit.setSelectedIndex(1);
@@ -138,7 +138,6 @@ public class MatchEditWindow extends JDialog implements ActionListener{
 		options.add(close);
 		comboBox.removeAll();
 		comboBox.add(new JLabel("Winner: " + winnerEdit.getSelectedItem()));
-		comboBox.repaint();
 		repaint();
 	}
 
@@ -166,17 +165,16 @@ public class MatchEditWindow extends JDialog implements ActionListener{
 		updateWhileEditing();
 		repaint();
 	}
-	
+
 	public void updateWhileEditing(){
 		int index = winnerEdit.getSelectedIndex();
 		winnerEdit.removeAllItems();
 		winnerEdit.addItem("Unplayed");
-		if(name1.equals(name2) ||
+		if((name1.getText()+school1.getText()).equals(name2.getText()+school2.getText()) ||
 				name1.getText().equals("") || name1.getText().equals("TBD") || name1.getText().equals(Match.DEFAULT_WINNER_NAME) ||
 				name2.getText().equals("") || name2.getText().equals("TBD") || name2.getText().equals(Match.DEFAULT_WINNER_NAME) ||
 				school1.getText().equals("") || school1.getText().equals("TBD") || school1.getText().equals(Match.DEFAULT_WINNER_SCHOOL) ||
-				school2.getText().equals("") || school2.getText().equals("TBD") || school2.getText().equals(Match.DEFAULT_WINNER_SCHOOL) ||
-				notes.getText().equals(""))
+				school2.getText().equals("") || school2.getText().equals("TBD") || school2.getText().equals(Match.DEFAULT_WINNER_SCHOOL))
 			save.setEnabled(false);
 		else{
 			winnerEdit.addItem(name1.getText()+"("+school1.getText()+")");
@@ -185,6 +183,8 @@ public class MatchEditWindow extends JDialog implements ActionListener{
 			save.setEnabled(true);
 			repaint();
 		}
+		if(notes.getText().equals(""))
+			save.setEnabled(false);
 		comboBox.repaint();
 	}
 
