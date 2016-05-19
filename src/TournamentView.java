@@ -260,6 +260,7 @@ public class TournamentView extends JFrame implements Observer, ActionListener{
 			File file = fileChooser.getSelectedFile();
 			try{
 				model = new TournamentModel(file,this);
+				update(model,null);
 			}
 			catch(FileNotFoundException e){
 				JOptionPane.showMessageDialog(this, "Error: Invalid File", "Whoops!", JOptionPane.ERROR_MESSAGE);

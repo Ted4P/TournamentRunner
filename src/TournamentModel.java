@@ -2,6 +2,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Observable;
 import java.util.Scanner;
 import java.util.Set;
@@ -35,9 +36,10 @@ public class TournamentModel extends Observable{
 			for(int j = 0; j < brackSize-1; j++){
 				String matchLine = scan.nextLine();
 				String[] data = matchLine.split(",");
+				
 				Brackets.getBracket(i).restoreState(data);
 				for(int k = 0; k < 2; k++){
-					if(!data[k].equals("TBD/TBD")){		//Add people back to set
+					if(!(data[k].equals(Match.DEFAULT_BLANK_NAME + "/" + Match.DEFAULT_BLANK_SCHOOL) || data[k].equals(Match.DEFAULT_WINNER_NAME + "/" + Match.DEFAULT_WINNER_SCHOOL))){		//Add people back to set
 						competitors[i].add(new Person(data[k].substring(0, data[k].indexOf('/')), data[k].substring(data[k].indexOf('/')+1)));
 					}
 				}

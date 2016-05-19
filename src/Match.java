@@ -6,11 +6,11 @@ public class Match {
 	private Person lPer, rPer, wPer;
 	private String note;
 	private int val, numLeft, numRight;
-	public static final String DEFAULT_WINNER_NAME = "No Winner", DEFAULT_WINNER_SCHOOL = "No School";
+	public static final String DEFAULT_WINNER_NAME = "No Winner", DEFAULT_WINNER_SCHOOL = "No School", DEFAULT_BLANK_NAME = "TBD", DEFAULT_BLANK_SCHOOL = "TBD";
 	public Match(int size, Match parent, int i){
 		val=i;
-		lPer = new Person("TBD", "TBD");
-		rPer = new Person("TBD", "TBD");
+		lPer = new Person(DEFAULT_BLANK_NAME, DEFAULT_BLANK_SCHOOL);
+		rPer = new Person(DEFAULT_BLANK_NAME, DEFAULT_BLANK_SCHOOL);
 		wPer = new Person(DEFAULT_WINNER_NAME,DEFAULT_WINNER_SCHOOL);
 		note = "No information availible yet";
 		this.parent = parent;
@@ -109,11 +109,11 @@ public class Match {
 	 * For all competitors facing Byes, promote until a match featuring two humans is found
 	 */
 	public void promoteBye() {
-		if(left!=null) promoteBye();
-		if(right!=null) promoteBye();
+		if(left!=null) left.promoteBye();
+		if(right!=null) right.promoteBye();
 		if(lPer instanceof Bye && rPer instanceof Bye) return;
-		if(lPer instanceof Bye) advancePerson(rPer, "Bye", val*2+1);
-		if(rPer instanceof Bye) advancePerson(lPer, "Bye", val*2);
+		if(lPer instanceof Bye) advancePerson(rPer, "Bye", val);
+		if(rPer instanceof Bye) advancePerson(lPer, "Bye", val);
 	}
 	public void setMatch(Person left2, Person right2, Person winner, String notes, int index) {
 		if(val==index){
