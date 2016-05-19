@@ -1,4 +1,5 @@
 import java.awt.Color;
+
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
@@ -9,12 +10,12 @@ import java.awt.event.ActionListener;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.Border;
-import javax.swing.border.EmptyBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
@@ -28,6 +29,7 @@ public class MatchEditWindow extends JDialog implements ActionListener{
 	private GridBagConstraints con;
 	private TournamentView view;
 	private int match;
+	private JComponent boxCompo;
 	public MatchEditWindow(TournamentView view, Bracket bracket, String[] matchInfo, int match){
 		super(view, "Match Info");
 		this.view = view;
@@ -86,7 +88,9 @@ public class MatchEditWindow extends JDialog implements ActionListener{
 		options.add(close);
 		comboBox = new JPanel();
 		comboBox.setLayout(new GridBagLayout());
-		comboBox.add(new JLabel("Winner: " + winnerEdit.getSelectedItem()));
+		comboBox.add(new JLabel("Winner: "));
+		boxCompo = new JLabel("" + winnerEdit.getSelectedItem());
+		comboBox.add(boxCompo);
 		setLayout(new GridLayout(6,1));
 		add(comboBox);
 		add(labels);
@@ -110,7 +114,6 @@ public class MatchEditWindow extends JDialog implements ActionListener{
 		school1.getDocument().addDocumentListener(docListen);
 		school2.getDocument().addDocumentListener(docListen);
 		notes.getDocument().addDocumentListener(docListen);
-		name1.setText(name1.getText());
 		viewMode();
 		Toolkit tlkt = Toolkit.getDefaultToolkit();
 		setModal(true);
@@ -136,8 +139,12 @@ public class MatchEditWindow extends JDialog implements ActionListener{
 		options.removeAll();
 		options.add(edit);
 		options.add(close);
-		comboBox.removeAll();
-		comboBox.add(new JLabel("Winner: " + winnerEdit.getSelectedItem()));
+		comboBox.remove(boxCompo);
+		boxCompo = new JLabel("" + winnerEdit.getSelectedItem());
+		comboBox.add(boxCompo);
+		comboBox.repaint();
+		repaint();
+		setSize(getWidth()+1,getHeight());
 		repaint();
 	}
 
@@ -153,17 +160,17 @@ public class MatchEditWindow extends JDialog implements ActionListener{
 			school2.setEditable(true);
 			school2.setBorder(drawBorder);
 			notes.setBorder(drawBorder);
+			setSize(getWidth()-1,getHeight());
 		}
 		notes.setEditable(true);
 		winnerEdit.setEnabled(true);
 		options.removeAll();
 		options.add(save);
 		options.add(cancel);
-		comboBox.removeAll();
-		comboBox.add(new JLabel("Winner: "));
-		comboBox.add(winnerEdit);
+		comboBox.remove(boxCompo);
+		boxCompo = winnerEdit;
+		comboBox.add(boxCompo);
 		updateWhileEditing();
-		repaint();
 	}
 
 	public void updateWhileEditing(){
