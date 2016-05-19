@@ -18,8 +18,6 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
-import com.sun.glass.ui.View;
-
 public class MatchEditWindow extends JDialog implements ActionListener{
 	private Bracket bracket;
 	private String[] matchInfo;
