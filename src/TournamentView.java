@@ -38,7 +38,7 @@ public class TournamentView extends JFrame implements Observer, ActionListener{
 	ERROR_NAME_NOT_FOUND = "Error: No bracket with specified name found", 
 	ERROR_NO_BRACKET_SPECIFIED = "Error: No bracket specified";
 	TournamentModel model;
-	private final JMenuItem newBracket, fromFile, save, saveAs, add, changeName, zoomIn, zoomOut;
+	private final JMenuItem newBracket, fromFile, save, saveAs, add, changeName, zoomIn, zoomOut, addRoster;
 	private JTextField name2, school2;
 	private JComboBox<String> bracketOptions;
 	private JButton confirm, cancel;
@@ -74,6 +74,9 @@ public class TournamentView extends JFrame implements Observer, ActionListener{
 		add.setAccelerator(KeyStroke.getKeyStroke('A', Toolkit.getDefaultToolkit ().getMenuShortcutKeyMask()));
 		add.addActionListener(this);
 		edit.add(add);
+		addRoster = new JMenuItem("Add Team Roster");
+		addRoster.addActionListener(this);
+		edit.add(addRoster);
 		changeName = new JMenuItem("Change Bracket Name");
 		changeName.setAccelerator(KeyStroke.getKeyStroke('R', Toolkit.getDefaultToolkit ().getMenuShortcutKeyMask()));
 		changeName.addActionListener(this);
@@ -267,6 +270,29 @@ public class TournamentView extends JFrame implements Observer, ActionListener{
 			}
 		}
 	}
+	
+	private void addRoster(){
+		String school = JOptionPane.showInputDialog(this, "Enter the team name");
+		if(school==null||school.equals("")) return;
+		if(school.equals(Match.DEFAULT_BLANK_SCHOOL) || school.equals(Match.DEFAULT_WINNER_SCHOOL)){ 
+			JOptionPane.showMessageDialog(this, "Error: Invalid school name");
+			return;
+		}
+		JOptionPane.showMessageDialog(this, "Select the text file containing names, with one name per line and per bracket");
+		String pathName = System.getProperty("user.dir") + "/";
+		JFileChooser fileChooser = new JFileChooser(pathName);
+		fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+		fileChooser.setFileFilter(new FileNameExtensionFilter(null, "txt"));
+		int result = fileChooser.showOpenDialog(null);
+		if(result == JFileChooser.APPROVE_OPTION){
+			File file = fileChooser.getSelectedFile();
+			try {
+				model.addRoster(school, file);
+			} catch (FileNotFoundException e) {
+				JOptionPane.showMessageDialog(this, "Error: Invalid File", "Whoops!", JOptionPane.ERROR_MESSAGE);
+			}
+		}
+	}
 
 	private void loadTabs() {
 		brackets.removeAll();
@@ -373,6 +399,9 @@ public class TournamentView extends JFrame implements Observer, ActionListener{
 		else if(source == confirm){
 			dialog.dispose();
 			addPerson();
+		}
+		else if(source == addRoster){
+			addRoster();
 		}
 		else if(source == cancel){
 			dialog.dispose();

@@ -121,4 +121,16 @@ public class TournamentModel extends Observable{
 			curr.promoteBye();
 		}
 	}
+	public void addRoster(String school, File file) throws FileNotFoundException {
+		Scanner scan = new Scanner(file);
+		int num = Brackets.getNum();
+		for(int i = 0; i < num; i++){
+			String name = scan.nextLine();
+			if(!name.equals(""))
+				Brackets.getBracket(i).addPerson(new Person(name,school));
+		}
+		scan.close();
+		setChanged();
+		notifyObservers();
+	}
 }
