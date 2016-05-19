@@ -1,227 +1,124 @@
-import java.awt.Color;
+import java.awt.Dimension;
 
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.GridLayout;
-import java.awt.Toolkit;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.util.NoSuchElementException;
+import java.util.Scanner;
+import java.awt.Color;
 
-import javax.swing.BorderFactory;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JComponent;
-import javax.swing.JDialog;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.border.Border;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
+import javax.swing.JScrollPane;
 
-public class MatchEditWindow extends JDialog implements ActionListener{
+@SuppressWarnings("serial")
+public class BracketPanel extends JPanel implements ActionListener{
 	private Bracket bracket;
-	private String[] matchInfo;
-	private JButton save, cancel, close, edit;
-	private JTextField name1, school1, name2, school2, notes;
-	private JComboBox<String> winnerEdit;
-	private JPanel comboBox, options;
-	private GridBagConstraints con;
+	private String[][] info;
+	private static int MATCH_WIDTH = 200, MATCH_HEIGHT = MATCH_WIDTH*1/5;
+	private final static int MAX_WIDTH = 1000, MIN_WIDTH = 100;
+	private static double FACTOR = 1.25;
+	private MatchButton[] editButtons;
 	private TournamentView view;
-	private int match;
-	private JComponent boxCompo;
-	public MatchEditWindow(TournamentView view, Bracket bracket, String[] matchInfo, int match){
-		super(view, "Match Info");
+	public BracketPanel(Bracket bracket, TournamentView view){
 		this.view = view;
 		this.bracket = bracket;
-		this.matchInfo = matchInfo;
-		this.match = match;
-		name1 = new JTextField(matchInfo[0]);
-		name1.setColumns(10);
-		name1.setHorizontalAlignment(JTextField.CENTER);
-		school1 = new JTextField(matchInfo[1]);
-		school1.setColumns(10);
-		school1.setHorizontalAlignment(JTextField.CENTER);
-		name2 = new JTextField(matchInfo[2]);
-		name2.setColumns(10);
-		name2.setHorizontalAlignment(JTextField.CENTER);
-		school2 = new JTextField(matchInfo[3]);
-		school2.setColumns(10);
-		school2.setHorizontalAlignment(JTextField.CENTER);
-		notes = new JTextField(matchInfo[6]);
-		String currWinner = matchInfo[4] + "(" + matchInfo[3] + ")";
-		winnerEdit = new JComboBox(new String[]{"Unplayed",name1.getText() + "(" + school1.getText() + ")",name2.getText() + "(" + school2.getText() + ")"});
-		if(winnerEdit.getItemAt(1).equals(currWinner))
-			winnerEdit.setSelectedIndex(1);
-		else if(winnerEdit.getItemAt(2).equals(currWinner))
-			winnerEdit.setSelectedIndex(2);
-		else
-			winnerEdit.setSelectedIndex(0);
-		winnerEdit.setEnabled(false);
-		JPanel labels = new JPanel();
-		labels.setLayout(new GridBagLayout());
-		labels.add(new JLabel("Player A          vs          Player B"));
-		JPanel comps = new JPanel();
-		comps.setLayout(new GridBagLayout());
-		GridBagConstraints con = new GridBagConstraints();
-		con.gridheight = 5;
-		con.gridwidth = this.getWidth();
-		con.fill = GridBagConstraints.BOTH;
-		comps.add(name1);
-		comps.add(name2);
-		JPanel schools = new JPanel();
-		schools.setLayout(new GridBagLayout());
-		schools.add(school1);
-		schools.add(school2);
-		options = new JPanel();
-		options.setLayout(new GridBagLayout());
-		save = new JButton("Save");
-		save.addActionListener(this);
-		save.setEnabled(false);
-		cancel = new JButton("Cancel");
-		cancel.addActionListener(this);
-		close = new JButton("Close");
-		close.addActionListener(this);
-		edit = new JButton("Edit");
-		edit.addActionListener(this);
-		options.add(edit);
-		options.add(close);
-		comboBox = new JPanel();
-		comboBox.setLayout(new GridBagLayout());
-		comboBox.add(new JLabel("Winner: "));
-		boxCompo = new JLabel("" + winnerEdit.getSelectedItem());
-		comboBox.add(boxCompo);
-		setLayout(new GridLayout(6,1));
-		add(comboBox);
-		add(labels);
-		add(comps);
-		add(schools);
-		add(notes);
-		add(options);
-		DocumentListener docListen = new DocumentListener(){
-			public void changedUpdate(DocumentEvent e){
-				updateWhileEditing();
+		info = new String[Brackets.getSize()][8];
+		setLayout(null);
+		String bracketInfo = bracket.getInfo();
+		Scanner scan = new Scanner(bracketInfo);
+		for(int i=0;i<Brackets.getSize() && scan.hasNext();i++){
+			String line = scan.nextLine();
+			String[] rawData = line.split(",");
+			for(int index=0;index<3;index++){
+			info[i][2*index] = rawData[index].substring(0, rawData[index].indexOf('/'));
+			info[i][2*index+1] = rawData[index].substring(rawData[index].indexOf('/')+1);
 			}
-			public void removeUpdate(DocumentEvent e){
-				updateWhileEditing();
-			}
-			public void insertUpdate(DocumentEvent e){
-				updateWhileEditing();
-			}
-		};
-		name1.getDocument().addDocumentListener(docListen);
-		name2.getDocument().addDocumentListener(docListen);
-		school1.getDocument().addDocumentListener(docListen);
-		school2.getDocument().addDocumentListener(docListen);
-		notes.getDocument().addDocumentListener(docListen);
-		viewMode();
-		Toolkit tlkt = Toolkit.getDefaultToolkit();
-		setModal(true);
-		setResizable(true);
-		setSize(400,200);
-		setLocation((int)(tlkt.getScreenSize().getWidth()-getWidth())/2,(int)(tlkt.getScreenSize().getHeight()-getHeight())/2);
-		setAlwaysOnTop(true);
-		setVisible(true);
-	}
-
-	private void viewMode(){
-		Border emptyBorder = BorderFactory.createEmptyBorder();
-		name1.setEditable(false);
-		name1.setBorder(emptyBorder);
-		name2.setEditable(false);
-		name2.setBorder(emptyBorder);
-		school1.setEditable(false);
-		school1.setBorder(emptyBorder);
-		school2.setEditable(false);
-		school2.setBorder(emptyBorder);
-		notes.setEditable(false);
-		notes.setBorder(emptyBorder);
-		options.removeAll();
-		options.add(edit);
-		options.add(close);
-		comboBox.remove(boxCompo);
-		boxCompo = new JLabel("" + winnerEdit.getSelectedItem());
-		comboBox.add(boxCompo);
-		comboBox.repaint();
-		repaint();
-		setSize(getWidth()+1,getHeight());
-		repaint();
-	}
-
-	private void editMode(){
-		if(Integer.parseInt(matchInfo[7]) > Brackets.getSize()/2){
-			Border drawBorder = BorderFactory.createLineBorder(Color.black, 1);
-			name1.setEditable(true);
-			name1.setBorder(drawBorder);
-			name2.setEditable(true);
-			name2.setBorder(drawBorder);
-			school1.setEditable(true);
-			school1.setBorder(drawBorder);
-			school2.setEditable(true);
-			school2.setBorder(drawBorder);
-			notes.setBorder(drawBorder);
-			setSize(getWidth()-1,getHeight());
+			info[i][6] = rawData[3];
+			info[i][7] = rawData[4];
 		}
-		notes.setEditable(true);
-		winnerEdit.setEnabled(true);
-		options.removeAll();
-		options.add(save);
-		options.add(cancel);
-		comboBox.remove(boxCompo);
-		boxCompo = winnerEdit;
-		comboBox.add(boxCompo);
-		updateWhileEditing();
+		scan.close();
+		setFocusable(true);
+		editButtons = new MatchButton[Brackets.getSize()+1];
 	}
 
-	public void updateWhileEditing(){
-		int index = winnerEdit.getSelectedIndex();
-		winnerEdit.removeAllItems();
-		winnerEdit.addItem("Unplayed");
-		if((name1.getText()+school1.getText()).equals(name2.getText()+school2.getText()) ||
-				name1.getText().equals("") || name1.getText().equals("TBD") || name1.getText().equals(Match.DEFAULT_WINNER_NAME) ||
-				name2.getText().equals("") || name2.getText().equals("TBD") || name2.getText().equals(Match.DEFAULT_WINNER_NAME) ||
-				school1.getText().equals("") || school1.getText().equals("TBD") || school1.getText().equals(Match.DEFAULT_WINNER_SCHOOL) ||
-				school2.getText().equals("") || school2.getText().equals("TBD") || school2.getText().equals(Match.DEFAULT_WINNER_SCHOOL))
-			save.setEnabled(false);
+	public void paintComponent(Graphics g){
+		removeAll();
+		if(g instanceof Graphics2D)
+			g = (Graphics2D)g;
+		super.paintComponent(g);
+		int level = 0;
+		for(;Math.pow(2, level) < Brackets.getSize();level++);
+		int shift = (int)(Math.pow(2, level-1)*(MATCH_WIDTH*6.0/100));
+		int totShift = (int)(2 * shift * (1-Math.pow(0.5, level)));
+		setPreferredSize(new Dimension(2*MATCH_WIDTH*level,(totShift+MATCH_HEIGHT)*2));
+		paintOneMatch(2*MATCH_WIDTH*level-(int)(MATCH_WIDTH*1.5),totShift-MATCH_HEIGHT/2+MATCH_HEIGHT,shift, 0, 1, g);
+	}
+	private void paintOneMatch(int x, int y, int shift, int level, int match, Graphics g){
+		g.setFont(new Font(g.getFont().getFontName(),Font.BOLD,MATCH_HEIGHT/3));
+		int index = getIndex(match);
+		for(int i=0;i<2;i++){
+			g.drawRect(x, y, MATCH_WIDTH, MATCH_HEIGHT);
+			if((info[index][4]+info[index][5]).equals(Match.DEFAULT_WINNER_NAME + Match.DEFAULT_WINNER_SCHOOL))
+				g.setColor(Color.BLACK);
+			else if((info[index][2*i]+info[index][2*i+1]).equals(info[index][4]+info[index][5])){
+				g.setColor(Color.GREEN);
+			}
+			else
+				g.setColor(Color.RED);
+			g.drawString(info[index][2*i], x+5, y+(5*i+4)*MATCH_HEIGHT/10);
+			g.drawString(info[index][2*i+1], x+MATCH_WIDTH/2, y+(5*i+4)*MATCH_HEIGHT/10);
+			g.setColor(Color.BLACK);
+			MatchButton button = new MatchButton(match);
+			button.setBounds(x + MATCH_WIDTH, y + MATCH_HEIGHT/5, MATCH_WIDTH/3,3*MATCH_HEIGHT/5);
+			button.setFont(new Font(button.getFont().getFontName(), Font.PLAIN, MATCH_HEIGHT/3));
+			button.addActionListener(this);
+			add(button);
+			editButtons[match] = button;
+		}
+		g.drawLine(x-MATCH_WIDTH/2,y+MATCH_HEIGHT/2,x-3*MATCH_WIDTH/4,y+MATCH_HEIGHT/2-shift);
+		g.drawLine(x-MATCH_WIDTH/2,y+MATCH_HEIGHT/2,x-3*MATCH_WIDTH/4,y+MATCH_HEIGHT/2+shift);
+		if(Math.pow(2, level+1) + 1 < Brackets.getSize()-1){
+			g.drawLine(x-MATCH_WIDTH/2,y+MATCH_HEIGHT/2,x+MATCH_WIDTH,y+MATCH_HEIGHT/2);
+			paintOneMatch(x-MATCH_WIDTH*2,y+shift,shift/2,level+1,match*2,g);
+			paintOneMatch(x-MATCH_WIDTH*2,y-shift,shift/2,level+1,match*2+1,g);
+		}
 		else{
-			winnerEdit.addItem(name1.getText()+"("+school1.getText()+")");
-			winnerEdit.addItem(name2.getText()+"("+school2.getText()+")");
-			winnerEdit.setSelectedIndex(index);
-			save.setEnabled(true);
-			repaint();
+			g.drawLine(x,y+MATCH_HEIGHT/2,x+MATCH_WIDTH,y+MATCH_HEIGHT/2);
 		}
-		if(notes.getText().equals(""))
-			save.setEnabled(false);
-		comboBox.repaint();
 	}
-
+	public static void zoomIn(){
+		if(MATCH_WIDTH*FACTOR < MAX_WIDTH){
+		MATCH_WIDTH *= FACTOR;
+		MATCH_HEIGHT *= FACTOR;
+		}
+	}
+	public static void zoomOut(){
+		if(MATCH_WIDTH/FACTOR > MIN_WIDTH){
+		MATCH_WIDTH /= FACTOR;
+		MATCH_HEIGHT /= FACTOR;
+		}
+	}
+	public static void setFactor(double newFactor){
+		FACTOR = newFactor;
+	}
+	private int getIndex(int match){
+		int index = 0;
+		while(index < Brackets.getSize() && !info[index][7].equals("" + match))
+			index++;
+		if(index == Brackets.getSize())
+			throw new NoSuchElementException();
+		return index;
+	}
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		if(arg0.getSource() == save){
-			Person p1 = new Person(name1.getText(),school1.getText());
-			Person p2 = new Person(name2.getText(), school2.getText());
-			Person toBePromoted;
-			if(winnerEdit.getSelectedItem().equals(name1.getText() + "(" + school1.getText() + ")"))
-				toBePromoted = p1;
-			else if(winnerEdit.getSelectedItem().equals(name2.getText() + "(" + school2.getText() + ")"))
-				toBePromoted = p2;
-			else
-				toBePromoted = new Person(Match.DEFAULT_WINNER_NAME,Match.DEFAULT_WINNER_SCHOOL);
-			winnerEdit.setEnabled(false);
-			view.setMatch(p1,p2,toBePromoted,notes.getText(),Brackets.indexOf(bracket),match);
-			view.promotePerson(toBePromoted,Brackets.indexOf(bracket),notes.getText(),match);
-			viewMode();
-		}
-		if(arg0.getSource() == cancel){
-			winnerEdit.setEnabled(false);
-			viewMode();
-		}
-		if(arg0.getSource() == close){
-			dispose();
-		}
-		if(arg0.getSource() == edit){
-			editMode();
+		if(arg0.getSource() instanceof MatchButton){
+			MatchButton match = (MatchButton)arg0.getSource();
+			new MatchEditWindow(view, bracket, info[getIndex(match.getMatch())],match.getMatch());
 		}
 	}
-
 }
