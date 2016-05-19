@@ -26,7 +26,6 @@ public class MatchEditWindow extends JDialog implements ActionListener{
 	private JTextField name1, school1, name2, school2, notes;
 	private JComboBox<String> winnerEdit;
 	private JPanel comboBox, options;
-	private GridBagConstraints con;
 	private TournamentView view;
 	private int match;
 	private JComponent boxCompo;
@@ -50,7 +49,7 @@ public class MatchEditWindow extends JDialog implements ActionListener{
 		school2.setHorizontalAlignment(JTextField.CENTER);
 		notes = new JTextField(matchInfo[6]);
 		String currWinner = matchInfo[4] + "(" + matchInfo[3] + ")";
-		winnerEdit = new JComboBox(new String[]{"Unplayed",name1.getText() + "(" + school1.getText() + ")",name2.getText() + "(" + school2.getText() + ")"});
+		winnerEdit = new JComboBox<String>(new String[]{"Unplayed",name1.getText() + "(" + school1.getText() + ")",name2.getText() + "(" + school2.getText() + ")"});
 		if(winnerEdit.getItemAt(1).equals(currWinner))
 			winnerEdit.setSelectedIndex(1);
 		else if(winnerEdit.getItemAt(2).equals(currWinner))
