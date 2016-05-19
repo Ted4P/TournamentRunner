@@ -55,12 +55,15 @@ public class TournamentView extends JFrame implements Observer, ActionListener, 
 		JMenuBar bar = new JMenuBar();
 		JMenu file = new JMenu("File");
 		newBracket = new JMenuItem("New Bracket");
+		newBracket.setAccelerator(KeyStroke.getKeyStroke('N', Toolkit.getDefaultToolkit ().getMenuShortcutKeyMask()));
 		newBracket.addActionListener(this);
 		file.add(newBracket);
 		fromFile = new JMenuItem("Open");
+		fromFile.setAccelerator(KeyStroke.getKeyStroke('O', Toolkit.getDefaultToolkit ().getMenuShortcutKeyMask()));
 		fromFile.addActionListener(this);
 		file.add(fromFile);
 		save = new JMenuItem("Save");
+		save.setAccelerator(KeyStroke.getKeyStroke('S', Toolkit.getDefaultToolkit ().getMenuShortcutKeyMask()));
 		save.addActionListener(this);
 		file.add(save);
 		saveAs = new JMenuItem("Save As");
@@ -68,9 +71,11 @@ public class TournamentView extends JFrame implements Observer, ActionListener, 
 		file.add(saveAs);
 		JMenu edit = new JMenu("Edit");
 		add = new JMenuItem("Add Competitor");
+		add.setAccelerator(KeyStroke.getKeyStroke('A', Toolkit.getDefaultToolkit ().getMenuShortcutKeyMask()));
 		add.addActionListener(this);
 		edit.add(add);
 		changeName = new JMenuItem("Change Bracket Name");
+		changeName.setAccelerator(KeyStroke.getKeyStroke('R', Toolkit.getDefaultToolkit ().getMenuShortcutKeyMask()));
 		changeName.addActionListener(this);
 		edit.add(changeName);
 		bar.add(file);
