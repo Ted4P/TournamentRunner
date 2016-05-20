@@ -6,9 +6,12 @@ public class Brackets {
 	private static Bracket[] brackets;
 	private static int bSize;
 	public static void setBrackets(int num, int size) {
-		bSize = size;
+		int i =2;
+		while(i<size) i*=2;
+		
+		bSize = i;
 		brackets = new Bracket[num];
-		for(int i = 0; i < num; i++) brackets[i] = new Bracket(size,""+(i+1));
+		for(int j = 0; j < num; j++) brackets[j] = new Bracket(size,""+(j+1));
 	}
 	public static Bracket getBracket(int num) {
 		if(num>=brackets.length) return null;
