@@ -15,7 +15,7 @@ import javax.swing.JPanel;
 public class BracketPanel extends JPanel implements ActionListener{
 	private Bracket bracket;
 	private String[][] info;
-	private static int MATCH_WIDTH = 200, MATCH_HEIGHT = MATCH_WIDTH*1/5;
+	private static int MATCH_WIDTH = 200, MATCH_HEIGHT = MATCH_WIDTH/5;
 	private final static int MAX_WIDTH = 1000, MIN_WIDTH = 100;
 	private static double FACTOR = 1.25;
 	private MatchButton[] editButtons;
@@ -88,16 +88,30 @@ public class BracketPanel extends JPanel implements ActionListener{
 		}
 	}
 	public static void zoomIn(){
-		if(MATCH_WIDTH*FACTOR < MAX_WIDTH){
-		MATCH_WIDTH *= FACTOR;
-		MATCH_HEIGHT *= FACTOR;
-		}
+		if(MATCH_WIDTH*FACTOR <= MAX_WIDTH)
+			MATCH_WIDTH *= FACTOR;
+		else
+			MATCH_WIDTH = MAX_WIDTH;
+		MATCH_HEIGHT = MATCH_WIDTH/5;
 	}
 	public static void zoomOut(){
-		if(MATCH_WIDTH/FACTOR > MIN_WIDTH){
-		MATCH_WIDTH /= FACTOR;
-		MATCH_HEIGHT /= FACTOR;
-		}
+		if(MATCH_WIDTH/FACTOR >= MIN_WIDTH)
+			MATCH_WIDTH /= FACTOR;
+		else
+			MATCH_WIDTH = MIN_WIDTH;
+		MATCH_HEIGHT = MATCH_WIDTH/5;
+	}
+	public static void setMatchWidth(int width){
+		if(width > MAX_WIDTH)
+			MATCH_WIDTH = MAX_WIDTH;
+		else if(width < MIN_WIDTH)
+			MATCH_WIDTH = MIN_WIDTH;
+		else
+			MATCH_WIDTH = width;
+		MATCH_HEIGHT = MATCH_WIDTH/5;
+	}
+	public static int getMatchWidth(){
+		return MATCH_WIDTH;
 	}
 	public static void setFactor(double newFactor){
 		FACTOR = newFactor;
