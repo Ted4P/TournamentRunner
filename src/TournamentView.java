@@ -40,15 +40,15 @@ public class TournamentView extends JFrame implements Observer, ActionListener{
 		JMenuBar bar = new JMenuBar();
 		JMenu file = new JMenu("File");
 		newBracket = new JMenuItem("New Bracket");
-		newBracket.setAccelerator(KeyStroke.getKeyStroke('N', Toolkit.getDefaultToolkit ().getMenuShortcutKeyMask()));
+		addCtrlKey(newBracket, 'N');
 		newBracket.addActionListener(this);
 		file.add(newBracket);
 		fromFile = new JMenuItem("Open");
-		fromFile.setAccelerator(KeyStroke.getKeyStroke('O', Toolkit.getDefaultToolkit ().getMenuShortcutKeyMask()));
+		addCtrlKey(fromFile,'O');
 		fromFile.addActionListener(this);
 		file.add(fromFile);
 		save = new JMenuItem("Save");
-		save.setAccelerator(KeyStroke.getKeyStroke('S', Toolkit.getDefaultToolkit ().getMenuShortcutKeyMask()));
+		addCtrlKey(save,'S');
 		save.addActionListener(this);
 		file.add(save);
 		saveAs = new JMenuItem("Save As");
@@ -56,25 +56,26 @@ public class TournamentView extends JFrame implements Observer, ActionListener{
 		file.add(saveAs);
 		JMenu edit = new JMenu("Edit");
 		add = new JMenuItem("Add Competitor");
-		add.setAccelerator(KeyStroke.getKeyStroke('A', Toolkit.getDefaultToolkit ().getMenuShortcutKeyMask()));
+		addCtrlKey(add,'A');
 		add.addActionListener(this);
 		print = new JMenuItem("Print");
-		print.setAccelerator(KeyStroke.getKeyStroke('P', Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+		addCtrlKey(print,'P');
 		print.addActionListener(this);
 		file.add(print);
 		edit.add(add);
 		addRoster = new JMenuItem("Add Team Roster");
+		addCtrlKey(addRoster,'T');
 		addRoster.addActionListener(this);
 		edit.add(addRoster);
 		changeName = new JMenuItem("Change Bracket Name");
-		changeName.setAccelerator(KeyStroke.getKeyStroke('R', Toolkit.getDefaultToolkit ().getMenuShortcutKeyMask()));
+		addCtrlKey(changeName,'R');
 		changeName.addActionListener(this);
 		edit.add(changeName);
 		JMenu view = new JMenu("View");
 		zoomIn = new JMenuItem("Zoom In");
 		zoomOut = new JMenuItem("Zoom Out");
-		zoomIn.setAccelerator(KeyStroke.getKeyStroke('=',Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
-		zoomOut.setAccelerator(KeyStroke.getKeyStroke('-', Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+		addCtrlKey(zoomIn,'=');
+		addCtrlKey(zoomOut,'-');
 		zoomIn.addActionListener(this);
 		zoomOut.addActionListener(this);
 		view.add(zoomIn);
@@ -91,6 +92,10 @@ public class TournamentView extends JFrame implements Observer, ActionListener{
 		setSize(1600,800);
 		setVisible(true);
 		super.setDefaultCloseOperation(EXIT_ON_CLOSE);
+	}
+
+	private void addCtrlKey(JMenuItem item, char c) {
+		item.setAccelerator(KeyStroke.getKeyStroke(c,Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
 	}
 
 	private void createNewBracket(){
