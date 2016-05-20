@@ -340,6 +340,7 @@ public class TournamentView extends JFrame implements Observer, ActionListener{
 			changeName.setEnabled(false);
 			zoomIn.setEnabled(false);
 			zoomOut.setEnabled(false);
+			addRoster.setEnabled(false);
 			setTitle("Tournament Runner");
 		}
 		else{
@@ -352,6 +353,7 @@ public class TournamentView extends JFrame implements Observer, ActionListener{
 			currPanel.paint(this.getGraphics());
 			zoomIn.setEnabled(true);
 			zoomOut.setEnabled(true);
+			addRoster.setEnabled(true);
 		}
 	}
 
