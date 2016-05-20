@@ -4,6 +4,7 @@ import java.awt.print.PageFormat;
 import java.awt.print.Printable;
 import java.awt.print.PrinterException;
 
+
 public class BracketPrinter implements Printable{
 	BracketPanel panel;
 	public BracketPrinter(BracketPanel panel){

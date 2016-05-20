@@ -18,18 +18,19 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+
 public class TournamentView extends JFrame implements Observer, ActionListener{
 	private static final String 
 	ERROR_NAME_NOT_FOUND = "Error: No bracket with specified name found", 
 	ERROR_NO_BRACKET_SPECIFIED = "Error: No bracket specified";
 	TournamentModel model;
 	private final JMenuItem newBracket, fromFile, save, saveAs, add, changeName, zoomIn, zoomOut, addRoster, print;
-	private JTextField name2, school2;
+	private JTextField name2, school2, tourName, numBrack, brackSize;
 	private JComboBox<String> bracketOptions;
-	private JButton confirm, cancel;
+	private JButton confirmAdd, cancelAdd, confirmNew, cancelNew;
 	private String currPathway;
 	private JTabbedPane brackets;
-	private JDialog dialog;
+	private JDialog dialogAdd, dialogNew;
 	private JCheckBox noSchool;
 	private BracketPanel currPanel;
 
@@ -99,32 +100,80 @@ public class TournamentView extends JFrame implements Observer, ActionListener{
 	}
 
 	private void createNewBracket(){
-		String numBrackets = JOptionPane.showInputDialog(this,
-				"Enter number of brackets", null);
-		if(numBrackets!=null){
-			try{
-				Integer intBracketNum = Integer.parseInt(numBrackets);
-				if(intBracketNum < 1)
-					JOptionPane.showMessageDialog(this, "Error: A new tournament must contain at least 1 bracket", "Whoops!", JOptionPane.ERROR_MESSAGE);
+		try{
+			int num = Integer.parseInt(numBrack.getText()), size = Integer.parseInt(brackSize.getText());
+			String name = tourName.getText();
+			if(num < 1){ 
+				JOptionPane.showMessageDialog(this, "Error: A new tournament must contain at least 1 bracket", "Whoops!", JOptionPane.ERROR_MESSAGE);
+			}
+			else if(size<=4) size = 8;
+			model = new TournamentModel(num,size,name);
+			model.addObserver(this);
+			update(model,null);
+		}
+		catch(NumberFormatException e){
+			JOptionPane.showMessageDialog(this, "Error: Invalid Input", "Whoops!", JOptionPane.ERROR_MESSAGE);
+		}
+	}
+	
+	private void newTournamentWindow(){
+		tourName = new JTextField("Tournament Name");
+		numBrack = new JTextField("Number of Brackets");
+		brackSize = new JTextField("Bracket Size");
+		tourName.setColumns(15);
+		numBrack.setColumns(10);
+		brackSize.setColumns(10);
+		confirmNew = new JButton("Confirm");
+		confirmNew.addActionListener(this);
+		confirmNew.setEnabled(false);
+		cancelNew = new JButton("Cancel");
+		cancelNew.addActionListener(this);
+		cancelNew.setEnabled(false);
+		DocumentListener docListen = new DocumentListener(){
+			public void changedUpdate(DocumentEvent e){
+				enableButtons();
+			}
+			public void removeUpdate(DocumentEvent e){
+				enableButtons();
+			}
+			public void insertUpdate(DocumentEvent e){
+				enableButtons();
+			}
+			private void enableButtons(){
+				if(tourName.getText().equals("Tournament Name") || tourName.getText().equals("") || 
+						numBrack.getText().equals("Number of Brackets") || numBrack.getText().equals("") ||
+							brackSize.getText().equals("Bracket Size") || brackSize.getText().equals("")){
+					confirmNew.setEnabled(false);
+					cancelNew.setEnabled(false);
+				}
 				else{
-					String bracketSize = JOptionPane.showInputDialog(this, "Enter size of each bracket", null);
-					if(bracketSize != null){
-						Integer intBracketSize = Integer.parseInt(bracketSize);
-						if(intBracketSize < 2)
-							JOptionPane.showMessageDialog(this, "Error: Each bracket must contain at least 2 competitors", "Whoops!", JOptionPane.ERROR_MESSAGE);
-						else{
-							model = new TournamentModel(intBracketNum,intBracketSize, "New Tournament");
-							model.addObserver(this);
-							update(model,null);
-						}
-					}
+					confirmNew.setEnabled(true);
+					cancelNew.setEnabled(true);
 				}
 			}
-			catch(NumberFormatException e){
-				JOptionPane.showMessageDialog(this, "Error: Invalid Input", "Whoops!", JOptionPane.ERROR_MESSAGE);
-			}
-		}
-
+		};
+		tourName.getDocument().addDocumentListener(docListen);
+		numBrack.getDocument().addDocumentListener(docListen);
+		brackSize.getDocument().addDocumentListener(docListen);
+		dialogNew = new JDialog(this, "New Tournament");
+		dialogNew.setLayout(new GridLayout(4,1));
+		dialogNew.setSize(600,300);
+		JPanel buttons = new JPanel();
+		buttons.add(confirmNew);
+		buttons.add(cancelNew);
+		
+		dialogNew.add(tourName);
+		dialogNew.add(numBrack);
+		dialogNew.add(brackSize);
+		dialogNew.add(buttons);
+		Toolkit tlkt = Toolkit.getDefaultToolkit();
+		dialogNew.setLocation((int)(tlkt.getScreenSize().getWidth()-dialogNew.getWidth())/2,(int)(tlkt.getScreenSize().getHeight()-dialogNew.getHeight())/2);
+		
+		dialogNew.setModal(true);
+		dialogNew.setResizable(false);
+		dialogNew.setAlwaysOnTop(true);
+		dialogNew.setVisible(true);
+		dialogNew.pack();
 	}
 
 	private void addPersonWindow(){
@@ -138,12 +187,12 @@ public class TournamentView extends JFrame implements Observer, ActionListener{
 		for(int i=0;i<brackets.length;i++)
 			brackets[i] = Brackets.getBracket(i).getName();
 		bracketOptions = new JComboBox<String>(brackets);
-		confirm = new JButton("Add");
-		confirm.addActionListener(this);
-		confirm.setEnabled(false);
-		cancel = new JButton("Cancel");
-		cancel.addActionListener(this);
-		cancel.setEnabled(false);
+		confirmAdd = new JButton("Add");
+		confirmAdd.addActionListener(this);
+		confirmAdd.setEnabled(false);
+		cancelAdd = new JButton("Cancel");
+		cancelAdd.addActionListener(this);
+		cancelAdd.setEnabled(false);
 		noSchool = new JCheckBox("Unaffiliated");
 		noSchool.addActionListener(this);
 		DocumentListener docListen = new DocumentListener(){
@@ -158,25 +207,25 @@ public class TournamentView extends JFrame implements Observer, ActionListener{
 			}
 			private void enableButtons(){
 				if(name2.getText().equals("Name") || name2.getText().equals("") || ((school2.getText().equals("School") || school2.getText().equals("")) && !noSchool.isSelected())){
-					confirm.setEnabled(false);
-					cancel.setEnabled(false);
+					confirmAdd.setEnabled(false);
+					cancelAdd.setEnabled(false);
 				}
 				else{
-					confirm.setEnabled(true);
-					cancel.setEnabled(true);
+					confirmAdd.setEnabled(true);
+					cancelAdd.setEnabled(true);
 				}
 			}
 		};
 		name2.getDocument().addDocumentListener(docListen);
 		school2.getDocument().addDocumentListener(docListen);
-		dialog = new JDialog(this, "Add new competitor");
-		dialog.setLayout(new GridLayout(3,1));
-		dialog.setSize(600,300);
+		dialogAdd = new JDialog(this, "Add new competitor");
+		dialogAdd.setLayout(new GridLayout(3,1));
+		dialogAdd.setSize(600,300);
 		JPanel options = new JPanel();
 		options.setLayout(new GridBagLayout());
 		GridBagConstraints constraints = new GridBagConstraints();
 		constraints.gridheight = 10;
-		constraints.gridwidth = dialog.getWidth();
+		constraints.gridwidth = dialogAdd.getWidth();
 		constraints.fill = GridBagConstraints.BOTH;
 		options.add(name2);
 		options.add(school2);
@@ -187,18 +236,18 @@ public class TournamentView extends JFrame implements Observer, ActionListener{
 		bracketSelect.add(bracketOptions);
 		JPanel buttons = new JPanel();
 		buttons.setLayout(new GridBagLayout());
-		buttons.add(confirm);
-		buttons.add(cancel);
+		buttons.add(confirmAdd);
+		buttons.add(cancelAdd);
 		Toolkit tlkt = Toolkit.getDefaultToolkit();
-		dialog.add(options);
-		dialog.add(bracketSelect);
-		dialog.add(buttons);
-		dialog.setModal(true);
-		dialog.setResizable(false);
-		dialog.setLocation((int)(tlkt.getScreenSize().getWidth()-dialog.getWidth())/2,(int)(tlkt.getScreenSize().getHeight()-dialog.getHeight())/2);
-		dialog.setAlwaysOnTop(true);
-		dialog.setVisible(true);
-		dialog.pack();
+		dialogAdd.add(options);
+		dialogAdd.add(bracketSelect);
+		dialogAdd.add(buttons);
+		dialogAdd.setModal(true);
+		dialogAdd.setResizable(false);
+		dialogAdd.setLocation((int)(tlkt.getScreenSize().getWidth()-dialogAdd.getWidth())/2,(int)(tlkt.getScreenSize().getHeight()-dialogAdd.getHeight())/2);
+		dialogAdd.setAlwaysOnTop(true);
+		dialogAdd.setVisible(true);
+		dialogAdd.pack();
 	}
 
 	//Add "which bracket" w/ dropdown menu for names of each
@@ -391,7 +440,7 @@ public class TournamentView extends JFrame implements Observer, ActionListener{
 	public void actionPerformed(ActionEvent arg0) {
 		Object source = arg0.getSource();
 		if(source == newBracket)
-			createNewBracket();
+			newTournamentWindow();
 		else if(source == add)
 			addPersonWindow();
 		else if(source == fromFile)
@@ -402,24 +451,31 @@ public class TournamentView extends JFrame implements Observer, ActionListener{
 			saveAs();
 		else if(source == changeName)
 			changeBracketName();
-		else if(source == confirm){
-			dialog.dispose();
+		else if(source == confirmAdd){
+			dialogAdd.dispose();
 			addPerson();
+		}
+		else if(source == confirmNew){
+			dialogNew.dispose();
+			createNewBracket();
 		}
 		else if(source == addRoster){
 			addRoster();
 		}
-		else if(source == cancel){
-			dialog.dispose();
+		else if(source == cancelAdd){
+			dialogAdd.dispose();
+		}
+		else if(source == cancelNew){
+			dialogNew.dispose();
 		}
 		else if(source == noSchool){
 			if(name2.getText().equals("Name") || name2.getText().equals("") || ((school2.getText().equals("School") || school2.getText().equals("")) && !noSchool.isSelected())){
-				confirm.setEnabled(false);
-				cancel.setEnabled(false);
+				confirmAdd.setEnabled(false);
+				cancelAdd.setEnabled(false);
 			}
 			else{
-				confirm.setEnabled(true);
-				cancel.setEnabled(true);
+				confirmAdd.setEnabled(true);
+				cancelAdd.setEnabled(true);
 			}
 			if(noSchool.isSelected()){
 				school2.setText("Unaffiliated");
