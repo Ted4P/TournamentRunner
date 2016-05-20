@@ -5,6 +5,8 @@ import java.awt.GridLayout;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.print.PrinterException;
+import java.awt.print.PrinterJob;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -21,7 +23,7 @@ public class TournamentView extends JFrame implements Observer, ActionListener{
 	ERROR_NAME_NOT_FOUND = "Error: No bracket with specified name found", 
 	ERROR_NO_BRACKET_SPECIFIED = "Error: No bracket specified";
 	TournamentModel model;
-	private final JMenuItem newBracket, fromFile, save, saveAs, add, changeName, zoomIn, zoomOut, addRoster;
+	private final JMenuItem newBracket, fromFile, save, saveAs, add, changeName, zoomIn, zoomOut, addRoster, print;
 	private JTextField name2, school2;
 	private JComboBox<String> bracketOptions;
 	private JButton confirm, cancel;
@@ -56,6 +58,10 @@ public class TournamentView extends JFrame implements Observer, ActionListener{
 		add = new JMenuItem("Add Competitor");
 		add.setAccelerator(KeyStroke.getKeyStroke('A', Toolkit.getDefaultToolkit ().getMenuShortcutKeyMask()));
 		add.addActionListener(this);
+		print = new JMenuItem("Print");
+		print.setAccelerator(KeyStroke.getKeyStroke('P', Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+		print.addActionListener(this);
+		file.add(print);
 		edit.add(add);
 		addRoster = new JMenuItem("Add Team Roster");
 		addRoster.addActionListener(this);
@@ -341,6 +347,7 @@ public class TournamentView extends JFrame implements Observer, ActionListener{
 			zoomIn.setEnabled(false);
 			zoomOut.setEnabled(false);
 			addRoster.setEnabled(false);
+			print.setEnabled(false);
 			setTitle("Tournament Runner");
 		}
 		else{
@@ -354,9 +361,22 @@ public class TournamentView extends JFrame implements Observer, ActionListener{
 			zoomIn.setEnabled(true);
 			zoomOut.setEnabled(true);
 			addRoster.setEnabled(true);
+			print.setEnabled(true);
 		}
 	}
-
+	private void print(){
+		PrinterJob job = PrinterJob.getPrinterJob();
+		job.setPrintable(new BracketPrinter(new BracketPanel(Brackets.getBracket(brackets.getSelectedIndex()), this)));
+		boolean doPrint = job.printDialog();
+		if(doPrint){
+			try{
+				job.print();
+			}
+			catch(PrinterException e){
+				JOptionPane.showMessageDialog(this, "Error: Failed to Print", "Whoops!", JOptionPane.ERROR_MESSAGE);
+			}
+		}
+	}
 
 	public static void main(String[] args){
 		TournamentView view = new TournamentView();
@@ -412,6 +432,9 @@ public class TournamentView extends JFrame implements Observer, ActionListener{
 		else if(source == zoomOut){
 			BracketPanel.zoomOut();
 			update(model,null);
+		}
+		else if(source == print){
+			print();
 		}
 	}
 }
