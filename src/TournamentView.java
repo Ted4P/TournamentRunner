@@ -25,12 +25,12 @@ public class TournamentView extends JFrame implements Observer, ActionListener{
 	ERROR_NO_BRACKET_SPECIFIED = "Error: No bracket specified";
 	TournamentModel model;
 	private final JMenuItem newBracket, fromFile, save, saveAs, add, changeName, zoomIn, zoomOut, addRoster, print;
-	private JTextField name2, school2, tourName, numBrack, brackSize;
+	private JTextField name2, school2;
 	private JComboBox<String> bracketOptions;
-	private JButton confirmAdd, cancelAdd, confirmNew, cancelNew;
+	private JButton confirmAdd, cancelAdd;
 	private String currPathway;
 	private JTabbedPane brackets;
-	private JDialog dialogAdd, dialogNew;
+	private JDialog dialogAdd;
 	private JCheckBox noSchool;
 	private BracketPanel currPanel;
 
@@ -99,10 +99,9 @@ public class TournamentView extends JFrame implements Observer, ActionListener{
 		item.setAccelerator(KeyStroke.getKeyStroke(c,Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
 	}
 
-	private void createNewBracket(){
+	public void createNewBracket(String name, String sNum, String sSize){
 		try{
-			int num = Integer.parseInt(numBrack.getText()), size = Integer.parseInt(brackSize.getText());
-			String name = tourName.getText();
+			int num = Integer.parseInt(sNum), size = Integer.parseInt(sSize);
 			if(num < 1){ 
 				JOptionPane.showMessageDialog(this, "Error: A new tournament must contain at least 1 bracket", "Whoops!", JOptionPane.ERROR_MESSAGE);
 			}
@@ -114,66 +113,6 @@ public class TournamentView extends JFrame implements Observer, ActionListener{
 		catch(NumberFormatException e){
 			JOptionPane.showMessageDialog(this, "Error: Invalid Input", "Whoops!", JOptionPane.ERROR_MESSAGE);
 		}
-	}
-	
-	private void newTournamentWindow(){
-		tourName = new JTextField("Tournament Name");
-		numBrack = new JTextField("Number of Brackets");
-		brackSize = new JTextField("Bracket Size");
-		tourName.setColumns(15);
-		numBrack.setColumns(10);
-		brackSize.setColumns(10);
-		confirmNew = new JButton("Confirm");
-		confirmNew.addActionListener(this);
-		confirmNew.setEnabled(false);
-		cancelNew = new JButton("Cancel");
-		cancelNew.addActionListener(this);
-		cancelNew.setEnabled(false);
-		DocumentListener docListen = new DocumentListener(){
-			public void changedUpdate(DocumentEvent e){
-				enableButtons();
-			}
-			public void removeUpdate(DocumentEvent e){
-				enableButtons();
-			}
-			public void insertUpdate(DocumentEvent e){
-				enableButtons();
-			}
-			private void enableButtons(){
-				if(tourName.getText().equals("Tournament Name") || tourName.getText().equals("") || 
-						numBrack.getText().equals("Number of Brackets") || numBrack.getText().equals("") ||
-							brackSize.getText().equals("Bracket Size") || brackSize.getText().equals("")){
-					confirmNew.setEnabled(false);
-					cancelNew.setEnabled(false);
-				}
-				else{
-					confirmNew.setEnabled(true);
-					cancelNew.setEnabled(true);
-				}
-			}
-		};
-		tourName.getDocument().addDocumentListener(docListen);
-		numBrack.getDocument().addDocumentListener(docListen);
-		brackSize.getDocument().addDocumentListener(docListen);
-		dialogNew = new JDialog(this, "New Tournament");
-		dialogNew.setLayout(new GridLayout(4,1));
-		dialogNew.setSize(600,300);
-		JPanel buttons = new JPanel();
-		buttons.add(confirmNew);
-		buttons.add(cancelNew);
-		
-		dialogNew.add(tourName);
-		dialogNew.add(numBrack);
-		dialogNew.add(brackSize);
-		dialogNew.add(buttons);
-		Toolkit tlkt = Toolkit.getDefaultToolkit();
-		dialogNew.setLocation((int)(tlkt.getScreenSize().getWidth()-dialogNew.getWidth())/2,(int)(tlkt.getScreenSize().getHeight()-dialogNew.getHeight())/2);
-		
-		dialogNew.setModal(true);
-		dialogNew.setResizable(false);
-		dialogNew.setAlwaysOnTop(true);
-		dialogNew.setVisible(true);
-		dialogNew.pack();
 	}
 
 	private void addPersonWindow(){
@@ -439,8 +378,9 @@ public class TournamentView extends JFrame implements Observer, ActionListener{
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		Object source = arg0.getSource();
-		if(source == newBracket)
-			newTournamentWindow();
+		if(source == newBracket){
+			NewTournamentWindow window = new NewTournamentWindow(this);
+		}
 		else if(source == add)
 			addPersonWindow();
 		else if(source == fromFile)
@@ -455,18 +395,11 @@ public class TournamentView extends JFrame implements Observer, ActionListener{
 			dialogAdd.dispose();
 			addPerson();
 		}
-		else if(source == confirmNew){
-			dialogNew.dispose();
-			createNewBracket();
-		}
 		else if(source == addRoster){
 			addRoster();
 		}
 		else if(source == cancelAdd){
 			dialogAdd.dispose();
-		}
-		else if(source == cancelNew){
-			dialogNew.dispose();
 		}
 		else if(source == noSchool){
 			if(name2.getText().equals("Name") || name2.getText().equals("") || ((school2.getText().equals("School") || school2.getText().equals("")) && !noSchool.isSelected())){
