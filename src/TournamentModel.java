@@ -124,9 +124,11 @@ public class TournamentModel extends Observable{
 		Scanner scan = new Scanner(file);
 		int num = Brackets.getNum();
 		for(int i = 0; i < num && scan.hasNextLine(); i++){
-			String name = scan.nextLine();
-			if(!name.equals(""))
-				Brackets.getBracket(i).addPerson(new Person(name,school));
+			String name = scan.nextLine()+",";
+			while(name.length()>0){
+				Brackets.getBracket(i).addPerson(new Person(name.substring(0,name.indexOf(',')),school));
+				name = name.substring(name.indexOf(',')+1);
+			}
 		}
 		scan.close();
 		setChanged();
