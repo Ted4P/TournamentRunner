@@ -1,3 +1,4 @@
+package tournamentRunner;
 /*
  * Singleton class representing the Brackets of the tournament, with getters for size, number and brackets
  */

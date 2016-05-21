@@ -1,9 +1,12 @@
+package windows;
 import java.awt.event.*;
 import java.awt.*;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+
+import tournamentRunner.TournamentView;
 
 
 public class NewTournamentWindow extends JDialog implements ActionListener{
@@ -33,7 +36,7 @@ public class NewTournamentWindow extends JDialog implements ActionListener{
 		cancel.addActionListener(this);
 		cancel.setEnabled(false);
 		
-		//this.setLayout(new GridLayout(5,1));
+		this.setLayout(new GridLayout(5,1));
 		this.setSize(600,300);
 		
 		add(name);
@@ -51,7 +54,7 @@ public class NewTournamentWindow extends JDialog implements ActionListener{
 	}
 	
 	public void actionPerformed(ActionEvent e) {
-		if(e.equals(cancel)) this.dispose();
+		if(e.getSource() ==cancel) this.dispose();
 		else{
 			view.createNewBracket(name.getText(),number.getText(),size.getText());
 			this.dispose();

@@ -1,3 +1,4 @@
+package windows;
 
 
 import java.awt.Color;
@@ -20,6 +21,12 @@ import javax.swing.JTextField;
 import javax.swing.border.Border;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+
+import tournamentRunner.Bracket;
+import tournamentRunner.Brackets;
+import tournamentRunner.Match;
+import tournamentRunner.Person;
+import tournamentRunner.TournamentView;
 
 public class MatchEditWindow extends JDialog implements ActionListener{
 	private Bracket bracket;

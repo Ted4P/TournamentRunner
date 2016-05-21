@@ -1,3 +1,4 @@
+package windows;
 
 
 import java.awt.Dimension;
@@ -12,6 +13,11 @@ import java.util.Scanner;
 import java.awt.Color;
 
 import javax.swing.JPanel;
+
+import tournamentRunner.Bracket;
+import tournamentRunner.Brackets;
+import tournamentRunner.Match;
+import tournamentRunner.TournamentView;
 
 @SuppressWarnings("serial")
 public class BracketPanel extends JPanel implements ActionListener{

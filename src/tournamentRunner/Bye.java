@@ -1,3 +1,4 @@
+package tournamentRunner;
 
 public class Bye extends Person {
 	public Bye() {

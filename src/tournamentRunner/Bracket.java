@@ -1,3 +1,4 @@
+package tournamentRunner;
 //Represents a single bracket, with size set in the constructor
 public class Bracket {
 	private Match top;

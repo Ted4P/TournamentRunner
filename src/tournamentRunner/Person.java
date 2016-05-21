@@ -1,3 +1,4 @@
+package tournamentRunner;
 
 public class Person implements Comparable<Person>{		//Represents a person with a given name and school
 	private String name, school;

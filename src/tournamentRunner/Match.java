@@ -1,3 +1,4 @@
+package tournamentRunner;
 /*
  * Represents a bracket using a tree data structure
  */
