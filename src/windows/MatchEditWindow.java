@@ -1,6 +1,4 @@
 package windows;
-
-
 import java.awt.Color;
 
 import java.awt.GridBagConstraints;
@@ -38,12 +36,14 @@ public class MatchEditWindow extends JDialog implements ActionListener{
 	private TournamentView view;
 	private int match;
 	private JComponent boxCompo;
-	public MatchEditWindow(TournamentView view, Bracket bracket, String[] matchInfo, int match){
+	private boolean isFinal;
+	public MatchEditWindow(TournamentView view, Bracket bracket, String[] matchInfo, int match, boolean isFinal){
 		super(view, "Match Info");
 		this.view = view;
 		this.bracket = bracket;
 		this.matchInfo = matchInfo;
 		this.match = match;
+		this.isFinal = isFinal;
 		name1 = new JTextField(matchInfo[0]);
 		name1.setColumns(10);
 		name1.setHorizontalAlignment(JTextField.CENTER);
@@ -57,11 +57,16 @@ public class MatchEditWindow extends JDialog implements ActionListener{
 		school2.setColumns(10);
 		school2.setHorizontalAlignment(JTextField.CENTER);
 		notes = new JTextField(matchInfo[6]);
-		String currWinner = matchInfo[4] + "(" + matchInfo[3] + ")";
-		winnerEdit = new JComboBox<String>(new String[]{"Unplayed",name1.getText() + "(" + school1.getText() + ")",name2.getText() + "(" + school2.getText() + ")"});
-		if(winnerEdit.getItemAt(1).equals(currWinner))
+		String player1 = name1.getText() + "(" + school1.getText() + ")";
+		String player2 = name2.getText() + "(" + school2.getText() + ")";
+		String winner = matchInfo[4] + "(" + matchInfo[5] + ")";
+		if(name1.getText().equals("BYE") && !name2.getText().equals(Match.DEFAULT_BLANK_NAME))
+			winner = player2;
+		winnerEdit = new JComboBox<String>();
+		winnerEdit = new JComboBox(new String[]{"Unplayed",player1,player2});
+		if(winnerEdit.getItemAt(1).equals(winner))
 			winnerEdit.setSelectedIndex(1);
-		else if(winnerEdit.getItemAt(2).equals(currWinner))
+		else if(winnerEdit.getItemAt(2).equals(winner))
 			winnerEdit.setSelectedIndex(2);
 		else
 			winnerEdit.setSelectedIndex(0);
@@ -144,6 +149,7 @@ public class MatchEditWindow extends JDialog implements ActionListener{
 		school2.setBorder(emptyBorder);
 		notes.setEditable(false);
 		notes.setBorder(emptyBorder);
+		winnerEdit.setEnabled(false);
 		options.removeAll();
 		options.add(edit);
 		options.add(close);
@@ -157,27 +163,33 @@ public class MatchEditWindow extends JDialog implements ActionListener{
 	}
 
 	private void editMode(){
-		if(Integer.parseInt(matchInfo[7]) > Brackets.getSize()/2){
-			Border drawBorder = BorderFactory.createLineBorder(Color.black, 1);
-			name1.setEditable(true);
-			name1.setBorder(drawBorder);
-			name2.setEditable(true);
-			name2.setBorder(drawBorder);
-			school1.setEditable(true);
-			school1.setBorder(drawBorder);
-			school2.setEditable(true);
-			school2.setBorder(drawBorder);
-			notes.setBorder(drawBorder);
-			setSize(getWidth()-1,getHeight());
+		Border drawBorder = BorderFactory.createLineBorder(Color.black, 1);
+		if(isFinal){
+			if(!name1.getText().equals("BYE")){
+				name1.setEditable(true);
+				name1.setBorder(drawBorder);
+				school1.setEditable(true);
+				school1.setBorder(drawBorder);
+			}
+			if(!name2.getText().equals("BYE")){
+				name2.setEditable(true);
+				name2.setBorder(drawBorder);
+				school2.setEditable(true);
+				school2.setBorder(drawBorder);
+			}
 		}
 		notes.setEditable(true);
 		winnerEdit.setEnabled(true);
 		options.removeAll();
 		options.add(save);
 		options.add(cancel);
-		comboBox.remove(boxCompo);
-		boxCompo = winnerEdit;
-		comboBox.add(boxCompo);
+		if(!name1.getText().equals("BYE") && !name2.getText().equals("BYE")){
+			comboBox.remove(boxCompo);
+			boxCompo = winnerEdit;
+			comboBox.add(boxCompo);
+		}
+		notes.setBorder(drawBorder);
+		setSize(getWidth()-1,getHeight());
 		updateWhileEditing();
 	}
 
@@ -209,9 +221,14 @@ public class MatchEditWindow extends JDialog implements ActionListener{
 			Person p1 = new Person(name1.getText(),school1.getText());
 			Person p2 = new Person(name2.getText(), school2.getText());
 			Person toBePromoted;
-			if(winnerEdit.getSelectedItem().equals(name1.getText() + "(" + school1.getText() + ")"))
+			String winner = (String)winnerEdit.getSelectedItem();
+			if(name1.getText().equals("BYE")){
+				winner = p2.toString();
+				winnerEdit.setSelectedIndex(2);
+			}
+			if(winner.equals(p1.toString()))
 				toBePromoted = p1;
-			else if(winnerEdit.getSelectedItem().equals(name2.getText() + "(" + school2.getText() + ")"))
+			else if(winner.equals(p2.toString()))
 				toBePromoted = p2;
 			else
 				toBePromoted = new Person(Match.DEFAULT_WINNER_NAME,Match.DEFAULT_WINNER_SCHOOL);
