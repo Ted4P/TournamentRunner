@@ -190,7 +190,7 @@ public class TournamentView extends JFrame implements Observer, ActionListener{
 			}
 		}
 	}
-
+	
 	private void loadTabs() {
 		brackets.removeAll();
 		for(int i = 0; i < Brackets.getNum(); i++){
