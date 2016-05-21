@@ -44,7 +44,9 @@ public class TournamentModel extends Observable{
 					}
 				}
 			}
+			Brackets.getBracket(i).recount();
 		}
+		
 		this.addObserver(view);
 		scan.close();
 		setChanged();

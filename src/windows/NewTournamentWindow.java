@@ -56,8 +56,8 @@ public class NewTournamentWindow extends JDialog implements ActionListener{
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource() ==cancel) this.dispose();
 		else{
+			dispose();
 			view.createNewBracket(name.getText(),number.getText(),size.getText());
-			this.dispose();
 		}
 	}
 	

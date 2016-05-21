@@ -127,4 +127,16 @@ public class Match {
 		if(left!=null) left.setMatch(left2, right2, winner, notes, index);
 		if(right!=null) right.setMatch(left2, right2, winner, notes, index);
 	}
+	public int recount() {
+		if(left!=null) numLeft=left.recount();
+		if(right!=null) numRight=right.recount();
+		if(left==null&&right==null){
+			int count = 0;
+			if(!(lPer instanceof Bye || lPer.getName().equals(DEFAULT_BLANK_NAME))) count++;
+			if(!(rPer instanceof Bye || rPer.getName().equals(DEFAULT_BLANK_NAME))) count++;
+			return count;
+		}
+		return numLeft+numRight;
+		
+	}
 }

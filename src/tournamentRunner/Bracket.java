@@ -36,4 +36,8 @@ public class Bracket {
 	public void setMatch(Person left, Person right, Person winner,String notes, int index) {
 		top.setMatch(left,right,winner,notes,index);
 	}
+	//Recount children for balanced adding
+	public void recount() {
+		top.recount();
+	}
 }

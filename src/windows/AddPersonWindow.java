@@ -103,8 +103,8 @@ public class AddPersonWindow extends JDialog implements ActionListener {
 	public void actionPerformed(ActionEvent arg0) {
 		Object source = arg0.getSource();
 		if(source==confirm){
-			view.addPerson(name.getText(),school.getText(), (String) bracketOptions.getSelectedItem(), noSchool.isSelected());
 			dispose();
+			view.addPerson(name.getText(),school.getText(), (String) bracketOptions.getSelectedItem(), noSchool.isSelected());
 		}
 		else if(source==cancel){
 			dispose();
