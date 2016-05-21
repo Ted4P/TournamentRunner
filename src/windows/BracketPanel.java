@@ -1,6 +1,3 @@
-package windows;
-
-
 import java.awt.Dimension;
 
 import java.awt.Font;
@@ -14,20 +11,16 @@ import java.awt.Color;
 
 import javax.swing.JPanel;
 
-import tournamentRunner.Bracket;
-import tournamentRunner.Brackets;
-import tournamentRunner.Match;
-import tournamentRunner.TournamentView;
-
 @SuppressWarnings("serial")
 public class BracketPanel extends JPanel implements ActionListener{
 	private Bracket bracket;
 	private String[][] info;
 	private static int MATCH_WIDTH = 200, MATCH_HEIGHT = MATCH_WIDTH/5;
-	private final static int MAX_WIDTH = 1000, MIN_WIDTH = 100;
+	private final static int MAX_WIDTH = 1000, MIN_WIDTH = 50;
 	private static double FACTOR = 1.25;
 	private MatchButton[] editButtons;
 	private TournamentView view;
+	private int level,shift,totShift;
 	public BracketPanel(Bracket bracket, TournamentView view){
 		this.view = view;
 		this.bracket = bracket;
@@ -48,6 +41,10 @@ public class BracketPanel extends JPanel implements ActionListener{
 		scan.close();
 		setFocusable(true);
 		editButtons = new MatchButton[Brackets.getSize()+1];
+		level = 0;
+		for(;Math.pow(2, level) < Brackets.getSize();level++);
+		shift = (int)(Math.pow(2, level-1)*(MATCH_WIDTH*6.0/100));
+		totShift = (int)(2 * shift * (1-Math.pow(0.5, level)));
 	}
 
 	public void paintComponent(Graphics g){
@@ -55,10 +52,6 @@ public class BracketPanel extends JPanel implements ActionListener{
 		if(g instanceof Graphics2D)
 			g = (Graphics2D)g;
 		super.paintComponent(g);
-		int level = 0;
-		for(;Math.pow(2, level) < Brackets.getSize();level++);
-		int shift = (int)(Math.pow(2, level-1)*(MATCH_WIDTH*6.0/100));
-		int totShift = (int)(2 * shift * (1-Math.pow(0.5, level)));
 		setPreferredSize(new Dimension(2*MATCH_WIDTH*level,(totShift+MATCH_HEIGHT)*2));
 		paintOneMatch(2*MATCH_WIDTH*level-(int)(MATCH_WIDTH*1.5),totShift-MATCH_HEIGHT/2+MATCH_HEIGHT,shift, 0, 1, g);
 	}
@@ -78,7 +71,7 @@ public class BracketPanel extends JPanel implements ActionListener{
 			g.drawString(info[index][2*i+1], x+MATCH_WIDTH/2, y+(5*i+4)*MATCH_HEIGHT/10);
 			g.setColor(Color.BLACK);
 			MatchButton button = new MatchButton(match);
-			button.setBounds(x + MATCH_WIDTH, y + MATCH_HEIGHT/5, MATCH_WIDTH/3,3*MATCH_HEIGHT/5);
+			button.setBounds(x + MATCH_WIDTH, y + MATCH_HEIGHT/5, (int)(1.1*MATCH_WIDTH/3),3*MATCH_HEIGHT/5);
 			button.setFont(new Font(button.getFont().getFontName(), Font.PLAIN, MATCH_HEIGHT/3));
 			button.addActionListener(this);
 			add(button);
@@ -92,7 +85,7 @@ public class BracketPanel extends JPanel implements ActionListener{
 			paintOneMatch(x-MATCH_WIDTH*2,y-shift,shift/2,level+1,match*2+1,g);
 		}
 		else{
-			g.drawLine(x,y+MATCH_HEIGHT/2,x+MATCH_WIDTH,y+MATCH_HEIGHT/2);
+			g.drawLine(x,y+MATCH_HEIGHT/2,x+5*MATCH_WIDTH/4,y+MATCH_HEIGHT/2);
 		}
 	}
 	public static void zoomIn(){
@@ -118,8 +111,17 @@ public class BracketPanel extends JPanel implements ActionListener{
 			MATCH_WIDTH = width;
 		MATCH_HEIGHT = MATCH_WIDTH/5;
 	}
+	public int getLevels(){
+		return level;
+	}
+	public int getTotShift(){
+		return totShift;
+	}
 	public static int getMatchWidth(){
 		return MATCH_WIDTH;
+	}
+	public static int getMatchHeight(){
+		return MATCH_HEIGHT;
 	}
 	public static void setFactor(double newFactor){
 		FACTOR = newFactor;
