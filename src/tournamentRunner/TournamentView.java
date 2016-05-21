@@ -3,11 +3,13 @@ import java.awt.Container;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.print.PageFormat;
 import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -26,6 +28,7 @@ public class TournamentView extends JFrame implements Observer, ActionListener{
 	private String currPathway;
 	private JTabbedPane brackets;
 	private BracketPanel currPanel;
+	private ArrayList<BracketPanel> bracketArray;
 
 
 	public TournamentView(){//Start popup with
@@ -80,6 +83,7 @@ public class TournamentView extends JFrame implements Observer, ActionListener{
 		update(null,null);
 		brackets = new JTabbedPane();
 		brackets.setTabPlacement(JTabbedPane.LEFT);
+		bracketArray = new ArrayList();
 		pane.add(brackets);
 		super.setJMenuBar(bar);
 		setTitle("Tournament Runner");
@@ -190,7 +194,9 @@ public class TournamentView extends JFrame implements Observer, ActionListener{
 	private void loadTabs() {
 		brackets.removeAll();
 		for(int i = 0; i < Brackets.getNum(); i++){
-			JScrollPane scroll = new JScrollPane(new BracketPanel(Brackets.getBracket(i),this));
+			BracketPanel panel = new BracketPanel(Brackets.getBracket(i),this);
+			JScrollPane scroll = new JScrollPane(panel);
+			bracketArray.add(panel);
 			brackets.addTab(Brackets.getBracket(i).getName(), scroll);
 		}
 		currPanel = new BracketPanel(Brackets.getBracket(brackets.getSelectedIndex()),this);
@@ -274,7 +280,9 @@ public class TournamentView extends JFrame implements Observer, ActionListener{
 	}
 	private void print(){
 		PrinterJob job = PrinterJob.getPrinterJob();
-		job.setPrintable(new BracketPrinter(new BracketPanel(Brackets.getBracket(brackets.getSelectedIndex()), this)));
+		PageFormat pf = job.defaultPage();
+		pf.setOrientation(PageFormat.LANDSCAPE);
+		job.setPrintable(new BracketPrinter(bracketArray.get(brackets.getSelectedIndex())));
 		boolean doPrint = job.printDialog();
 		if(doPrint){
 			try{
