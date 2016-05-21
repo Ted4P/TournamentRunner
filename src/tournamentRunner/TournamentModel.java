@@ -15,10 +15,17 @@ public class TournamentModel extends Observable{
 	private Set<Person>[] competitors;		//Array of Sets of Person of added competitors
 	private String tournamentName;
 	public TournamentModel(int num, int size, String name){		//Number, size of brackets, and tournament name
+		int newSize;
+		for(newSize=2;newSize<size;newSize*=2);
+		int numByes = newSize - size;
+		size = newSize;
 		competitors = new Set[num];
 		for(int i = 0; i < num; i++) competitors[i] = new TreeSet<Person>();
 		tournamentName = name;
 		Brackets.setBrackets(num,size);
+		for(int bracket = 0;bracket<num;bracket++)
+			for(int i = 0; i<numByes;i++)
+				addPerson(new Bye(),bracket);
 		setChanged();
 		notifyObservers();
 	}
