@@ -8,7 +8,7 @@ public class Match {
 	private String note;
 	private int val, numLeft, numRight;
 	public static final String DEFAULT_WINNER_NAME = "No Winner", DEFAULT_WINNER_SCHOOL = "No School", DEFAULT_BLANK_NAME = "TBD", DEFAULT_BLANK_SCHOOL = "TBD";
-	public Match(int size, Match parent, int i){
+	public Match(int size, Match parent, int i){		//Create a new Match with the parent match [parent], recursively call with [size] divided by 2 and [i] increased according to heap convention
 		val=i;
 		lPer = new Person(DEFAULT_BLANK_NAME, DEFAULT_BLANK_SCHOOL);
 		rPer = new Person(DEFAULT_BLANK_NAME, DEFAULT_BLANK_SCHOOL);

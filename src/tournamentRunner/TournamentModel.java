@@ -102,7 +102,7 @@ public class TournamentModel extends Observable{
 		setChanged();
 		notifyObservers();
 	}
-	
+	//Set the match in [bracket] with id [index] to the data specified
 	public void setMatch(Person left, Person right, Person winner, String notes, int bracket, int index){
 		Brackets.getBracket(bracket).setMatch(left,right,winner,notes,index);
 		
@@ -130,6 +130,7 @@ public class TournamentModel extends Observable{
 			curr.promoteBye();
 		}
 	}
+	//Add a roster from a certain school, using the convention specified in the manual
 	public void addRoster(String school, File file) throws FileNotFoundException {
 		Scanner scan = new Scanner(file);
 		int num = Brackets.getNum();
