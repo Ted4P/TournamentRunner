@@ -54,7 +54,7 @@ public class BracketPanel extends JPanel implements ActionListener{
 			g = (Graphics2D)g;
 		super.paintComponent(g);
 		g.setFont(new Font(g.getFont().getFontName(),Font.BOLD,MATCH_HEIGHT/3));
-		setPreferredSize(new Dimension(2*2*MATCH_WIDTH*(level-1)+3*MATCH_WIDTH,(totShift+MATCH_HEIGHT)*2));
+		setPreferredSize(new Dimension(2*2*MATCH_WIDTH*level+3*MATCH_WIDTH,(totShift+MATCH_HEIGHT)*2));
 		int startingX = 2*MATCH_WIDTH*level+(int)(1.5*MATCH_WIDTH);
 		int startingY = totShift-MATCH_HEIGHT/2+MATCH_HEIGHT;
 		g.drawRect(startingX, startingY, MATCH_WIDTH, MATCH_HEIGHT);
