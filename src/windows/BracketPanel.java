@@ -57,11 +57,13 @@ public class BracketPanel extends JPanel implements ActionListener{
 		setPreferredSize(new Dimension(2*2*MATCH_WIDTH*level+3*MATCH_WIDTH,(totShift+MATCH_HEIGHT)*2));
 		int startingX = 2*MATCH_WIDTH*level+(int)(1.5*MATCH_WIDTH);
 		int startingY = totShift-MATCH_HEIGHT/2+MATCH_HEIGHT;
-		g.drawRect(startingX, startingY, MATCH_WIDTH, MATCH_HEIGHT);
+		g.drawRect(startingX, startingY-MATCH_HEIGHT*2, MATCH_WIDTH, MATCH_HEIGHT);
+		g.drawLine(startingX,startingY-3*MATCH_HEIGHT/2,startingX+MATCH_WIDTH,startingY-3*MATCH_HEIGHT/2);
+		g.drawLine(startingX + MATCH_WIDTH/2,startingY-2*MATCH_HEIGHT,startingX+MATCH_WIDTH/2,startingY+MATCH_HEIGHT/2);
 		g.drawLine(startingX-3*MATCH_WIDTH/4,startingY+MATCH_HEIGHT/2,startingX+7*MATCH_WIDTH/4,startingY+MATCH_HEIGHT/2);
 		MatchButton finalButton = new MatchButton(1);
-		finalButton.setBounds(startingX+MATCH_WIDTH/3, startingY+MATCH_HEIGHT, MATCH_WIDTH/3, 3*MATCH_HEIGHT/5);
-		finalButton.setFont(new Font(finalButton.getFont().getFontName(),Font.PLAIN,MATCH_HEIGHT/3));
+		finalButton.setBounds(startingX+MATCH_WIDTH/3, startingY-MATCH_HEIGHT, MATCH_WIDTH/3, 3*MATCH_HEIGHT/5);
+		finalButton.setFont(new Font(finalButton.getFont().getFontName(),Font.PLAIN,(int)(1.1*MATCH_HEIGHT/3)));
 		finalButton.addActionListener(this);
 		add(finalButton);
 		editButtons[1] = finalButton;
@@ -75,9 +77,9 @@ public class BracketPanel extends JPanel implements ActionListener{
 			}
 			else
 				g.setColor(Color.RED);
-			g.drawString(info[0][2*i], startingX+5, startingY+(5*i+4)*MATCH_HEIGHT/10);
+			g.drawString(info[0][2*i], startingX+5, startingY+(5*i+4)*MATCH_HEIGHT/10-2*MATCH_HEIGHT);
 			if(!info[0][2*i+1].equals("NA"))
-				g.drawString(info[0][2*i+1], startingX+MATCH_WIDTH/2, startingY+(5*i+4)*MATCH_HEIGHT/10);
+				g.drawString(info[0][2*i+1], startingX+MATCH_WIDTH/2, startingY+(5*i+4)*MATCH_HEIGHT/10-2*MATCH_HEIGHT);
 			g.setColor(Color.BLACK);
 			paintOneMatch(startingX-2*MATCH_WIDTH,startingY, shift, 0, 2, 1, g);
 			paintOneMatch(startingX+2*MATCH_WIDTH,startingY, shift, 0, 3, -1, g);
