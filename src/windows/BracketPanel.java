@@ -43,7 +43,8 @@ public class BracketPanel extends JPanel implements ActionListener{
 		editButtons = new MatchButton[Brackets.getSize()+1];
 		level = 0;
 		for(;Math.pow(2, level) < Brackets.getSize();level++);
-		shift = (int)(Math.pow(2, level-1)*(MATCH_WIDTH*6.0/100));
+		level--;
+		shift = (int)(Math.pow(2, level)*(MATCH_WIDTH*6.0/100));
 		totShift = (int)(2 * shift * (1-Math.pow(0.5, level)));
 	}
 
@@ -52,12 +53,40 @@ public class BracketPanel extends JPanel implements ActionListener{
 		if(g instanceof Graphics2D)
 			g = (Graphics2D)g;
 		super.paintComponent(g);
-		setPreferredSize(new Dimension(2*MATCH_WIDTH*level,(totShift+MATCH_HEIGHT)*2));
-		paintOneMatch(2*MATCH_WIDTH*level-(int)(MATCH_WIDTH*1.5),totShift-MATCH_HEIGHT/2+MATCH_HEIGHT,shift, 0, 1, g);
+		g.setFont(new Font(g.getFont().getFontName(),Font.BOLD,MATCH_HEIGHT/3));
+		setPreferredSize(new Dimension(2*2*MATCH_WIDTH*(level-1)+3*MATCH_WIDTH,(totShift+MATCH_HEIGHT)*2));
+		int startingX = 2*MATCH_WIDTH*level+(int)(1.5*MATCH_WIDTH);
+		int startingY = totShift-MATCH_HEIGHT/2+MATCH_HEIGHT;
+		g.drawRect(startingX, startingY, MATCH_WIDTH, MATCH_HEIGHT);
+		g.drawLine(startingX-3*MATCH_WIDTH/4,startingY+MATCH_HEIGHT/2,startingX+7*MATCH_WIDTH/4,startingY+MATCH_HEIGHT/2);
+		MatchButton finalButton = new MatchButton(1);
+		finalButton.setBounds(startingX+MATCH_WIDTH/3, startingY+MATCH_HEIGHT, MATCH_WIDTH/3, 3*MATCH_HEIGHT/5);
+		finalButton.setFont(new Font(finalButton.getFont().getFontName(),Font.PLAIN,MATCH_HEIGHT/3));
+		finalButton.addActionListener(this);
+		add(finalButton);
+		editButtons[1] = finalButton;
+		for(int i=0;i<2;i++){
+			String winner = info[0][4]+info[0][5];
+			String player = info[0][2*i]+info[0][2*i+1];
+			if(winner.equals(Match.DEFAULT_WINNER_NAME + Match.DEFAULT_WINNER_SCHOOL))
+				g.setColor(Color.BLACK);
+			else if(winner.equals(player)){
+				g.setColor(Color.GREEN);
+			}
+			else
+				g.setColor(Color.RED);
+			g.drawString(info[0][2*i], startingX+5, startingY+(5*i+4)*MATCH_HEIGHT/10);
+			if(!info[0][2*i+1].equals("NA"))
+				g.drawString(info[0][2*i+1], startingX+MATCH_WIDTH/2, startingY+(5*i+4)*MATCH_HEIGHT/10);
+			g.setColor(Color.BLACK);
+			paintOneMatch(startingX-2*MATCH_WIDTH,startingY, shift, 0, 2, 1, g);
+			paintOneMatch(startingX+2*MATCH_WIDTH,startingY, shift, 0, 3, -1, g);
+		}
 	}
-	private void paintOneMatch(int x, int y, int shift, int level, int match, Graphics g){
+	private void paintOneMatch(int x, int y, int shift, int level, int match, int direction, Graphics g){
 		g.setFont(new Font(g.getFont().getFontName(),Font.BOLD,MATCH_HEIGHT/3));
 		int index = getIndex(match);
+		int newX = x;
 		for(int i=0;i<2;i++){
 			g.drawRect(x, y, MATCH_WIDTH, MATCH_HEIGHT);
 			String winner = info[index][4]+info[index][5];
@@ -73,22 +102,29 @@ public class BracketPanel extends JPanel implements ActionListener{
 			if(!info[index][2*i+1].equals("NA"))
 				g.drawString(info[index][2*i+1], x+MATCH_WIDTH/2, y+(5*i+4)*MATCH_HEIGHT/10);
 			g.setColor(Color.BLACK);
-			MatchButton button = new MatchButton(match);
-			button.setBounds(x + MATCH_WIDTH, y + MATCH_HEIGHT/5, (int)(1.1*MATCH_WIDTH/3),3*MATCH_HEIGHT/5);
-			button.setFont(new Font(button.getFont().getFontName(), Font.PLAIN, MATCH_HEIGHT/3));
-			button.addActionListener(this);
-			add(button);
-			editButtons[match] = button;
 		}
+		MatchButton button = new MatchButton(match);
+		newX = x + MATCH_WIDTH/2*(direction+1);
+		if(direction == -1)
+			newX -= (int)(1.1*MATCH_WIDTH/3);
+		button.setBounds(newX, y + MATCH_HEIGHT/5, (int)(1.1*MATCH_WIDTH/3),3*MATCH_HEIGHT/5);
+		button.setFont(new Font(button.getFont().getFontName(), Font.PLAIN, MATCH_HEIGHT/3));
+		button.addActionListener(this);
+		add(button);
+		editButtons[match] = button;
+		if(direction == -1)
+			newX = x + MATCH_WIDTH;
+		else
+			newX = x;
 		if(!isFinalMatch(match)){
-			g.drawLine(x-MATCH_WIDTH/2,y+MATCH_HEIGHT/2,x-3*MATCH_WIDTH/4,y+MATCH_HEIGHT/2-shift);
-			g.drawLine(x-MATCH_WIDTH/2,y+MATCH_HEIGHT/2,x-3*MATCH_WIDTH/4,y+MATCH_HEIGHT/2+shift);
-			g.drawLine(x-MATCH_WIDTH/2,y+MATCH_HEIGHT/2,x+MATCH_WIDTH,y+MATCH_HEIGHT/2);
-			paintOneMatch(x-MATCH_WIDTH*2,y+shift,shift/2,level+1,match*2,g);
-			paintOneMatch(x-MATCH_WIDTH*2,y-shift,shift/2,level+1,match*2+1,g);
+			g.drawLine(newX-direction*MATCH_WIDTH/2,y+MATCH_HEIGHT/2,newX-(int)(direction*3.8*MATCH_WIDTH/6),y+MATCH_HEIGHT/2-shift);
+			g.drawLine(newX-direction*MATCH_WIDTH/2,y+MATCH_HEIGHT/2,newX-(int)(direction*3.8*MATCH_WIDTH/6),y+MATCH_HEIGHT/2+shift);
+			g.drawLine(newX-direction*MATCH_WIDTH/2,y+MATCH_HEIGHT/2,newX+direction*MATCH_WIDTH,y+MATCH_HEIGHT/2);
+			paintOneMatch(x-direction*MATCH_WIDTH*2,y+shift,shift/2,level+1,match*2,direction,g);
+			paintOneMatch(x-direction*MATCH_WIDTH*2,y-shift,shift/2,level+1,match*2+1,direction,g);
 		}
 		else{
-			g.drawLine(x,y+MATCH_HEIGHT/2,x+5*MATCH_WIDTH/4,y+MATCH_HEIGHT/2);
+			g.drawLine(newX,y+MATCH_HEIGHT/2,newX+direction*5*MATCH_WIDTH/4,y+MATCH_HEIGHT/2);
 		}
 	}
 	private boolean isFinalMatch(int match){
