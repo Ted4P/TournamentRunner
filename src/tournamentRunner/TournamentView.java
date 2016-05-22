@@ -88,6 +88,8 @@ public class TournamentView extends JFrame implements Observer, ActionListener{
 		super.setJMenuBar(bar);
 		setTitle("Tournament Runner");
 		setSize(1600,800);
+		Toolkit tlkt = Toolkit.getDefaultToolkit();
+		this.setLocation((int)(tlkt.getScreenSize().getWidth()-this.getWidth())/2,(int)(tlkt.getScreenSize().getHeight()-this.getHeight())/2);
 		setVisible(true);
 		super.setDefaultCloseOperation(EXIT_ON_CLOSE);
 	}
