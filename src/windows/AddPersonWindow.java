@@ -20,6 +20,10 @@ import javax.swing.event.DocumentListener;
 import tournamentRunner.Brackets;
 import tournamentRunner.TournamentView;
 
+
+/*
+*Represent a dialog to add a person to a bracket
+*/
 public class AddPersonWindow extends JDialog implements ActionListener {
 	private TournamentView view;
 	private JButton confirm, cancel;
@@ -27,7 +31,7 @@ public class AddPersonWindow extends JDialog implements ActionListener {
 	private JComboBox<String> bracketOptions;
 	private JCheckBox noSchool;
 	
-	public AddPersonWindow(TournamentView tournamentView) {
+	public AddPersonWindow(TournamentView tournamentView) {		//Retain a refrence to view to allow method calls
 		super(tournamentView, "Add new competitor");
 		view = tournamentView;
 		name = new JTextField("Name");
@@ -43,10 +47,10 @@ public class AddPersonWindow extends JDialog implements ActionListener {
 		confirm.setEnabled(false);
 		cancel = new JButton("Cancel");
 		cancel.addActionListener(this);
-		cancel.setEnabled(false);
+		cancel.setEnabled(true);
 		noSchool = new JCheckBox("Unaffiliated");
 		noSchool.addActionListener(this);
-		DocumentListener docListen = new DocumentListener(){
+		DocumentListener docListen = new DocumentListener(){		//Listen for changes in text fields
 			public void changedUpdate(DocumentEvent e){
 				enableButtons();
 			}
@@ -56,14 +60,12 @@ public class AddPersonWindow extends JDialog implements ActionListener {
 			public void insertUpdate(DocumentEvent e){
 				enableButtons();
 			}
-			private void enableButtons(){
+			private void enableButtons(){		//If any fields are default or empty, do not allow confirm
 				if(name.getText().equals("Name") || name.getText().equals("") || ((school.getText().equals("School") || school.getText().equals("")) && !noSchool.isSelected())){
 					confirm.setEnabled(false);
-					cancel.setEnabled(false);
 				}
 				else{
 					confirm.setEnabled(true);
-					cancel.setEnabled(true);
 				}
 			}
 		};
@@ -102,14 +104,14 @@ public class AddPersonWindow extends JDialog implements ActionListener {
 
 	public void actionPerformed(ActionEvent arg0) {
 		Object source = arg0.getSource();
-		if(source==confirm){
+		if(source==confirm){		//If confirm, attempt to add a person to the chosen bracket
 			dispose();
 			view.addPerson(name.getText(),school.getText(), (String) bracketOptions.getSelectedItem(), noSchool.isSelected());
 		}
-		else if(source==cancel){
+		else if(source==cancel){		//If cancel, remove dialog
 			dispose();
 		}
-		else if(source == noSchool){
+		else if(source == noSchool){				//If no school checkbox clicked, recheck if all fields are filles
 			if(name.getText().equals("Name") || name.getText().equals("") || ((school.getText().equals("School") || school.getText().equals("")) && !noSchool.isSelected())){
 				confirm.setEnabled(false);
 				cancel.setEnabled(false);

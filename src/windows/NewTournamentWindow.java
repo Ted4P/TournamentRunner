@@ -7,16 +7,17 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
 import tournamentRunner.TournamentView;
-
-
+/*
+*Represents a Dialog box to create a new Tournament, with Name, Size and # of brackets
+*/
 public class NewTournamentWindow extends JDialog implements ActionListener{
 	private TournamentView view;
 	private JButton confirm,cancel;
 	private JTextField name, number, size;
-	public NewTournamentWindow(TournamentView view){
+	public NewTournamentWindow(TournamentView view){ //Retain refrence to view to allow method calls
 		super(view, "New Tournament");
 		this.view = view;
-		DocListener dl = new DocListener();
+		DocListener dl = new DocListener();		//Listen for changes to text fields
 		name = new JTextField("Tournament Name");
 		name.setColumns(15);
 		number = new JTextField("Number of Brackets");
@@ -34,7 +35,7 @@ public class NewTournamentWindow extends JDialog implements ActionListener{
 		
 		cancel = new JButton("Cancel");
 		cancel.addActionListener(this);
-		cancel.setEnabled(false);
+		cancel.setEnabled(true);
 		
 		this.setLayout(new GridLayout(5,1));
 		this.setSize(600,300);
@@ -53,7 +54,7 @@ public class NewTournamentWindow extends JDialog implements ActionListener{
 		this.pack();
 	}
 	
-	public void actionPerformed(ActionEvent e) {
+	public void actionPerformed(ActionEvent e) {			//If cancel, close the window, if confirm, attempt to create new bracket
 		if(e.getSource() ==cancel) this.dispose();
 		else{
 			dispose();
@@ -71,16 +72,14 @@ public class NewTournamentWindow extends JDialog implements ActionListener{
 		public void insertUpdate(DocumentEvent e){
 			enableButtons();
 		}
-		private void enableButtons(){
+		private void enableButtons(){				//If any fields are default text or blank, do not allow confirm
 			if(name.getText().equals("Tournament Name") || name.getText().equals("") || 
 					number.getText().equals("Number of Brackets") || number.getText().equals("") ||
 						size.getText().equals("Bracket Size") || size.getText().equals("")){
 				confirm.setEnabled(false);
-				cancel.setEnabled(false);
 			}
 			else{
 				confirm.setEnabled(true);
-				cancel.setEnabled(true);
 			}
 		}
 		
