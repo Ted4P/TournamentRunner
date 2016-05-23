@@ -8,15 +8,17 @@ import javax.swing.event.DocumentListener;
 
 import tournamentRunner.TournamentView;
 
-
-public class NewTournamentWindow extends JDialog implements ActionListener{
+/*
+*Represents a Dialog box to create a new Tournament, with Name, Size and # of brackets
+*/
+public class NewTournamentWindow extends JDialog implements ActionListener{ //Retain reference to view to allow method calls
 	private TournamentView view;
 	private JButton confirm,cancel;
 	private JTextField name, number, size;
 	public NewTournamentWindow(TournamentView view){
 		super(view, "New Tournament");
 		this.view = view;
-		DocListener dl = new DocListener();
+		DocListener dl = new DocListener(); //Listen for changes to text fields
 		
 		GridBagConstraints cons = new GridBagConstraints();
 		cons.gridheight = 10;
@@ -70,15 +72,15 @@ public class NewTournamentWindow extends JDialog implements ActionListener{
 		this.pack();
 	}
 	
-	public void actionPerformed(ActionEvent e) {
-		if(e.getSource() == cancel) this.dispose();
+	public void actionPerformed(ActionEvent e) { //If cancel, close the window, if confirm, attempt to create new bracket
+		if(e.getSource() == cancel) this.dispose();	
 		else{
 			dispose();
 			view.createNewBracket(name.getText(),number.getText(),size.getText());
 		}
 	}
 	
-	private class DocListener implements DocumentListener{
+	private class DocListener implements DocumentListener{ //If any fields are default text or blank, do not allow confirm
 		public void changedUpdate(DocumentEvent e){
 			enableButtons();
 		}
