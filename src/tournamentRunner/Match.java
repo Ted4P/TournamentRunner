@@ -6,7 +6,8 @@ public class Match {
 	private Match left, right, parent;
 	private Person lPer, rPer, wPer;
 	private String note;
-	private int val, numLeft, numRight;
+	private int val;
+	private boolean leaf;
 	public static final String DEFAULT_WINNER_NAME = "No Winner", DEFAULT_WINNER_SCHOOL = "No School", DEFAULT_BLANK_NAME = "TBD", DEFAULT_BLANK_SCHOOL = "TBD";
 	public Match(int size, Match parent, int i){		//Create a new Match with the parent match [parent], recursively call with [size] divided by 2 and [i] increased according to heap convention
 		val=i;
@@ -15,7 +16,10 @@ public class Match {
 		wPer = new Person(DEFAULT_WINNER_NAME,DEFAULT_WINNER_SCHOOL);
 		note = "No information availible yet";
 		this.parent = parent;
-		if(size<=2) return;
+		if(size<=2){ 
+			leaf = true;
+			return;
+		}
 		left = new Match(size/2, this,i*2);
 		right = new Match(size/2, this,i*2+1);
 	}
@@ -24,12 +28,12 @@ public class Match {
 	 * Returns true if no the seed exists and is empty, otherwise false
 	 */
 	public boolean addPerson(Person person, int seed, int curLoc, int size){
-		if(left==null&&right==null && (seed==curLoc || seed == (size+1)-curLoc)){
+		if(left==null && (seed==curLoc || seed == (size+1)-curLoc)){
 			if(lPer.getName().equals("TBD") && seed == curLoc){lPer = person; return true;}
 			else if(rPer.getName().equals("TBD") && seed == (size+1)-curLoc){rPer = person; return true;}
 		}
-		if(right!=null && right.addPerson(person,seed,curLoc,size*2)){ numRight++; return true;}
-		else if(left!=null && left.addPerson(person,seed,(size+1)-curLoc,size*2)){ numLeft++; return true;}
+		if(right.addPerson(person,seed,curLoc,size*2))	return true;
+		else if(left.addPerson(person,seed,(size+1)-curLoc,size*2))	return true;
 		return false;
 	}
 	
@@ -49,8 +53,8 @@ public class Match {
 			else
 				return false;
 		}
-		else if(left != null && left.advancePerson(person, notes, matchID)) return true;
-		else if(right != null && right.advancePerson(person, notes, matchID)) return true;
+		else if(!leaf && left.advancePerson(person, notes, matchID)) return true;
+		else if(!leaf && right.advancePerson(person, notes, matchID)) return true;
 		else return false;
 	}
 	private boolean promoteWinner(Person per, String notes) {
@@ -74,10 +78,10 @@ public class Match {
 	 */
 	public String getInfo(){
 		String result = "";
-		if(left != null)
+		if(!leaf){
 			result += left.getInfo() + "\n";
-		if(right != null)
 			result += right.getInfo() + "\n";
+		}
 		result += lPer.getName() + "/" + lPer.getSchool() + ","
 			+ rPer.getName() + "/" + rPer.getSchool() + ","
 			+ wPer.getName() + "/" + wPer.getSchool() + "," + note + "," + val;
@@ -96,20 +100,12 @@ public class Match {
 			return;
 		}
 		else{
-			if(left!=null) left.restoreState(data);
-			if(right!=null) right.restoreState(data);
+			if(!leaf){ 
+				left.restoreState(data);
+				right.restoreState(data);
+			}
 		}
 		
-	}
-	/*
-	 * For all competitors facing Byes, promote until a match featuring two humans is found
-	 */
-	public void promoteBye() {
-		if(left!=null) left.promoteBye();
-		if(right!=null) right.promoteBye();
-		if(lPer instanceof Bye && rPer instanceof Bye) return;
-		if(lPer instanceof Bye) advancePerson(rPer, "Bye", val);
-		if(rPer instanceof Bye) advancePerson(lPer, "Bye", val);
 	}
 	public void setMatch(Person left2, Person right2, Person winner, String notes, int index) {
 		if(val==index){
@@ -121,17 +117,5 @@ public class Match {
 		}
 		if(left!=null) left.setMatch(left2, right2, winner, notes, index);
 		if(right!=null) right.setMatch(left2, right2, winner, notes, index);
-	}
-	public int recount() {
-		if(left!=null) numLeft=left.recount();
-		if(right!=null) numRight=right.recount();
-		if(left==null&&right==null){
-			int count = 0;
-			if(!(lPer instanceof Bye || lPer.getName().equals(DEFAULT_BLANK_NAME))) count++;
-			if(!(rPer instanceof Bye || rPer.getName().equals(DEFAULT_BLANK_NAME))) count++;
-			return count;
-		}
-		return numLeft+numRight;
-		
 	}
 }

@@ -35,20 +35,8 @@ public class Bracket {
 	public void restoreState(String[] data) {
 		top.restoreState(data);
 	}
-	//Promote all players past all Byes
-	public void promoteBye() {
-		top.promoteBye();
-	}
 	//Set the match indicated by Index to the information contained
 	public void setMatch(Person left, Person right, Person winner,String notes, int index) {
 		top.setMatch(left,right,winner,notes,index);
-	}
-	//Recount children for balanced adding
-	public void recount() {
-		top.recount();
-	}
-	public int numPeople() {
-		// TODO Auto-generated method stub
-		return 0;
 	}
 }
