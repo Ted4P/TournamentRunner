@@ -60,12 +60,13 @@ public class TournamentModel extends Observable{
 		notifyObservers();
 	}
 	/*
-	 * Attempt to add the given person to the bracket with index [bracket]. 
+	 * Attempt to add the given person to the bracket with index [bracket]. If seeded, add to given seed, if unseeded, add from bottom to top
 	 * 			If an equal person has already been added, or the bracket is full, return false
 	 */
 	public boolean addPerson(Person person, int bracket){
 		return addPerson(person,bracket,-1);
 	}
+	
 	public boolean addPerson(Person person, int bracket, int seed){
 		if(competitors[bracket].add(person)){
 			boolean result;

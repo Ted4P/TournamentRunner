@@ -10,10 +10,9 @@ public class Bracket {
 	//Set the bracket name
 	public void setName(String nm){name = nm;}
 	/*
-	 * Attempt to add a new Person to the bracket, and return false if no space can be found
+	 * Attempt to add a new Person to the bracket, and return false if the given seed is occupied
 	 */
 	public boolean addPerson(Person per,int seed){
-		System.out.println("ADDING WITH SEED: " + seed);
 		return top.addPerson(per,seed,1,2);
 		}
 	
