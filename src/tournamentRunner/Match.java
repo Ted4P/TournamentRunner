@@ -28,12 +28,13 @@ public class Match {
 	 * Returns true if no the seed exists and is empty, otherwise false
 	 */
 	public boolean addPerson(Person person, int seed, int curLoc, int size){
-		if(left==null && (seed==curLoc || seed == (size+1)-curLoc)){
+		if(leaf && (seed==curLoc || seed == (size+1)-curLoc)){
 			if(lPer.getName().equals("TBD") && seed == curLoc){lPer = person; return true;}
 			else if(rPer.getName().equals("TBD") && seed == (size+1)-curLoc){rPer = person; return true;}
+			return false;
 		}
-		if(right.addPerson(person,seed,curLoc,size*2))	return true;
-		else if(left.addPerson(person,seed,(size+1)-curLoc,size*2))	return true;
+		if(!leaf && right.addPerson(person,seed,curLoc,size*2))	return true;
+		else if(!leaf && left.addPerson(person,seed,(size+1)-curLoc,size*2))	return true;
 		return false;
 	}
 	
