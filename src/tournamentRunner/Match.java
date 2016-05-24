@@ -20,21 +20,16 @@ public class Match {
 		right = new Match(size/2, this,i*2+1);
 	}
 	/*
-	 * Add a new Person to the bracket, attempting to "balance" by adding people to the side with fewer entrants. 
-	 * Returns false if no free spaces exist in the given bracket, otherwise true
+	 * Add a new Person to the bracket, with the given seed.
+	 * Returns true if no the seed exists and is empty, otherwise false
 	 */
-	public boolean addPerson(Person person){
-		if(left==null&&right==null){
-			if(lPer.getName().equals("TBD")){lPer = person; return true;}
-			else if(rPer.getName().equals("TBD")){rPer = person; return true;}
+	public boolean addPerson(Person person, int seed, int curLoc, int size){
+		if(left==null&&right==null && (seed==curLoc || seed == (size+1)-curLoc)){
+			if(lPer.getName().equals("TBD") && seed == curLoc){lPer = person; return true;}
+			else if(rPer.getName().equals("TBD") && seed == (size+1)-curLoc){rPer = person; return true;}
 		}
-		if(numLeft<numRight){
-			if(left!=null && left.addPerson(person)){ numLeft++; return true;}
-			else if(right!=null && right.addPerson(person)){ numRight++; return true;}
-			return false;
-		}
-		if(right!=null && right.addPerson(person)){ numRight++; return true;}
-		else if(left!=null && left.addPerson(person)){ numLeft++; return true;}
+		if(right!=null && right.addPerson(person,seed,curLoc,size*2)){ numRight++; return true;}
+		else if(left!=null && left.addPerson(person,seed,(size+1)-curLoc,size*2)){ numLeft++; return true;}
 		return false;
 	}
 	

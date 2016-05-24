@@ -14,6 +14,7 @@ import java.util.TreeSet;
 public class TournamentModel extends Observable{
 	private Set<Person>[] competitors;		//Array of Sets of Person of added competitors
 	private String tournamentName;
+	private int byeAdded;
 	public TournamentModel(int num, int size, String name){		//Number, size of brackets, and tournament name
 		int newSize;
 		for(newSize=2;newSize<size;newSize*=2);
@@ -64,8 +65,19 @@ public class TournamentModel extends Observable{
 	 * 			If an equal person has already been added, or the bracket is full, return false
 	 */
 	public boolean addPerson(Person person, int bracket){
+		return addPerson(person,bracket,-1);
+	}
+	public boolean addPerson(Person person, int bracket, int seed){
 		if(competitors[bracket].add(person)){
-			boolean result = Brackets.getBracket(bracket).addPerson(person);
+			boolean result;
+			if(seed!=-1){
+				result = Brackets.getBracket(bracket).addPerson(person,seed);
+			}
+			else{
+				seed = Brackets.getSize();
+				while(seed > 0  && !Brackets.getBracket(bracket).addPerson(person,seed--));
+				result = seed!=0;
+			}
 			if(result){
 				setChanged();
 				notifyObservers();
@@ -120,16 +132,7 @@ public class TournamentModel extends Observable{
 			}
 			writer.close();
 	}
-	
-	//Fill empty slots in the tournament with Byes, then advance all competitors until a match featuring no Byes is found
-	public void startTournament(){
-		int num = Brackets.getNum();
-		for(int i = 0; i < num; i++){
-			Bracket curr = Brackets.getBracket(i);
-			while(curr.addPerson(new Bye()));
-			curr.promoteBye();
-		}
-	}
+
 	//Add a roster from a certain school, using the convention specified in the manual
 	public void addRoster(String school, File file) throws FileNotFoundException {
 		Scanner scan = new Scanner(file);
@@ -137,7 +140,7 @@ public class TournamentModel extends Observable{
 		for(int i = 0; i < num && scan.hasNextLine(); i++){
 			String name = scan.nextLine()+",";
 			while(name.length()>0){
-				Brackets.getBracket(i).addPerson(new Person(name.substring(0,name.indexOf(',')),school));
+				addPerson(new Person(name.substring(0,name.indexOf(',')),school),i);
 				name = name.substring(name.indexOf(',')+1);
 			}
 		}

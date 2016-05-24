@@ -27,7 +27,7 @@ import tournamentRunner.TournamentView;
 public class AddPersonWindow extends JDialog implements ActionListener {
 	private TournamentView view;
 	private JButton confirm, cancel;
-	private JTextField name, school;
+	private JTextField name, school, seed;
 	private JComboBox<String> bracketOptions;
 	private JCheckBox noSchool;
 	
@@ -112,7 +112,7 @@ public class AddPersonWindow extends JDialog implements ActionListener {
 			dispose();
 		}
 		else if(source == noSchool){				//If no school checkbox clicked, recheck if all fields are filles
-			if(name.getText().equals("Name") || name.getText().equals("") || ((school.getText().equals("School") || school.getText().equals("")) && !noSchool.isSelected())){
+			if(name.getText().equals("Name") || name.getText().equals("") || ((school.getText()==null || school.getText().equals("School") || school.getText().equals("")) && !noSchool.isSelected())){
 				confirm.setEnabled(false);
 				cancel.setEnabled(false);
 			}

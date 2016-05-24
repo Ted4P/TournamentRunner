@@ -12,7 +12,10 @@ public class Bracket {
 	/*
 	 * Attempt to add a new Person to the bracket, and return false if no space can be found
 	 */
-	public boolean addPerson(Person per){return top.addPerson(per);}
+	public boolean addPerson(Person per,int seed){
+		System.out.println("ADDING WITH SEED: " + seed);
+		return top.addPerson(per,seed,1,2);
+		}
 	
 	//Set the winner of the bracket given by MatcchID to the Person winner, and set match notes
 	public void recordWin(Person winner, String notes, int matchID){
@@ -43,5 +46,9 @@ public class Bracket {
 	//Recount children for balanced adding
 	public void recount() {
 		top.recount();
+	}
+	public int numPeople() {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 }
