@@ -54,9 +54,8 @@ public class Match {
 			else
 				return false;
 		}
-		else if(!leaf && left.advancePerson(person, notes, matchID)) return true;
-		else if(!leaf && right.advancePerson(person, notes, matchID)) return true;
-		else return false;
+		return (!leaf && left.advancePerson(person, notes, matchID))? 
+				true: (!leaf && right.advancePerson(person, notes, matchID));
 	}
 	private boolean promoteWinner(Person per, String notes) {
 		note = notes;
