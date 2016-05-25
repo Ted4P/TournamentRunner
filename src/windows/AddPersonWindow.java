@@ -125,11 +125,9 @@ public class AddPersonWindow extends JDialog implements ActionListener {
 		else if(source == noSchool){				//If no school checkbox clicked, recheck if all fields are filles
 			if(name.getText().equals("Name") || name.getText().equals("") || ((school.getText()==null || school.getText().equals("School") || school.getText().equals("")) && !noSchool.isSelected())){
 				confirm.setEnabled(false);
-				cancel.setEnabled(false);
 			}
 			else{
 				confirm.setEnabled(true);
-				cancel.setEnabled(true);
 			}
 			if(noSchool.isSelected()){
 				school.setText("Unaffiliated");
@@ -143,11 +141,9 @@ public class AddPersonWindow extends JDialog implements ActionListener {
 		else if(source == unseeded){
 			if(name.getText().equals("Name") || name.getText().equals("") || ((school.getText()==null || school.getText().equals("Seed") || school.getText().equals("")) && !unseeded.isSelected())){
 				confirm.setEnabled(false);
-				cancel.setEnabled(false);
 			}
 			else{
 				confirm.setEnabled(true);
-				cancel.setEnabled(true);
 			}
 			if(unseeded.isSelected()){
 				seed.setText("Unseeded");
