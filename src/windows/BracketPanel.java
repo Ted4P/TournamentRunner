@@ -82,11 +82,11 @@ public class BracketPanel extends JPanel implements ActionListener{
 			if(!info[0][2*i+1].equals("NA"))
 				g.drawString(info[0][2*i+1], startingX+MATCH_WIDTH/2, startingY+(5*i+4)*MATCH_HEIGHT/10-2*MATCH_HEIGHT);
 			g.setColor(Color.BLACK);
-			paintOneMatch(startingX-2*MATCH_WIDTH,startingY, shift, 0, 2, 1, g);
-			paintOneMatch(startingX+2*MATCH_WIDTH,startingY, shift, 0, 3, -1, g);
+			paintOneMatch(startingX-2*MATCH_WIDTH,startingY, shift, 0, 2, 1, 1, g);
+			paintOneMatch(startingX+2*MATCH_WIDTH,startingY, shift, 0, 3, -1, 2, g);
 		}
 	}
-	private void paintOneMatch(int x, int y, int shift, int level, int match, int direction, Graphics g){
+	private void paintOneMatch(int x, int y, int shift, int level, int match, int direction, int seed, Graphics g){
 		g.setFont(new Font(g.getFont().getFontName(),Font.BOLD,MATCH_HEIGHT/3));
 		int index = getIndex(match);
 		int newX = x;
@@ -104,6 +104,10 @@ public class BracketPanel extends JPanel implements ActionListener{
 			g.drawString(info[index][2*i], x+5, y+(5*i+4)*MATCH_HEIGHT/10);
 			if(!info[index][2*i+1].equals("NA"))
 				g.drawString(info[index][2*i+1], x+MATCH_WIDTH/2, y+(5*i+4)*MATCH_HEIGHT/10);
+			if(isFinalMatch(match)){
+				g.drawString("" + Math.abs((seed-i*(Brackets.getSize()+1))), x+7*MATCH_WIDTH/8, y+(5*i+4)*MATCH_HEIGHT/10);
+				g.drawLine(x+(int)(6.8*MATCH_WIDTH/8), y, x+(int)(6.8*MATCH_WIDTH/8), y+MATCH_HEIGHT);
+			}
 			g.setColor(Color.BLACK);
 		}
 		MatchButton button = new MatchButton(match);
@@ -123,8 +127,8 @@ public class BracketPanel extends JPanel implements ActionListener{
 			g.drawLine(newX-direction*MATCH_HEIGHT/4,y+MATCH_HEIGHT/2,newX-(int)(direction*2.3*MATCH_WIDTH/6),y+MATCH_HEIGHT/2-shift);
 			g.drawLine(newX-direction*MATCH_HEIGHT/4,y+MATCH_HEIGHT/2,newX-(int)(direction*2.3*MATCH_WIDTH/6),y+MATCH_HEIGHT/2+shift);
 			g.drawLine(newX-direction*MATCH_HEIGHT/4,y+MATCH_HEIGHT/2,newX+direction*MATCH_WIDTH,y+MATCH_HEIGHT/2);
-			paintOneMatch(x-direction*7*MATCH_WIDTH/4,y+shift,shift/2,level+1,match*2,direction,g);
-			paintOneMatch(x-direction*7*MATCH_WIDTH/4,y-shift,shift/2,level+1,match*2+1,direction,g);
+			paintOneMatch(x-direction*7*MATCH_WIDTH/4,y+shift,shift/2,level+1,match*2,direction,(int)(Math.pow(2, level+2)+1-seed),g);
+			paintOneMatch(x-direction*7*MATCH_WIDTH/4,y-shift,shift/2,level+1,match*2+1,direction,seed,g);
 		}
 		else
 			g.drawLine(newX,y+MATCH_HEIGHT/2,newX+direction*5*MATCH_WIDTH/4,y+MATCH_HEIGHT/2);
