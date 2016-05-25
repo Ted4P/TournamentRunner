@@ -82,8 +82,8 @@ public class BracketPanel extends JPanel implements ActionListener{
 			if(!info[0][2*i+1].equals("NA"))
 				g.drawString(info[0][2*i+1], startingX+MATCH_WIDTH/2, startingY+(5*i+4)*MATCH_HEIGHT/10-2*MATCH_HEIGHT);
 			g.setColor(Color.BLACK);
-			paintOneMatch(startingX-2*MATCH_WIDTH,startingY, shift, 0, 2, 1, 1, g);
-			paintOneMatch(startingX+2*MATCH_WIDTH,startingY, shift, 0, 3, -1, 2, g);
+			paintOneMatch(startingX-2*MATCH_WIDTH,startingY, shift, 0, 2, 1, 2, g);
+			paintOneMatch(startingX+2*MATCH_WIDTH,startingY, shift, 0, 3, -1, 1, g);
 		}
 	}
 	private void paintOneMatch(int x, int y, int shift, int level, int match, int direction, int seed, Graphics g){
