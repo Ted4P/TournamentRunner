@@ -115,7 +115,7 @@ public class TournamentView extends JFrame implements Observer, ActionListener{
 	}
 	//Add "which bracket" w/ dropdown menu for names of each
 
-	public void addPerson(String name, String school, String bracket, boolean noSchool) {
+	public void addPerson(String name, String school, String seed, String bracket, boolean noSchool, boolean unseeded) {
 		int brackNum = findBrackNum(bracket);
 		if(noSchool)
 			school = "Unaffiliated";
@@ -127,11 +127,11 @@ public class TournamentView extends JFrame implements Observer, ActionListener{
 			JOptionPane.showMessageDialog(this, ERROR_NO_BRACKET_SPECIFIED);
 		else if(brackNum==-1)
 			JOptionPane.showMessageDialog(this, ERROR_NAME_NOT_FOUND);
-		else addPerson(name,school,brackNum);
+		else addPerson(name,school,brackNum, (unseeded)? -1 : Integer.parseInt(seed));
 	}
-	private void addPerson(String name, String school, int bracket){	
+	private void addPerson(String name, String school, int bracket, int seed){	
 		String bracketName = Brackets.getBracket(bracket).getName();
-		boolean success = model.addPerson(new Person(name, school),bracket);
+		boolean success = model.addPerson(new Person(name, school),bracket,seed);
 		if(success){
 			JOptionPane.showMessageDialog(this, name + " from " + school + " successfully added to bracket " + bracketName);
 		}

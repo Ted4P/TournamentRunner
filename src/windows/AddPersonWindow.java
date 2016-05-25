@@ -29,7 +29,7 @@ public class AddPersonWindow extends JDialog implements ActionListener {
 	private JButton confirm, cancel;
 	private JTextField name, school, seed;
 	private JComboBox<String> bracketOptions;
-	private JCheckBox noSchool;
+	private JCheckBox noSchool,unseeded;
 	
 	public AddPersonWindow(TournamentView tournamentView) {		//Retain a refrence to view to allow method calls
 		super(tournamentView, "Add new competitor");
@@ -38,6 +38,8 @@ public class AddPersonWindow extends JDialog implements ActionListener {
 		name.setColumns(10);
 		school = new JTextField("School");
 		school.setColumns(10);
+		seed = new JTextField("Seed");
+		seed.setColumns(10);
 		String[] brackets = new String[Brackets.getNum()];
 		for(int i=0;i<brackets.length;i++)
 			brackets[i] = Brackets.getBracket(i).getName();
@@ -50,6 +52,8 @@ public class AddPersonWindow extends JDialog implements ActionListener {
 		cancel.setEnabled(true);
 		noSchool = new JCheckBox("Unaffiliated");
 		noSchool.addActionListener(this);
+		unseeded = new JCheckBox("Unseeded");
+		unseeded.addActionListener(this);
 		DocumentListener docListen = new DocumentListener(){		//Listen for changes in text fields
 			public void changedUpdate(DocumentEvent e){
 				enableButtons();
@@ -61,7 +65,9 @@ public class AddPersonWindow extends JDialog implements ActionListener {
 				enableButtons();
 			}
 			private void enableButtons(){		//If any fields are default or empty, do not allow confirm
-				if(name.getText().equals("Name") || name.getText().equals("") || ((school.getText().equals("School") || school.getText().equals("")) && !noSchool.isSelected())){
+				if(name.getText().equals("Name") || name.getText().equals("") || 
+						((school.getText().equals("School") || school.getText().equals("")) && !noSchool.isSelected()) || 
+						((seed.getText().equals("Seed") || school.getText().equals("")) && !noSchool.isSelected())){
 					confirm.setEnabled(false);
 				}
 				else{
@@ -71,6 +77,8 @@ public class AddPersonWindow extends JDialog implements ActionListener {
 		};
 		name.getDocument().addDocumentListener(docListen);
 		school.getDocument().addDocumentListener(docListen);
+		seed.getDocument().addDocumentListener(docListen);
+		
 		this.setLayout(new GridLayout(3,1));
 		this.setSize(600,300);
 		JPanel options = new JPanel();
@@ -82,6 +90,9 @@ public class AddPersonWindow extends JDialog implements ActionListener {
 		options.add(name);
 		options.add(school);
 		options.add(noSchool);
+		options.add(seed);
+		options.add(unseeded);
+		
 		JPanel bracketSelect = new JPanel();
 		bracketSelect.setLayout(new GridBagLayout());
 		bracketSelect.add(new JLabel("Select bracket: "));
@@ -106,7 +117,7 @@ public class AddPersonWindow extends JDialog implements ActionListener {
 		Object source = arg0.getSource();
 		if(source==confirm){		//If confirm, attempt to add a person to the chosen bracket
 			dispose();
-			view.addPerson(name.getText(),school.getText(), (String) bracketOptions.getSelectedItem(), noSchool.isSelected());
+			view.addPerson(name.getText(),school.getText(), seed.getText(), (String) bracketOptions.getSelectedItem(), noSchool.isSelected(), unseeded.isSelected());
 		}
 		else if(source==cancel){		//If cancel, remove dialog
 			dispose();
@@ -127,6 +138,24 @@ public class AddPersonWindow extends JDialog implements ActionListener {
 			else{
 				school.setText("School");
 				school.setEditable(true);
+			}
+		}
+		else if(source == unseeded){
+			if(name.getText().equals("Name") || name.getText().equals("") || ((school.getText()==null || school.getText().equals("Seed") || school.getText().equals("")) && !unseeded.isSelected())){
+				confirm.setEnabled(false);
+				cancel.setEnabled(false);
+			}
+			else{
+				confirm.setEnabled(true);
+				cancel.setEnabled(true);
+			}
+			if(unseeded.isSelected()){
+				seed.setText("Unseeded");
+				seed.setEditable(false);
+			}
+			else{
+				seed.setText("Seed");
+				seed.setEditable(true);
 			}
 		}
 	}
