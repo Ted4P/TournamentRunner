@@ -83,7 +83,7 @@ public class TournamentView extends JFrame implements Observer, ActionListener{
 		update(null,null);
 		brackets = new JTabbedPane();
 		brackets.setTabPlacement(JTabbedPane.LEFT);
-		bracketArray = new ArrayList();
+		bracketArray = new ArrayList<BracketPanel>();
 		pane.add(brackets);
 		super.setJMenuBar(bar);
 		setTitle("Tournament Runner");
@@ -121,8 +121,8 @@ public class TournamentView extends JFrame implements Observer, ActionListener{
 			school = "Unaffiliated";
 		if(name.equals(""))
 			JOptionPane.showMessageDialog(this, "Error: Please enter a name");
-		else if(name.equals("TBD"))
-			JOptionPane.showMessageDialog(this, "Error: Invalid name");
+		else if(name.equals(Match.DEFAULT_BLANK_NAME) || school.equals(Match.DEFAULT_BLANK_SCHOOL))
+			JOptionPane.showMessageDialog(this, "Error: Invalid name or school");
 		else if(bracket.equals(""))
 			JOptionPane.showMessageDialog(this, ERROR_NO_BRACKET_SPECIFIED);
 		else if(brackNum==-1)
@@ -297,17 +297,17 @@ public class TournamentView extends JFrame implements Observer, ActionListener{
 	}
 
 	public static void main(String[] args){
-		TournamentView view = new TournamentView();
+		new TournamentView();
 	}
 	
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		Object source = arg0.getSource();
 		if(source == newBracket){
-			NewTournamentWindow window = new NewTournamentWindow(this);
+			new NewTournamentWindow(this);
 		}
 		else if(source == add){
-			AddPersonWindow window = new AddPersonWindow(this);
+			new AddPersonWindow(this);
 		}
 		else if(source == fromFile)
 			newBracketFromFile();

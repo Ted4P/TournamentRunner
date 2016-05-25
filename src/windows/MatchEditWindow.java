@@ -28,7 +28,6 @@ import tournamentRunner.TournamentView;
 
 public class MatchEditWindow extends JDialog implements ActionListener{
 	private Bracket bracket;
-	private String[] matchInfo;
 	private JButton save, cancel, close, edit;
 	private JTextField name1, school1, name2, school2, notes;
 	private JComboBox<String> winnerEdit;
@@ -41,7 +40,6 @@ public class MatchEditWindow extends JDialog implements ActionListener{
 		super(view, "Match Info");
 		this.view = view;
 		this.bracket = bracket;
-		this.matchInfo = matchInfo;
 		this.match = match;
 		this.isFinal = isFinal;
 		name1 = new JTextField(matchInfo[0]);
@@ -63,7 +61,7 @@ public class MatchEditWindow extends JDialog implements ActionListener{
 		if(name1.getText().equals("BYE") && !name2.getText().equals(Match.DEFAULT_BLANK_NAME))
 			winner = player2;
 		winnerEdit = new JComboBox<String>();
-		winnerEdit = new JComboBox(new String[]{"Unplayed",player1,player2});
+		winnerEdit = new JComboBox<String>(new String[]{"Unplayed",player1,player2});
 		if(winnerEdit.getItemAt(1).equals(winner))
 			winnerEdit.setSelectedIndex(1);
 		else if(winnerEdit.getItemAt(2).equals(winner))
