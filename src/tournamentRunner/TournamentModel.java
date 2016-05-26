@@ -16,7 +16,7 @@ public class TournamentModel extends Observable{
 	private String tournamentName;
 	public TournamentModel(int num, int size, String name){		//Number, size of brackets, and tournament name
 		int newSize;
-		for(newSize=2;newSize<size;newSize*=2);
+		for(newSize=2;newSize<size || newSize<8;newSize*=2);
 		int numByes = newSize - size;
 		size = newSize;
 		competitors = new Set[num];

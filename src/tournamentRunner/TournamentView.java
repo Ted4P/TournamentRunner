@@ -108,7 +108,6 @@ public class TournamentView extends JFrame implements Observer, ActionListener{
 			if(num < 1){ 
 				JOptionPane.showMessageDialog(this, "Error: A new tournament must contain at least 1 bracket", "Whoops!", JOptionPane.ERROR_MESSAGE);
 			}
-			else if(size<=4) size = 8;
 			model = new TournamentModel(num,size,name);
 			model.addObserver(this);
 			update(model,null);
