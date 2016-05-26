@@ -275,6 +275,7 @@ public class TournamentView extends JFrame implements Observer, ActionListener{
 			save.setEnabled(false);
 			saveAs.setEnabled(false);
 			changeName.setEnabled(false);
+			fillByes.setEnabled(false);
 			zoomIn.setEnabled(false);
 			zoomOut.setEnabled(false);
 			addRoster.setEnabled(false);
@@ -288,6 +289,7 @@ public class TournamentView extends JFrame implements Observer, ActionListener{
 			save.setEnabled(true);
 			saveAs.setEnabled(true);
 			changeName.setEnabled(true);
+			fillByes.setEnabled(true);
 			currPanel.paint(this.getGraphics());
 			zoomIn.setEnabled(true);
 			zoomOut.setEnabled(true);
