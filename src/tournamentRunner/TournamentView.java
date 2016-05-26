@@ -24,7 +24,7 @@ public class TournamentView extends JFrame implements Observer, ActionListener{
 	ERROR_NAME_NOT_FOUND = "Error: No bracket with specified name found", 
 	ERROR_NO_BRACKET_SPECIFIED = "Error: No bracket specified";
 	TournamentModel model;
-	private final JMenuItem newBracket, fromFile, save, saveAs, add, changeName, zoomIn, zoomOut, addRoster, print;
+	private final JMenuItem newBracket, fromFile, save, saveAs, add, changeName, zoomIn, zoomOut, addRoster, print, fillByes;
 	private String currPathway;
 	private JTabbedPane brackets;
 	private BracketPanel currPanel;
@@ -67,7 +67,11 @@ public class TournamentView extends JFrame implements Observer, ActionListener{
 		changeName = new JMenuItem("Change Bracket Name");
 		addCtrlKey(changeName,'R');
 		changeName.addActionListener(this);
+		fillByes = new JMenuItem("Fill Bracket");
+		fillByes.addActionListener(this);
+		addCtrlKey(fillByes, 'F');
 		edit.add(changeName);
+		edit.add(fillByes);
 		JMenu view = new JMenu("View");
 		zoomIn = new JMenuItem("Zoom In");
 		zoomOut = new JMenuItem("Zoom Out");
@@ -142,6 +146,17 @@ public class TournamentView extends JFrame implements Observer, ActionListener{
 		for(int i = 0; i < Brackets.getNum(); i++)
 			if(Brackets.getBracket(i).getName().equals(bracketName)) return i;
 		return -1;
+	}
+	public void addByes(String bracket, boolean setAll){
+		if(setAll){
+			for(int i = 0; i < Brackets.getNum(); i++){
+				while(model.addPerson(new Bye(), i));
+			}
+		}
+		else{
+			int num = findBrackNum(bracket);
+			while(model.addPerson(new Bye(), num));
+		}
 	}
 	
 	public void setMatch(Person p1, Person p2, Person win, String notes, int bracket, int index){
@@ -319,6 +334,9 @@ public class TournamentView extends JFrame implements Observer, ActionListener{
 			changeBracketName();
 		else if(source == addRoster){
 			addRoster();
+		}
+		else if(source == fillByes){
+			new FillByeWindow(this);
 		}
 		else if(source == zoomIn){
 			BracketPanel.zoomIn();

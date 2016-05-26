@@ -115,7 +115,9 @@ public class Match {
 			note = notes;
 			return;
 		}
-		if(left!=null) left.setMatch(left2, right2, winner, notes, index);
-		if(right!=null) right.setMatch(left2, right2, winner, notes, index);
+		if(!leaf){ 
+			left.setMatch(left2, right2, winner, notes, index);
+			right.setMatch(left2, right2, winner, notes, index);
+		}
 	}
 }
