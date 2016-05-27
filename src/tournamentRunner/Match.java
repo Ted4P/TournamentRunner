@@ -28,6 +28,7 @@ public class Match {
 	 * Returns true if no the seed exists and is empty, otherwise false
 	 */
 	public boolean addPerson(Person person, int seed, int curLoc, int size){
+		
 		if(leaf && (seed==curLoc || seed == (size+1)-curLoc)){
 			if(lPer.getName().equals("TBD") && seed == curLoc){lPer = person; return true;}
 			else if(rPer.getName().equals("TBD") && seed == (size+1)-curLoc){rPer = person; return true;}
@@ -119,5 +120,12 @@ public class Match {
 			left.setMatch(left2, right2, winner, notes, index);
 			right.setMatch(left2, right2, winner, notes, index);
 		}
+	}
+	
+	public void promoteByes(){
+		left.promoteByes();
+		right.promoteByes();
+		if(lPer instanceof Bye) promoteWinner(rPer,"Bye");
+		else if(rPer instanceof Bye) promoteWinner(lPer, "Bye");
 	}
 }

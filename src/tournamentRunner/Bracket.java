@@ -38,4 +38,9 @@ public class Bracket {
 	public void setMatch(Person left, Person right, Person winner,String notes, int index) {
 		top.setMatch(left,right,winner,notes,index);
 	}
+	
+	//Promote all people facings byes up until another human opponent
+	public void promoteByes(){
+		top.promoteByes();
+	}
 }
