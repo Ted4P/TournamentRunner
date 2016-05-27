@@ -38,6 +38,7 @@ public class BracketPanel extends JPanel implements ActionListener{
 			info[i][6] = rawData[3];
 			info[i][7] = rawData[4];
 		}
+		System.out.println(bracket.getInfo());
 		scan.close();
 		setFocusable(true);
 		editButtons = new MatchButton[Brackets.getSize()+1];
@@ -68,9 +69,10 @@ public class BracketPanel extends JPanel implements ActionListener{
 		finalButton.addActionListener(this);
 		add(finalButton);
 		editButtons[1] = finalButton;
+		int index = getIndex(1);
 		for(int i=0;i<2;i++){
-			String winner = info[0][4]+info[0][5];
-			String player = info[0][2*i]+info[0][2*i+1];
+			String winner = info[index][4]+info[index][5];
+			String player = info[index][2*i]+info[index][2*i+1];
 			if(winner.equals(Match.DEFAULT_WINNER_NAME + Match.DEFAULT_WINNER_SCHOOL))
 				g.setColor(Color.BLACK);
 			else if(winner.equals(player)){
@@ -79,7 +81,7 @@ public class BracketPanel extends JPanel implements ActionListener{
 			else
 				g.setColor(Color.RED);
 			g.drawString(info[0][2*i], startingX+5, startingY+(5*i+4)*MATCH_HEIGHT/10-2*MATCH_HEIGHT);
-			if(!info[0][2*i+1].equals("NA"))
+			if(!info[index][2*i+1].equals("NA"))
 				g.drawString(info[0][2*i+1], startingX+MATCH_WIDTH/2, startingY+(5*i+4)*MATCH_HEIGHT/10-2*MATCH_HEIGHT);
 			g.setColor(Color.BLACK);
 			paintOneMatch(startingX-2*MATCH_WIDTH,startingY, shift, 0, 2, 1, 2, g);
@@ -104,11 +106,11 @@ public class BracketPanel extends JPanel implements ActionListener{
 			g.drawString(info[index][2*i], x+5, y+(5*i+4)*MATCH_HEIGHT/10);
 			if(!info[index][2*i+1].equals("NA"))
 				g.drawString(info[index][2*i+1], x+MATCH_WIDTH/2, y+(5*i+4)*MATCH_HEIGHT/10);
+			g.setColor(Color.BLACK);
 			if(isFinalMatch(match)){
 				g.drawString("" + Math.abs((seed-i*(Brackets.getSize()+1))), x+7*MATCH_WIDTH/8, y+(5*i+4)*MATCH_HEIGHT/10);
 				g.drawLine(x+(int)(6.8*MATCH_WIDTH/8), y, x+(int)(6.8*MATCH_WIDTH/8), y+MATCH_HEIGHT);
 			}
-			g.setColor(Color.BLACK);
 		}
 		MatchButton button = new MatchButton(match);
 		newX = x + MATCH_WIDTH/2*(direction+1);
@@ -134,7 +136,10 @@ public class BracketPanel extends JPanel implements ActionListener{
 			g.drawLine(newX,y+MATCH_HEIGHT/2,newX+direction*5*MATCH_WIDTH/4,y+MATCH_HEIGHT/2);
 	}
 	private boolean isFinalMatch(int match){
-		return match*2+1 > Brackets.getSize() || info[getIndex(match*2)][0].equals("BYE") && info[getIndex(match*2+1)][0].equals("BYE");
+		return match*2+1 > Brackets.getSize()
+				|| (info[getIndex(match)][0].equals("BYE") && info[getIndex(match)][2].equals("BYE"))
+				|| ((info[getIndex(match*2)][0].equals("BYE") && info[getIndex(match*2)][2].equals("BYE"))
+				|| (info[getIndex(match*2+1)][0].equals("BYE") && info[getIndex(match*2+1)][2].equals("BYE")));
 	}
 	public static void zoomIn(){
 		if(MATCH_WIDTH*FACTOR <= MAX_WIDTH)
