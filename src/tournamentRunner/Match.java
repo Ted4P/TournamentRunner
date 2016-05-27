@@ -123,8 +123,10 @@ public class Match {
 	}
 	
 	public void promoteByes(){
-		left.promoteByes();
-		right.promoteByes();
+		if(left != null)
+			left.promoteByes();
+		if(right !=null)
+			right.promoteByes();
 		if(lPer instanceof Bye) promoteWinner(rPer,"Bye");
 		else if(rPer instanceof Bye) promoteWinner(lPer, "Bye");
 	}
