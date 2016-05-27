@@ -81,6 +81,7 @@ public class TournamentModel extends Observable{
 				setChanged();
 				notifyObservers();
 			}
+			Brackets.getBracket(bracket).promoteByes();
 			return result;
 		}
 		return false;
