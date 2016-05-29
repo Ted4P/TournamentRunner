@@ -38,7 +38,6 @@ public class BracketPanel extends JPanel implements ActionListener{
 			info[i][6] = rawData[3];
 			info[i][7] = rawData[4];
 		}
-		System.out.println(bracket.getInfo());
 		scan.close();
 		setFocusable(true);
 		editButtons = new MatchButton[Brackets.getSize()+1];
@@ -80,9 +79,9 @@ public class BracketPanel extends JPanel implements ActionListener{
 			}
 			else
 				g.setColor(Color.RED);
-			g.drawString(info[0][2*i], startingX+5, startingY+(5*i+4)*MATCH_HEIGHT/10-2*MATCH_HEIGHT);
+			g.drawString(info[index][2*i], startingX+5, startingY+(5*i+4)*MATCH_HEIGHT/10-2*MATCH_HEIGHT);
 			if(!info[index][2*i+1].equals("NA"))
-				g.drawString(info[0][2*i+1], startingX+MATCH_WIDTH/2, startingY+(5*i+4)*MATCH_HEIGHT/10-2*MATCH_HEIGHT);
+				g.drawString(info[index][2*i+1], startingX+MATCH_WIDTH/2, startingY+(5*i+4)*MATCH_HEIGHT/10-2*MATCH_HEIGHT);
 			g.setColor(Color.BLACK);
 			paintOneMatch(startingX-2*MATCH_WIDTH,startingY, shift, 0, 2, 1, 2, g);
 			paintOneMatch(startingX+2*MATCH_WIDTH,startingY, shift, 0, 3, -1, 1, g);
