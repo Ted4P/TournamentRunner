@@ -77,13 +77,14 @@ public class TournamentModel extends Observable{
 				while(seed > 0  && !Brackets.getBracket(bracket).addPerson(person,seed--));
 				result = seed!=0;
 			}
+			Brackets.getBracket(bracket).promoteByes(false);
 			if(result){
 				setChanged();
 				notifyObservers();
 			}
-			Brackets.getBracket(bracket).promoteByes();
 			return result;
 		}
+		competitors[bracket].remove(person);
 		return false;
 	}
 	/*
