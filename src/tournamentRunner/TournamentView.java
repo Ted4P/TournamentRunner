@@ -147,15 +147,15 @@ public class TournamentView extends JFrame implements Observer, ActionListener{
 		return -1;
 	}
 	public void addByes(String bracket, boolean setAll){
+		int num = findBrackNum(bracket);
 		if(setAll){
 			for(int i = 0; i < Brackets.getNum(); i++){
 				while(model.addPerson(new Bye(), i));
 			}
 		}
-		else{
-			int num = findBrackNum(bracket);
+		else
 			while(model.addPerson(new Bye(), num));
-		}
+		Brackets.getBracket(num).promoteByes(true);;
 	}
 	
 	public void setMatch(Person p1, Person p2, Person win, String notes, int bracket, int index){
