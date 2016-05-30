@@ -26,6 +26,9 @@ public class Match {
 	/*
 	 * Add a new Person to the bracket, with the given seed.
 	 * Returns true if no the seed exists and is empty, otherwise false
+	 * 
+	 * Use the following algorithm to calculate seeds: the top receives the parent passed seed (starting with one), 
+	 * and the bottom receives the size of the bracket at that level, plus one, minus the top seed, performed recursively
 	 */
 	public boolean addPerson(Person person, int seed, int curLoc, int size){
 		
