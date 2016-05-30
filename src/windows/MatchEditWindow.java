@@ -224,6 +224,10 @@ public class MatchEditWindow extends JDialog implements ActionListener{
 				winner = p2.toString();
 				winnerEdit.setSelectedIndex(2);
 			}
+			if(name2.getText().equals("BYE")){
+				winner = p1.toString();
+				winnerEdit.setSelectedIndex(1);
+			}
 			if(winner.equals(p1.toString()))
 				toBePromoted = p1;
 			else if(winner.equals(p2.toString()))
