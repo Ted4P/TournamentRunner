@@ -40,7 +40,7 @@ public class Bracket {
 	}
 	
 	//Promote all people facings byes up until another human opponent
-	public void promoteByes(){
-		top.promoteByes();
+	public void promoteByes(boolean fill){
+		top.promoteByes(fill);
 	}
 }
