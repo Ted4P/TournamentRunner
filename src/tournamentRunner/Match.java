@@ -120,13 +120,19 @@ public class Match {
 			left.setMatch(left2, right2, winner, notes, index);
 			right.setMatch(left2, right2, winner, notes, index);
 		}
-	}
+	}	
 	
-	public void promoteByes(){
+	public void promoteByes(boolean fill){
 		if(left != null)
-			left.promoteByes();
+			left.promoteByes(fill);
 		if(right !=null)
-			right.promoteByes();
+			right.promoteByes(fill);
+		if(fill){
+		if(lPer.getName().equals(DEFAULT_BLANK_NAME))
+			lPer = new Bye();
+		if(rPer.getName().equals(DEFAULT_BLANK_NAME))
+			rPer = new Bye();
+		}
 		if(lPer instanceof Bye) promoteWinner(rPer,"Bye");
 		else if(rPer instanceof Bye) promoteWinner(lPer, "Bye");
 	}
