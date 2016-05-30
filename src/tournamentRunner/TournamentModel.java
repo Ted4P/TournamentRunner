@@ -139,7 +139,7 @@ public class TournamentModel extends Observable{
 		int num = Brackets.getNum();
 		for(int i = 0; i < num && scan.hasNextLine(); i++){
 			String name = scan.nextLine()+",";
-			while(name.length()>0){
+			while(name.length()>1){
 				addPerson(new Person(name.substring(0,name.indexOf(',')),school),i);
 				name = name.substring(name.indexOf(',')+1);
 			}
