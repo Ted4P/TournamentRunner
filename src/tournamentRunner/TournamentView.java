@@ -278,7 +278,6 @@ public class TournamentView extends JFrame implements Observer, ActionListener{
 			zoomIn.setEnabled(false);
 			zoomOut.setEnabled(false);
 			addRoster.setEnabled(false);
-			print.setEnabled(false);
 			setTitle("Tournament Runner");
 		}
 		else{
@@ -293,10 +292,9 @@ public class TournamentView extends JFrame implements Observer, ActionListener{
 			zoomIn.setEnabled(true);
 			zoomOut.setEnabled(true);
 			addRoster.setEnabled(true);
-			print.setEnabled(true);
 		}
 	}
-	private void print(){
+	/*private void print(){
 		PrinterJob job = PrinterJob.getPrinterJob();
 		PageFormat pf = job.defaultPage();
 		pf.setOrientation(PageFormat.LANDSCAPE);
@@ -310,7 +308,7 @@ public class TournamentView extends JFrame implements Observer, ActionListener{
 				JOptionPane.showMessageDialog(this, "Error: Failed to Print", "Whoops!", JOptionPane.ERROR_MESSAGE);
 			}
 		}
-	}
+	}*/
 
 	public static void main(String[] args){
 		new TournamentView();
@@ -348,7 +346,7 @@ public class TournamentView extends JFrame implements Observer, ActionListener{
 			update(model,null);
 		}
 		else if(source == print){
-			print();
+			//print();
 		}
 	}
 }
