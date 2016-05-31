@@ -9,16 +9,19 @@ import javax.swing.event.DocumentListener;
 import tournamentRunner.TournamentView;
 
 /*
-*Represents a Dialog box to create a new Tournament, with Name, Size and # of brackets
-*/
-public class NewTournamentWindow extends JDialog implements ActionListener{ //Retain reference to view to allow method calls
+ * Represents a window to create a new tournament
+ * 5.30.16
+ * Ben Kelly and Ted Pyne
+ */
+public class NewTournamentWindow extends JDialog implements ActionListener{
 	private TournamentView view;
 	private JButton confirm,cancel;
 	private JTextField name, number, size;
+	//Creates a new window dependent on TournamentView view
 	public NewTournamentWindow(TournamentView view){
 		super(view, "New Tournament");
 		this.view = view;
-		DocListener dl = new DocListener(); //Listen for changes to text fields
+		DocListener dl = new DocListener();
 		
 		GridBagConstraints cons = new GridBagConstraints();
 		cons.gridheight = 10;
@@ -28,8 +31,7 @@ public class NewTournamentWindow extends JDialog implements ActionListener{ //Re
 		name = new JTextField("Tournament Name");
 		name.setColumns(15);
 		name.setHorizontalAlignment(JTextField.CENTER);
-		namePanel.add(name);
-		
+		namePanel.add(name);		
 		JPanel numberAndSize = new JPanel();
 		numberAndSize.setLayout(new GridBagLayout());
 		number = new JTextField("Number of Brackets");
@@ -71,16 +73,16 @@ public class NewTournamentWindow extends JDialog implements ActionListener{ //Re
 		this.setVisible(true);
 		this.pack();
 	}
-	
-	public void actionPerformed(ActionEvent e) { //If cancel, close the window, if confirm, attempt to create new bracket
-		if(e.getSource() == cancel) this.dispose();	
+	//Resolves an action event of the confirm and cancel buttons
+	public void actionPerformed(ActionEvent e) {
+		if(e.getSource() == cancel) this.dispose();
 		else{
 			dispose();
 			view.createNewBracket(name.getText(),number.getText(),size.getText());
 		}
 	}
 	
-	private class DocListener implements DocumentListener{ //If any fields are default text or blank, do not allow confirm
+	private class DocListener implements DocumentListener{ //Listens for changes in the textfields
 		public void changedUpdate(DocumentEvent e){
 			enableButtons();
 		}
