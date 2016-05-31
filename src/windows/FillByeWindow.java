@@ -27,7 +27,7 @@ public class FillByeWindow extends JDialog implements ActionListener {
 	private JComboBox<String> bracketOptions;
 	private JCheckBox fillAll;
 	
-	
+	//Creates a new window
 	public FillByeWindow(TournamentView view){
 		this.view = view;
 		confirm = new JButton("Confirm");
@@ -67,7 +67,7 @@ public class FillByeWindow extends JDialog implements ActionListener {
 		this.setVisible(true);
 		this.pack();
 	}
-	
+	//Resolves when people click the buttons and comboBox
 	public void actionPerformed(ActionEvent arg0) {
 		Object source = arg0.getSource();
 		if(source == fillAll){
