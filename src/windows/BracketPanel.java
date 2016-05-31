@@ -11,7 +11,12 @@ import java.awt.Color;
 import tournamentRunner.*;
 import javax.swing.JPanel;
 
-@SuppressWarnings("serial")
+/*
+ * Acts as an extension of a panel which, given a TournamentView to reference and a bracket, it will display
+ * that bracket within the panel.
+ * 5.30.16
+ * Ben Kelly and Ted Pyne
+ */
 public class BracketPanel extends JPanel implements ActionListener{
 	private Bracket bracket;
 	private String[][] info;
@@ -21,6 +26,7 @@ public class BracketPanel extends JPanel implements ActionListener{
 	private MatchButton[] editButtons;
 	private TournamentView view;
 	private int level,shift,totShift;
+	//Creates a new BracketPanel for a given bracket connected to view
 	public BracketPanel(Bracket bracket, TournamentView view){
 		this.view = view;
 		this.bracket = bracket;
@@ -48,7 +54,8 @@ public class BracketPanel extends JPanel implements ActionListener{
 		shift = (int)(Math.pow(2, level)*(MATCH_WIDTH*6.0/100));
 		totShift = (int)(2 * shift * (1-Math.pow(0.5, level)));
 	}
-
+	/*@Override
+	 *Paints this panel with the correct information for the stored bracket*/
 	public void paintComponent(Graphics g){
 		removeAll();
 		if(g instanceof Graphics2D)
@@ -93,6 +100,7 @@ public class BracketPanel extends JPanel implements ActionListener{
 			paintOneMatch(startingX+2*MATCH_WIDTH,startingY, shift, 0, 3, -1, 1, g);
 		}
 	}
+	//Recursive method designed to paint a single match in the bracket, then to call its children (if they exist) to be painted
 	private void paintOneMatch(int x, int y, int shift, int level, int match, int direction, int seed, Graphics g){
 		g.setFont(new Font(g.getFont().getFontName(),Font.BOLD,MATCH_HEIGHT/3));
 		int index = getIndex(match);
@@ -140,12 +148,14 @@ public class BracketPanel extends JPanel implements ActionListener{
 		else
 			g.drawLine(newX,y+MATCH_HEIGHT/2,newX+direction*5*MATCH_WIDTH/4,y+MATCH_HEIGHT/2);
 	}
+	//Returns if this match is a final match in the bracket or if its children both contain BYEs
 	private boolean isFinalMatch(int match){
 		return match*2+1 > Brackets.getSize()
 				|| (info[getIndex(match)][0].equals("BYE") && info[getIndex(match)][2].equals("BYE"))
 				|| ((info[getIndex(match*2)][0].equals("BYE") && info[getIndex(match*2)][2].equals("BYE"))
 				|| (info[getIndex(match*2+1)][0].equals("BYE") && info[getIndex(match*2+1)][2].equals("BYE")));
 	}
+	//Zooms in the panel by FACTOR
 	public static void zoomIn(){
 		if(MATCH_WIDTH*FACTOR <= MAX_WIDTH)
 			MATCH_WIDTH *= FACTOR;
@@ -153,6 +163,7 @@ public class BracketPanel extends JPanel implements ActionListener{
 			MATCH_WIDTH = MAX_WIDTH;
 		MATCH_HEIGHT = MATCH_WIDTH/5;
 	}
+	//Zooms out the panel by FACTOR
 	public static void zoomOut(){
 		if(MATCH_WIDTH/FACTOR >= MIN_WIDTH)
 			MATCH_WIDTH /= FACTOR;
@@ -160,6 +171,7 @@ public class BracketPanel extends JPanel implements ActionListener{
 			MATCH_WIDTH = MIN_WIDTH;
 		MATCH_HEIGHT = MATCH_WIDTH/5;
 	}
+	//Sets the match width a certain width
 	public static void setMatchWidth(int width){
 		if(width > MAX_WIDTH)
 			MATCH_WIDTH = MAX_WIDTH;
@@ -169,21 +181,27 @@ public class BracketPanel extends JPanel implements ActionListener{
 			MATCH_WIDTH = width;
 		MATCH_HEIGHT = MATCH_WIDTH/5;
 	}
+	//Returns the number of levels
 	public int getLevels(){
 		return level;
 	}
+	//Returns the total shift in the y-axis
 	public int getTotShift(){
 		return totShift;
 	}
+	//Returns the width of each match
 	public static int getMatchWidth(){
 		return MATCH_WIDTH;
 	}
+	//Returns the height of each match
 	public static int getMatchHeight(){
 		return MATCH_HEIGHT;
 	}
+	//Sets the zoom factor
 	public static void setFactor(double newFactor){
 		FACTOR = newFactor;
 	}
+	//Given a match number, finds and returns the index where that match is in the information array
 	private int getIndex(int match){
 		int index = 0;
 		while(index < Brackets.getSize() && !info[index][7].equals("" + match))
@@ -193,6 +211,7 @@ public class BracketPanel extends JPanel implements ActionListener{
 		return index;
 	}
 	@Override
+	//If an edit button is pressed, finds which match it corresponds to and makes a new window for the editing
 	public void actionPerformed(ActionEvent arg0) {
 		if(arg0.getSource() instanceof MatchButton){
 			MatchButton match = (MatchButton)arg0.getSource();
