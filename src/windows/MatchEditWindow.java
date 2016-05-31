@@ -25,7 +25,11 @@ import tournamentRunner.Brackets;
 import tournamentRunner.Match;
 import tournamentRunner.Person;
 import tournamentRunner.TournamentView;
-
+/*
+ * Represents a window for editing the match details, including the winner and the contestents
+ * 5.30.16
+ * Ben Kelly and Ted Pyne
+ */
 public class MatchEditWindow extends JDialog implements ActionListener{
 	private Bracket bracket;
 	private JButton save, cancel, close, edit;
@@ -36,6 +40,8 @@ public class MatchEditWindow extends JDialog implements ActionListener{
 	private int match;
 	private JComponent boxCompo;
 	private boolean isFinal;
+	//Creates a new editing window corresponding to the given bracket with the given matchInfo and num.
+	//Also given whether the represented match is a match is in the first round
 	public MatchEditWindow(TournamentView view, Bracket bracket, String[] matchInfo, int match, boolean isFinal){
 		super(view, "Match Info");
 		this.view = view;
@@ -134,7 +140,7 @@ public class MatchEditWindow extends JDialog implements ActionListener{
 		setAlwaysOnTop(true);
 		setVisible(true);
 	}
-
+	//Sets this window to viewing mode, and no fields can be changed
 	private void viewMode(){
 		Border emptyBorder = BorderFactory.createEmptyBorder();
 		name1.setEditable(false);
@@ -159,7 +165,8 @@ public class MatchEditWindow extends JDialog implements ActionListener{
 		setSize(getWidth()+1,getHeight());
 		repaint();
 	}
-
+	//Sets this window to edit mode, and some field, depending on whether the match is in the first
+	//round can be edited.
 	private void editMode(){
 		Border drawBorder = BorderFactory.createLineBorder(Color.black, 1);
 		if(isFinal){
@@ -190,7 +197,8 @@ public class MatchEditWindow extends JDialog implements ActionListener{
 		setSize(getWidth()-1,getHeight());
 		updateWhileEditing();
 	}
-
+	//Adjusts what buttons are enabled based on what people enter in the fields during
+	//edit mode
 	public void updateWhileEditing(){
 		int index = winnerEdit.getSelectedIndex();
 		winnerEdit.removeAllItems();
@@ -212,7 +220,7 @@ public class MatchEditWindow extends JDialog implements ActionListener{
 			save.setEnabled(false);
 		comboBox.repaint();
 	}
-
+	//Responds to action events in this window and resolves them based on their source
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		if(arg0.getSource() == save){
