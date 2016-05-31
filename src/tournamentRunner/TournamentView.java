@@ -90,7 +90,7 @@ public class TournamentView extends JFrame implements Observer, ActionListener{
 		bracketArray = new ArrayList<BracketPanel>();
 		pane.add(brackets);
 		super.setJMenuBar(bar);
-		setTitle("Tournament Runner");
+		setTitle("Bracket Master");
 		setSize(1600,800);
 		Toolkit tlkt = Toolkit.getDefaultToolkit();
 		this.setLocation((int)(tlkt.getScreenSize().getWidth()-this.getWidth())/2,(int)(tlkt.getScreenSize().getHeight()-this.getHeight())/2);
