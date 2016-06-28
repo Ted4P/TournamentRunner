@@ -1,8 +1,12 @@
 package tournamentRunner;
+
+import java.util.ArrayList;
+
 //Represents a single bracket, with size set in the constructor
 public class Bracket {
 	private Match top;
 	private String name;
+	private ArrayList<String> records = new ArrayList<String>();
 	public Bracket(int size,  String name) {		//Create a bracket with a given size and name
 		top = new Match(size, null,1);
 		this.name = name;
@@ -18,6 +22,8 @@ public class Bracket {
 	
 	//Set the winner of the bracket given by MatcchID to the Person winner, and set match notes
 	public void recordWin(Person winner, String notes, int matchID){
+		//Add to list of match records
+		records.add(winner + " defeated " + top.getLoser(matchID) + " with notes \"" + notes + "\"");
 		top.advancePerson(winner, notes, matchID);
 	}
 	/*

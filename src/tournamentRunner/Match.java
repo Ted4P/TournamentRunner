@@ -139,4 +139,13 @@ public class Match {
 		if(lPer instanceof Bye) promoteWinner(rPer,"Bye");
 		else if(rPer instanceof Bye) promoteWinner(lPer, "Bye");
 	}
+	public Person getLoser(int matchID) {
+		if(matchID == val){
+			if(wPer == lPer) return rPer;
+			else return lPer;
+		}
+		Person per = left.getLoser(matchID);
+		if(per!=null) return per;
+		return right.getLoser(matchID);
+	}
 }
